@@ -31,7 +31,7 @@ export const puzzleOptions: Puzzle[] = [
         tag: 'button',
         displayname: 'Button',
         properties: {
-            textContent: 'Button',
+            textContent: '',
         },
         allowedNestElements: ['inlinestyle', 'text'],
     },
@@ -93,5 +93,8 @@ export const processProperty = {
         bindInput(stylePropertyObject.value, valueModifier, val => {
             stylePropertyObject.value = dashToCamel(val)
         })
+    },
+    textContent: (modifier: HTMLInputElement, properties: WezzleProperty) => {
+        bindInput(properties.textContent!, modifier, val => properties.textContent = val)
     }
 }

@@ -9,6 +9,8 @@
 
 :root {
     font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+    user-select: none;
 }
 
 body {
@@ -26,6 +28,10 @@ button {
 
     font-family: Montserrat;
     font-weight: 500;
+}
+
+button:empty::before {
+    content: 'Button';
 }
 
 .wz-temp {

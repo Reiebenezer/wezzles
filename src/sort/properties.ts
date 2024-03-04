@@ -42,6 +42,18 @@ export function showProperties(id: string) {
                     break;
             }
         } else {
+            const input = propertyModifier.firstElementChild as HTMLInputElement
+
+            switch (key) {
+                case 'textContent':
+                    processProperty.textContent(input, properties)
+                    propertyModifier.onkeyup = () => parse(true)
+                    break;
+            
+                default:
+                    break;
+            }
+
             propertyModifier.onchange = () => parse(true)
         }
     }
