@@ -597,3 +597,8 @@ export function addWezzle(option: HTMLElement) {
 
 	// Selection
 }
+
+// To Fix Animation bugs when not hovering over any puzzle piece
+export function setCurrentlyAnimating(value: boolean) {
+	currentlyAnimating = value
+}

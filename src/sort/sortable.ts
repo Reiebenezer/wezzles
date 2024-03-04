@@ -6,6 +6,7 @@ import {
 	insertSeparators,
 	removeSeparators,
 	insertSort,
+	setCurrentlyAnimating,
 } from './animations'
 import { DEFAULT_GAP } from '../config'
 
@@ -255,6 +256,8 @@ export function makeItemsSortable(list: HTMLElement) {
 			if (hovered !== deleteIcon) {
 				deleteIcon.style.scale = '0'
 			}
+
+			if (hovered === document.getElementById('wz-playground')) setCurrentlyAnimating(false)
 
 			function hoveredIsChildOfTarget(target: HTMLElement): boolean {
 				let isChild = false
