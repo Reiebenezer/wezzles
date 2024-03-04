@@ -257,7 +257,7 @@ export function makeItemsSortable(list: HTMLElement) {
 				deleteIcon.style.scale = '0'
 			}
 
-			if (hovered === document.getElementById('wz-playground')) setCurrentlyAnimating(false)
+			setCurrentlyAnimating(false)
 
 			function hoveredIsChildOfTarget(target: HTMLElement): boolean {
 				let isChild = false
