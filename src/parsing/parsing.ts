@@ -1,5 +1,5 @@
 import { SHOW_INLINE_STYLES } from '../config'
-import { getAllPuzzleChildrenIDs, isSameArray, playgroundItems } from '../defs'
+import { camelToDash, getAllPuzzleChildrenIDs, isSameArray, playgroundItems } from '../defs'
 import { WezzleProperty } from '../puzzle-pieces'
 
 const playground = document.getElementById('wz-playground')!
@@ -121,7 +121,7 @@ function processStyling(parsedHTML: HTMLDivElement) {
 		stringified += `#${selector} {\n`
 
 		for (const [ key, value ] of Object.entries(properties)) {
-			stringified += `\t${key}: ${value};\n`
+			stringified += `\t${camelToDash(key)}: ${value};\n`
 		}
 
 		stringified += '}\n\n'
