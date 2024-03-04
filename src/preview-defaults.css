@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+
+    box-sizing: border-box;
+}
+
+:root {
+    font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: whitesmoke;
+}
+
+button {
+    padding: 0.5rem 1rem;
+
+    border-radius: 0.5e1px;
+    border: none;
+
+    background-color: violet;
+    color: darkslategrey;
+
+    font-family: Montserrat;
+    font-weight: 500;
+}
+
+.wz-temp {
+    background-color: blueviolet;
+    color: white;
+
+    display: block;
+
+    width: 5rem;
+    height: 1rem;
+}

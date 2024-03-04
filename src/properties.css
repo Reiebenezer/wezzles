@@ -1,0 +1,30 @@
+#wz-properties > * {
+    display: none;
+}
+
+#wz-properties label input {
+    border: 1px solid #a9a9a9;
+    border-radius: 0.5e1px;
+
+    font-size: 1rem;
+    font-family: Montserrat Variable, Inter, system-ui, Helvetica, sans-serif;
+
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+
+    max-width: 25ch;
+}
+
+#wz-properties .wz-visible,
+#wz-properties .wz-visible > :is(label, div) {
+    display: grid;
+    gap: 0.25rem;
+}
+
+#wz-properties .wz-visible .value-valid {
+    box-shadow: 0 0 8px 0 green;
+}
+
+#wz-properties .wz-visible .value-error {
+    box-shadow: 0 0 8px 0 maroon;
+}

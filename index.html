@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wezzles</title>
+  <link rel="icon" href="src/assets/logo.ico" />
+
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="stylesheet" href="src/properties.css">
+
+  <script type="module" src="/src/external-styles.ts"></script>
+
+</head>
+
+<body>
+  <main>
+    <div id="wz-options">
+
+    </div>
+    <i id="wz-delete-icon" class="ph ph-trash"></i>
+
+    <div id="wz-playground" data-id="global-container">
+      <div id="wz-shift-animation"></div>
+      <div id="wz-resize-animation"></div>
+      <div id="wz-insert-animation"></div>
+    </div>
+
+
+    <aside>
+      <div id="wz-preview">
+        <iframe src="src/parsing/templates/preview.html" width="100%" height="100%" frameborder="0"
+          id="wz-preview-container"></iframe>
+      </div>
+      <div id="wz-properties">
+        <label id="wz-property-text-content">Text Content<input type="text"></label>
+        <div id="wz-property-style">
+          <label id="wz-property-style-name">Style Name<input type="text"></label>
+          <label id="wz-property-style-value">Style Value<input type="text"></label>
+        </div>
+      </div>
+    </aside>
+
+    <canvas id="wz-arrow"></canvas>
+  </main>
+
+
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

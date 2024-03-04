@@ -1,0 +1,5 @@
+import '@phosphor-icons/web/regular'
+import '@phosphor-icons/web/bold'
+import 'toastify-js/src/toastify.css'
+import '@fontsource-variable/montserrat'
+import '@fontsource/bubblegum-sans'
