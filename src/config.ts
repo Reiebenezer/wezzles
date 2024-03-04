@@ -7,4 +7,4 @@ export let ANIMATION_TIME = DEFAULT_ANIMATION !== AnimationTypes.none ? DEFAULT_
 export let DEFAULT_GAP = 16
 export let FOLLOW_WEZZLE = true
 
-export let SHOW_INLINE_STYLES = true
+export let SHOW_INLINE_STYLES = false

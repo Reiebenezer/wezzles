@@ -24,7 +24,14 @@ export async function parse(force?: boolean) {
 
 	// console.log(parsedHTML)
 
-	processStyling(parsedHTML)
+	const stylehead = processStyling(parsedHTML)
+
+	if (stylehead) {
+		const head = document.createElement('style')
+		head.innerHTML = stylehead
+
+		preview.contentDocument!.head.appendChild(head)
+	}
 	preview.contentDocument!.body.innerHTML = parsedHTML.innerHTML
 	console.timeEnd('Parsed in')
 
@@ -94,17 +101,35 @@ function processStyling(parsedHTML: HTMLDivElement) {
 	const styleArray: { [element: string]: { [name: string]: string } } = {}
 
 	parsedHTML.querySelectorAll('style').forEach(styleTag => {
-		const parentID = styleTag.parentElement!.id
+		const parentID = styleTag.parentElement!.id || 'body'
 		const [stylename, stylevalue] = styleTag.innerHTML.split(':')
 
 		if (SHOW_INLINE_STYLES)
 			styleTag.parentElement!.style.setProperty(stylename, stylevalue)
+
 		else if (stylename) {
+			if (!styleArray[parentID]) styleArray[parentID] = {}
 			styleArray[parentID][stylename] = stylevalue
 		}
 
 		styleTag.remove()
 	})
+
+	// Parse the stylearray into a css string
+	let stringified = ''
+	for (const [ selector, properties ] of Object.entries(styleArray)) {
+		stringified += `#${selector} {\n`
+
+		for (const [ key, value ] of Object.entries(properties)) {
+			stringified += `\t${key}: ${value};\n`
+		}
+
+		stringified += '}\n\n'
+	}
+
+	console.log(stringified)
+
+	return stringified
 }
 
 function processProperties(properties: WezzleProperty, element: HTMLElement) {
