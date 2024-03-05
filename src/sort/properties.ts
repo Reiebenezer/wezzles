@@ -1,6 +1,7 @@
-import { camelToDash, playgroundItems } from "../defs";
-import { parse } from "../parsing/parsing";
-import { processProperty } from "../puzzle-pieces";
+import { camelToDash } from "../typing";
+import { playgroundItems } from "../global";
+import { parse } from "../parsing";
+import { processProperty } from "../global";
 
 const propertiesPanel = document.getElementById('wz-properties')!
 

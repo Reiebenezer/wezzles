@@ -1,6 +1,8 @@
-import { SHOW_INLINE_STYLES } from '../config'
-import { camelToDash, getAllPuzzleChildrenIDs, isSameArray, playgroundItems } from '../defs'
-import { WezzleProperty } from '../puzzle-pieces'
+import { SHOW_INLINE_STYLES } from './config'
+import { getAllPuzzleChildrenIDs, isSameArray } from './functions'
+import { camelToDash } from "./typing"
+import { playgroundItems } from "./global"
+import { WezzleProperty } from "./types"
 
 const playground = document.getElementById('wz-playground')!
 let cachedElements = getAllPuzzleChildrenIDs(playground)
@@ -168,7 +170,7 @@ export function openNewWindow() {
 	}
 }
 
-export interface parsedElement {
+interface parsedElement {
 	id: string
 	tag: string | 'none'
 	properties: WezzleProperty

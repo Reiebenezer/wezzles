@@ -1,7 +1,7 @@
 import Toastify from "toastify-js"
-import { EssentialPuzzleList } from "./puzzle-pieces"
-
-export const playgroundItems: EssentialPuzzleList = {}
+import { PuzzleChildArray } from "./types"
+import { puzzleOptions } from "./global"
+import { addWezzle } from "./animations"
 
 export const notify = {
     error: (message: string) => {
@@ -44,18 +44,6 @@ export function returnAsHTMLElementArray(parent: HTMLElement) {
     return children;
 }
 
-export function a_an(s: string) {
-    if (
-        s.toLowerCase().startsWith('a') ||
-        s.toLowerCase().startsWith('e') ||
-        s.toLowerCase().startsWith('i') ||
-        s.toLowerCase().startsWith('o') ||
-        s.toLowerCase().startsWith('u')
-    )
-        return 'an';
-    else return 'a';
-}
-
 export function isSameArray(a: PuzzleChildArray, b: PuzzleChildArray) {
     if (a === b) return true
     if (a.length !== b.length) return false
@@ -86,26 +74,24 @@ export function getAllPuzzleChildrenIDs(element: HTMLElement) {
     return IDs
 }
 
-type PuzzleChildArray = Array<string | { id: string, children: PuzzleChildArray }>
-
-export function camelToDash(str: string) {
-    return str.replace(/[A-Z]/g, match => `-${match.toLowerCase()}`)
-}
-
-export function dashToCamel(str: string) {
-    return str.replace(/-[a-z]/g, match => `${match.toUpperCase().replace('-', '')}`)
-}
-
 export function bindInput(initValue: string, input: HTMLInputElement, callback: (changedValue: string) => any) {
     input.value = initValue
 
     input.onkeyup = () => callback(input.value)
 }
 
-export const AnimationTypes = {
-	fancy: 'cubic-bezier( 0.215, 0.61, 0.355, 1 )',
-	fast: 'cubic-bezier(0.23, 1, 0.32, 1)',
-	bouncy: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-	static: 'linear',
-	none: undefined,
+export function addToOptions() {
+    const optionContainer = document.getElementById('wz-options')
+
+    puzzleOptions.forEach(puzzle => {
+        const el = document.createElement('div')
+        el.classList.add('puzzle-piece')
+
+        el.dataset.id = puzzle.name
+        el.dataset.name = puzzle.displayname
+
+        optionContainer?.appendChild(el)
+        el.onclick = () => addWezzle(el)
+    })
 }
+

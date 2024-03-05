@@ -3,10 +3,13 @@ import {
 	DEFAULT_ANIMATION,
 	DEFAULT_GAP,
 	FOLLOW_WEZZLE,
-} from '../config'
-import { AnimationTypes, a_an, notify, playgroundItems } from '../defs'
-import { puzzleOptions } from '../puzzle-pieces'
-import { hideProperties, showProperties } from './properties'
+} from './config'
+import { notify } from './functions'
+import { a_an } from "./typing"
+import { AnimationTypes } from "./global"
+import { playgroundItems } from "./global"
+import { puzzleOptions } from "./global"
+import { hideProperties, showProperties } from './sort/properties'
 
 export let currentlyAnimating = false
 

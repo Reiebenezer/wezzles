@@ -1,22 +1,15 @@
-import { bindInput, dashToCamel } from "./defs"
-import { addWezzle } from "./sort/animations"
+import { bindInput } from "./functions";
+import { dashToCamel } from "./typing";
+import { EssentialPuzzleList, Puzzle, WezzleProperty } from "./types";
 
-interface Puzzle {
-    name: string
-    tag: string | 'none'
-    displayname: string
-    properties: WezzleProperty
-    allowedNestElements: string[] | 'all' | 'none'
-}
 
-export type EssentialPuzzleList = {
-    [key: string]: Omit<Puzzle, 'displayname'>
-}
-
-export interface WezzleProperty {
-	textContent?: string
-	style?: { name: string; value: string }
-}
+export const playgroundItems: EssentialPuzzleList = {};export const AnimationTypes = {
+    fancy: 'cubic-bezier( 0.215, 0.61, 0.355, 1 )',
+    fast: 'cubic-bezier(0.23, 1, 0.32, 1)',
+    bouncy: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    static: 'linear',
+    none: undefined,
+};
 
 export const puzzleOptions: Puzzle[] = [
     {
@@ -47,22 +40,7 @@ export const puzzleOptions: Puzzle[] = [
         },
         allowedNestElements: 'none',
     },
-]
-
-export function addToOptions() {
-    const optionContainer = document.getElementById('wz-options')
-
-    puzzleOptions.forEach(puzzle => {
-        const el = document.createElement('div')
-        el.classList.add('puzzle-piece')
-        
-        el.dataset.id = puzzle.name
-        el.dataset.name = puzzle.displayname
-
-        optionContainer?.appendChild(el)
-        el.onclick = () => addWezzle(el)
-    });
-}
+];
 
 export const processProperty = {
     style: (
@@ -85,8 +63,8 @@ export const processProperty = {
             else if (validProps.includes(modifiedVal)) {
                 nameModifier.classList.replace('value-error', 'value-valid') || nameModifier.classList.add('value-valid')
                 stylePropertyObject.name = val
-            } 
-            
+            }
+
             else nameModifier.classList.replace('value-valid', 'value-error') || nameModifier.classList.add('value-error')
         })
 
@@ -98,3 +76,7 @@ export const processProperty = {
         bindInput(properties.textContent!, modifier, val => properties.textContent = val)
     }
 }
+
+export const PLAYGROUND: HTMLElement = document.getElementById('wz-playground') as HTMLElement;
+export const CANVAS: HTMLCanvasElement = document.getElementById('wz-arrow') as HTMLCanvasElement;
+export const CANVASCONTEXT: CanvasRenderingContext2D | null = CANVAS.getContext('2d')

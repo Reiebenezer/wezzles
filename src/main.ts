@@ -1,18 +1,16 @@
-import { addToOptions } from './puzzle-pieces'
-import { currentlyAnimating } from './sort/animations';
-import { parse } from './parsing/parsing';
+import { addToOptions } from "./functions";
+import { currentlyAnimating } from './animations';
+import { parse } from './parsing';
 import { makeItemsSortable, makePlaygroundItem } from './sort/sortable'
 import { hideProperties } from './sort/properties';
+import { PLAYGROUND, CANVAS, CANVASCONTEXT } from "./global";
 
-const PLAYGROUND = document.getElementById('wz-playground')!
+CANVAS.width = CANVAS.offsetWidth;
+CANVAS.height = CANVAS.offsetHeight;
 
-const arrow = document.getElementById('wz-arrow') as HTMLCanvasElement;
-arrow.width = arrow.offsetWidth;
-arrow.height = arrow.offsetHeight;
-
-const context = arrow.getContext('2d');
 addToOptions()
 hideProperties()
+
 PLAYGROUND.addEventListener('click', () => {
   document.querySelectorAll('.wz-selected').forEach(item => item.classList.remove('wz-selected'))
   hideProperties()
@@ -20,8 +18,6 @@ PLAYGROUND.addEventListener('click', () => {
 
 const mutationObserver = new MutationObserver(() => {
   makePlaygroundItem(PLAYGROUND)
-  
-  // PARSING
   
   if (!currentlyAnimating) {
     parse()
@@ -33,44 +29,44 @@ mutationObserver.observe(PLAYGROUND, {
 })
 
 window.onresize = () => {
-  arrow.width = arrow.offsetWidth
-  arrow.height = arrow.offsetHeight
+  CANVAS.width = CANVAS.offsetWidth
+  CANVAS.height = CANVAS.offsetHeight
 }
 
 makeItemsSortable(PLAYGROUND)
 
 function animate() {
-  context?.clearRect(0, 0, arrow.width, arrow.height)
+  CANVASCONTEXT?.clearRect(0, 0, CANVAS.width, CANVAS.height)
 
-  if (arrow.dataset.src && arrow.dataset.dst) {
-    const src = arrow.dataset.src.split(' ').map(str => +str)
-    const dst = arrow.dataset.dst.split(' ').map(str => +str)
+  if (CANVAS.dataset.src && CANVAS.dataset.dst) {
+    const src = CANVAS.dataset.src.split(' ').map(str => +str)
+    const dst = CANVAS.dataset.dst.split(' ').map(str => +str)
 
-    context!.strokeStyle = 'black'
-    context!.lineWidth = 5
+    CANVASCONTEXT!.strokeStyle = 'black'
+    CANVASCONTEXT!.lineWidth = 5
 
-    const arrowLineOffset = +arrow.dataset.offset!
+    const arrowLineOffset = +CANVAS.dataset.offset!
 
-    context?.beginPath();
-    context?.moveTo(src[0], src[1])
-    context?.lineTo(arrowLineOffset, src[1])
-    context?.lineTo(arrowLineOffset, dst[1])
-    context?.lineTo(dst[0], dst[1]);
-    context?.stroke()
-    context?.closePath()
+    CANVASCONTEXT?.beginPath();
+    CANVASCONTEXT?.moveTo(src[0], src[1])
+    CANVASCONTEXT?.lineTo(arrowLineOffset, src[1])
+    CANVASCONTEXT?.lineTo(arrowLineOffset, dst[1])
+    CANVASCONTEXT?.lineTo(dst[0], dst[1]);
+    CANVASCONTEXT?.stroke()
+    CANVASCONTEXT?.closePath()
     
-    context?.beginPath()
-    context?.moveTo(
+    CANVASCONTEXT?.beginPath()
+    CANVASCONTEXT?.moveTo(
         dst[0] +
             (dst[0] - (arrowLineOffset) > 0
                 ? 10
                 : -10),
         dst[1]
     ); // -10 if less, 10 if more
-    context?.lineTo(dst[0], dst[1] - 5)
-    context?.lineTo(dst[0], dst[1] + 5)
-    context?.closePath()
-    context?.fill()
+    CANVASCONTEXT?.lineTo(dst[0], dst[1] - 5)
+    CANVASCONTEXT?.lineTo(dst[0], dst[1] + 5)
+    CANVASCONTEXT?.closePath()
+    CANVASCONTEXT?.fill()
   }
   
 

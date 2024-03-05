@@ -1,5 +1,7 @@
 import interact from 'interactjs'
-import { a_an, notify, playgroundItems } from '../defs'
+import { notify } from '../functions'
+import { a_an } from "../typing"
+import { playgroundItems } from "../global"
 import {
 	insert,
 	goToTrash,
@@ -7,7 +9,7 @@ import {
 	removeSeparators,
 	insertSort,
 	setCurrentlyAnimating,
-} from './animations'
+} from '../animations'
 import { DEFAULT_GAP } from '../config'
 
 const arrow = document.getElementById('wz-arrow') as HTMLCanvasElement

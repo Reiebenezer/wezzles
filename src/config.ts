@@ -1,4 +1,4 @@
-import { AnimationTypes } from "./defs"
+import { AnimationTypes } from "./global"
 
 export let DEFAULT_ANIMATION = AnimationTypes.fast
 export let DEFAULT_ANIMATION_TIME = 300
