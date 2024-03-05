@@ -103,7 +103,7 @@ function processStyling(parsedHTML: HTMLDivElement) {
 	const styleArray: { [element: string]: { [name: string]: string } } = {}
 
 	parsedHTML.querySelectorAll('style').forEach(styleTag => {
-		const parentID = styleTag.parentElement!.id || 'body'
+		const parentID = styleTag.parentElement!.id ?? 'body'
 		const [stylename, stylevalue] = styleTag.innerHTML.split(':')
 
 		if (SHOW_INLINE_STYLES)
@@ -140,7 +140,7 @@ function processProperties(properties: WezzleProperty, element: HTMLElement) {
 	}
 
 	if (properties.textContent) {
-		element.innerText = properties.textContent || ''
+		element.innerText = properties.textContent ?? ''
 	}
 }
 

@@ -75,7 +75,7 @@ export function makePlaygroundItem(list: HTMLElement) {
 		if (clientX < list.offsetLeft || clientX > list.offsetLeft + list.offsetWidth) 
 			list.querySelectorAll('.wz-arrow-hovered').forEach(item => item.classList.remove('wz-arrow-hovered'))
 
-		if (h || list.querySelectorAll('.wz-arrow-hovered').length > 1) {
+		if (h ?? list.querySelectorAll('.wz-arrow-hovered').length > 1) {
 			list.querySelectorAll('.wz-arrow-hovered').forEach(item =>
 				item.classList.remove('wz-arrow-hovered')
 			)
@@ -235,10 +235,10 @@ export function makeItemsSortable(list: HTMLElement) {
 							`You cannot nest ${a_an(target.dataset.name!)} ${
 								target.dataset.name
 							} in ${a_an(
-								(hovered.dataset.name ||
+								(hovered.dataset.name ??
 									hovered.parentElement!.dataset.name)!
 							)} ${
-								hovered.dataset.name ||
+								hovered.dataset.name ??
 								hovered.parentElement!.dataset.name
 							}!`
 						)

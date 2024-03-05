@@ -5,10 +5,10 @@ import {
 	FOLLOW_WEZZLE,
 } from './config'
 import { notify } from './functions'
-import { a_an } from "./typing"
-import { AnimationTypes } from "./global"
-import { playgroundItems } from "./global"
-import { puzzleOptions } from "./global"
+import { a_an } from './typing'
+import { AnimationTypes } from './global'
+import { playgroundItems } from './global'
+import { puzzleOptions } from './global'
 import { hideProperties, showProperties } from './sort/properties'
 
 export let currentlyAnimating = false
@@ -379,7 +379,7 @@ export function insertSort(source: HTMLElement, separator: HTMLElement) {
 	const sourceOffset = source.getBoundingClientRect()
 
 	let sourceInsert =
-		(source.nextElementSibling as HTMLElement) ||
+		(source.nextElementSibling as HTMLElement) ??
 		(source.nextElementSibling?.nextElementSibling as HTMLElement)
 
 	const destInsert = separator.nextElementSibling as HTMLElement
@@ -483,7 +483,11 @@ export function addWezzle(option: HTMLElement) {
 	const clonedWezzle = option.cloneNode() as HTMLElement
 	const playground = document.getElementById('wz-playground')!
 
-	const puzzle = JSON.parse(JSON.stringify(puzzleOptions.find(value => value.name === clonedWezzle.dataset.id)!))
+	const puzzle = JSON.parse(
+		JSON.stringify(
+			puzzleOptions.find(value => value.name === clonedWezzle.dataset.id)!
+		)
+	)
 
 	if (!puzzle) {
 		console.error('Puzzle piece name not found.')
@@ -518,10 +522,11 @@ export function addWezzle(option: HTMLElement) {
 		properties: puzzle.properties,
 		allowedNestElements: puzzle.allowedNestElements,
 	}
-	
+
 	// prevent incompatibilities
 	if (selected) {
-		const selectedAllowed = playgroundItems[selected.dataset.id!].allowedNestElements
+		const selectedAllowed =
+			playgroundItems[selected.dataset.id!].allowedNestElements
 
 		if (selectedAllowed === 'none') {
 			notify.error(
@@ -530,15 +535,20 @@ export function addWezzle(option: HTMLElement) {
 				)} ${selected.dataset.name!}!`
 			)
 			return
-		}
-		else if ((selectedAllowed !== 'all' && !selectedAllowed.includes(playgroundItems[id].name))) {
+		} else if (
+			selectedAllowed !== 'all' &&
+			!selectedAllowed.includes(playgroundItems[id].name)
+		) {
 			notify.error(
-				`You cannot add ${a_an(clonedWezzle.dataset.name!)} ${clonedWezzle.dataset.name} inside ${a_an(selected.dataset.name!)} ${selected.dataset.name!}!`
+				`You cannot add ${a_an(clonedWezzle.dataset.name!)} ${
+					clonedWezzle.dataset.name
+				} inside ${a_an(selected.dataset.name!)} ${selected.dataset
+					.name!}!`
 			)
 			return
 		}
 	}
-	
+
 	//
 	currentlyAnimating = true
 
@@ -573,8 +583,7 @@ export function addWezzle(option: HTMLElement) {
 		playground.prepend(resizeContainer)
 
 		resizeContainer.style.position = ''
-
-		;(document.querySelector('.wz-selected') || playground).appendChild(
+		;(document.querySelector('.wz-selected') ?? playground).appendChild(
 			clonedWezzle
 		)
 		anim.play()
@@ -593,8 +602,7 @@ export function addWezzle(option: HTMLElement) {
 
 			if (clonedWezzle.classList.contains('wz-selected')) {
 				showProperties(id)
-			}
-			else hideProperties()
+			} else hideProperties()
 		})
 	}
 
