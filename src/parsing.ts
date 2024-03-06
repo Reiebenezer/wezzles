@@ -15,6 +15,7 @@ export async function parse(force?: boolean) {
 	const parsedElementArray: parsedElement[] = []
 
 	getElementsFromDom(PLAYGROUND, parsedElementArray)
+
 	let parsedHTML = generateHTML(parsedElementArray)
 
 	const stylehead = processStyling(parsedHTML)
@@ -23,7 +24,12 @@ export async function parse(force?: boolean) {
 		const head = document.createElement('style')
 		head.innerHTML = stylehead
 
+		if (PREVIEW.contentDocument?.querySelector('style')) {
+			PREVIEW.contentDocument?.querySelector('style')?.remove()
+		} 
+
 		PREVIEW.contentDocument!.head.appendChild(head)
+
 	}
 	PREVIEW.contentDocument!.body.innerHTML = parsedHTML.innerHTML
 
@@ -120,8 +126,6 @@ function processStyling(parsedHTML: HTMLDivElement) {
 		stringified += '}\n\n'
 	}
 
-	console.log(stringified)
-
 	return stringified
 }
 
@@ -136,7 +140,6 @@ function processProperties(properties: WezzleProperty, element: HTMLElement) {
 }
 
 export function openPreview() {
-    console.log('dfdfdf')
 	const previewNew = window.open('', '_blank')!
 
 	const windowContent =
