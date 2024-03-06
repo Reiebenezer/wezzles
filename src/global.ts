@@ -12,11 +12,18 @@ export const AnimationTypes = {
 export const PLAYGROUND: HTMLElement = document.getElementById(
 	'wz-playground'
 ) as HTMLElement
-export const CANVAS: HTMLCanvasElement = document.getElementById(
+
+export const ARROW: SVGElement = document.getElementById(
 	'wz-arrow'
-) as HTMLCanvasElement
-export const CANVASCONTEXT: CanvasRenderingContext2D | null =
-	CANVAS.getContext('2d')
+) as unknown as SVGElement
+
+export const ARROWPATH: SVGPathElement = ARROW.querySelector(
+	'path'
+) as SVGPathElement
+
+export const ARROWHEAD: SVGGElement = ARROW.querySelector(
+	'g'
+) as SVGGElement
 
 export const puzzleOptions: Puzzle[] = [
 	{

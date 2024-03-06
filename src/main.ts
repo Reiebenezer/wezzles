@@ -1,75 +1,60 @@
-import { addToOptions } from "./functions";
-import { currentlyAnimating } from './animations';
-import { parse } from './parsing';
+import { addToOptions } from './functions'
+import { currentlyAnimating } from './animations'
+import { parse } from './parsing'
 import { makeItemsSortable, makePlaygroundItem } from './sort/sortable'
-import { hideProperties } from './sort/properties';
-import { PLAYGROUND, CANVAS, CANVASCONTEXT } from "./global";
-
-CANVAS.width = CANVAS.offsetWidth;
-CANVAS.height = CANVAS.offsetHeight;
+import { hideProperties } from './sort/properties'
+import { ARROW, ARROWHEAD, ARROWPATH, PLAYGROUND } from './global'
+import { ARROW_COLOR, ARROW_WIDTH } from './config'
 
 addToOptions()
 hideProperties()
 
 PLAYGROUND.addEventListener('click', () => {
-  document.querySelectorAll('.wz-selected').forEach(item => item.classList.remove('wz-selected'))
-  hideProperties()
+	document
+		.querySelectorAll('.wz-selected')
+		.forEach(item => item.classList.remove('wz-selected'))
+	hideProperties()
 })
 
 const mutationObserver = new MutationObserver(() => {
-  makePlaygroundItem(PLAYGROUND)
-  
-  if (!currentlyAnimating) {
-    parse()
-  }
+	makePlaygroundItem(PLAYGROUND)
+
+	if (!currentlyAnimating) {
+		parse()
+	}
 })
 mutationObserver.observe(PLAYGROUND, {
-  childList: true,
-  subtree: true,
+	childList: true,
+	subtree: true,
 })
-
-window.onresize = () => {
-  CANVAS.width = CANVAS.offsetWidth
-  CANVAS.height = CANVAS.offsetHeight
-}
 
 makeItemsSortable(PLAYGROUND)
 
 function animate() {
-  CANVASCONTEXT?.clearRect(0, 0, CANVAS.width, CANVAS.height)
+	const source = ARROW.dataset.src?.split(' ')
+	const dest = ARROW.dataset.dst?.split(' ')
+	const offset = ARROW.dataset.offset
 
-  if (CANVAS.dataset.src && CANVAS.dataset.dst) {
-    const src = CANVAS.dataset.src.split(' ').map(str => +str)
-    const dst = CANVAS.dataset.dst.split(' ').map(str => +str)
+	if (source && dest && offset) {
+		ARROWPATH.setAttribute(
+			'd',
+			`M${source[0]} ${source[1]} ` +
+				`L${offset}  ${source[1]}` +
+				`L${offset}  ${dest[1]}` +
+				`L${dest[0]} ${dest[1]}`
+		)
 
-    CANVASCONTEXT!.strokeStyle = 'black'
-    CANVASCONTEXT!.lineWidth = 5
+    ARROWPATH.setAttribute('stroke-width', ARROW_WIDTH + 'px')
+    ARROWHEAD.setAttribute('transform', `translate(${dest[0]} ${dest[1]})`)
 
-    const arrowLineOffset = +CANVAS.dataset.offset!
+    ARROWHEAD.style.fill = ARROW_COLOR
+    ARROWPATH.style.stroke = ARROW_COLOR
 
-    CANVASCONTEXT?.beginPath();
-    CANVASCONTEXT?.moveTo(src[0], src[1])
-    CANVASCONTEXT?.lineTo(arrowLineOffset, src[1])
-    CANVASCONTEXT?.lineTo(arrowLineOffset, dst[1])
-    CANVASCONTEXT?.lineTo(dst[0], dst[1]);
-    CANVASCONTEXT?.stroke()
-    CANVASCONTEXT?.closePath()
-    
-    CANVASCONTEXT?.beginPath()
-    CANVASCONTEXT?.moveTo(
-        dst[0] +
-            (dst[0] - (arrowLineOffset) > 0
-                ? 10
-                : -10),
-        dst[1]
-    ); // -10 if less, 10 if more
-    CANVASCONTEXT?.lineTo(dst[0], dst[1] - 5)
-    CANVASCONTEXT?.lineTo(dst[0], dst[1] + 5)
-    CANVASCONTEXT?.closePath()
-    CANVASCONTEXT?.fill()
+	} else {
+    ARROWPATH.setAttribute('d', '')
+    ARROWHEAD.setAttribute('transform', `translate(-1000, -1000)`)
   }
-  
 
-  requestAnimationFrame(animate)
+	requestAnimationFrame(animate)
 }
 animate()
