@@ -1,5 +1,5 @@
 import interact from 'interactjs'
-import { getBounds, isMobile, notify } from '../functions'
+import { getBounds, notify } from '../functions'
 import { a_an } from "../typing"
 import { ARROW, playgroundItems } from "../global"
 import {
@@ -10,7 +10,6 @@ import {
 	insertSort,
 	setCurrentlyAnimating,
 } from '../animations'
-import { DEFAULT_GAP } from '../config'
 
 const deleteIcon = document.getElementById('wz-delete-icon')!
 
@@ -66,6 +65,8 @@ export function makePlaygroundItem(list: HTMLElement) {
 					x + w > clientX
 				) {
 					hoveredChild = child
+
+					if (hoveredChild === deleteIcon) return hoveredChild
 					if (hoveredChild.classList.contains('wz-separator'))
 						return hoveredChild
 
@@ -101,12 +102,6 @@ export function makeItemsSortable(list: HTMLElement) {
 				e.target.getBoundingClientRect().width +
 				100 +
 				''
-
-			deleteIcon.style.left =
-				list.offsetLeft +
-				deleteIcon.offsetWidth +
-				(isMobile() ? -DEFAULT_GAP / 2 : DEFAULT_GAP) +
-				'px'
 				
 			deleteIcon.style.setProperty('--delay', '0ms')
 			deleteIcon.style.scale = '1'

@@ -1,4 +1,4 @@
-import { addToOptions } from './functions'
+import { addToOptions, getBounds } from './functions'
 import { currentlyAnimating } from './animations'
 import { parse } from './parsing'
 import { makeItemsSortable, makePlaygroundItem } from './sort/sortable'
@@ -33,18 +33,29 @@ mutationObserver.observe(PLAYGROUND, {
 
 makeItemsSortable(PLAYGROUND)
 
+let mainBounds = getBounds(document.querySelector('main')!)
+window.onresize = () => mainBounds = getBounds(document.querySelector('main')!)
+
 function animate() {
-	const source = ARROW.dataset.src?.split(' ')
-	const dest = ARROW.dataset.dst?.split(' ')
-	const offset = ARROW.dataset.offset
+	const source = ARROW.dataset.src?.split(' ').map(_ => +_)
+	const dest = ARROW.dataset.dst?.split(' ').map(_ => +_)
+	let offset = +(ARROW.dataset.offset ?? 0)
 
 	if (source && dest && offset) {
+		source[0] -= mainBounds.x
+		source[1] -= mainBounds.y
+
+		offset -= mainBounds.x
+		
+		dest[0] -= mainBounds.x
+		dest[1] -= mainBounds.y
+
 		ARROWPATH.setAttribute(
 			'd',
 			`M${source[0]} ${source[1]} ` +
-				`L${offset}  ${source[1]}` +
-				`L${offset}  ${dest[1]}` +
-				`L${dest[0]} ${dest[1]}`
+			`L${offset}    ${source[1]}` +
+			`L${offset}    ${dest[1]}` +
+			`L${dest[0]}   ${dest[1]}`
 		)
 
     ARROWPATH.setAttribute('stroke-width', ARROW_WIDTH + 'px')

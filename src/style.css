@@ -115,7 +115,7 @@ main {
   width: 100%;
   height: 100%;
 
-  z-index: 999;
+  z-index: 801;
   pointer-events: none;
 }
 
@@ -146,7 +146,6 @@ aside {
 
   position: fixed;
   bottom: 3rem;
-  
 
   background: hsl(359, 60%, 37%);
   color: white;
@@ -159,7 +158,7 @@ aside {
 
   scale: 0;
   transition: scale 250ms ease var(--delay);
-  z-index: 2;
+  z-index: 800;
 }
 
 @keyframes wobble {
@@ -228,6 +227,7 @@ aside {
     width: auto;
 
     padding-right: 4rem;
+    overflow-x: visible;
   }
 
   #wz-playground .puzzle-piece {
@@ -239,6 +239,8 @@ aside {
 
     display: flex;
     flex-direction: row-reverse;
+
+    z-index: 805;
   }
 
   #wz-properties {
@@ -258,7 +260,6 @@ aside {
   }
 
   #wz-delete-icon {
-    /* transform: translate(-1rem); */
     bottom: 9rem;
   }
 }
