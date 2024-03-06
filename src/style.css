@@ -121,6 +121,8 @@ aside {
   width: 100%;
 
   background-color: gray;
+  user-select: none;
+  pointer-events: none;
 }
 
 #wz-delete-icon {

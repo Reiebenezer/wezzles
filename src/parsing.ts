@@ -1,30 +1,21 @@
 import { SHOW_INLINE_STYLES } from './config'
 import { getAllPuzzleChildrenIDs, isSameArray } from './functions'
 import { camelToDash } from "./typing"
-import { playgroundItems } from "./global"
+import { PLAYGROUND, PREVIEW, playgroundItems } from "./global"
 import { WezzleProperty } from "./types"
 
-const playground = document.getElementById('wz-playground')!
-let cachedElements = getAllPuzzleChildrenIDs(playground)
+let cachedElements = getAllPuzzleChildrenIDs(PLAYGROUND)
 
 export async function parse(force?: boolean) {
-	if (!force && isSameArray(cachedElements, getAllPuzzleChildrenIDs(playground))) return
-	cachedElements = getAllPuzzleChildrenIDs(playground)
+	if (!force && isSameArray(cachedElements, getAllPuzzleChildrenIDs(PLAYGROUND))) return
+	cachedElements = getAllPuzzleChildrenIDs(PLAYGROUND)
 
-	// console.log(cachedElements)
-
-	console.time('Parsed in')
+	// console.time('Parsed in')
 
 	const parsedElementArray: parsedElement[] = []
 
-	const preview = document.getElementById(
-		'wz-preview-container'
-	) as HTMLIFrameElement
-
-	getElementsFromDom(playground, parsedElementArray)
+	getElementsFromDom(PLAYGROUND, parsedElementArray)
 	let parsedHTML = generateHTML(parsedElementArray)
-
-	// console.log(parsedHTML)
 
 	const stylehead = processStyling(parsedHTML)
 
@@ -32,11 +23,11 @@ export async function parse(force?: boolean) {
 		const head = document.createElement('style')
 		head.innerHTML = stylehead
 
-		preview.contentDocument!.head.appendChild(head)
+		PREVIEW.contentDocument!.head.appendChild(head)
 	}
-	preview.contentDocument!.body.innerHTML = parsedHTML.innerHTML
-	console.timeEnd('Parsed in')
+	PREVIEW.contentDocument!.body.innerHTML = parsedHTML.innerHTML
 
+	// console.timeEnd('Parsed in')
 }
 
 function getElementsFromDom(parent: HTMLElement, parentArray: parsedElement[]) {
@@ -144,30 +135,18 @@ function processProperties(properties: WezzleProperty, element: HTMLElement) {
 	}
 }
 
-export function openNewWindow() {
-	const preview = document.getElementById('wz-preview')!
+export function openPreview() {
+    console.log('dfdfdf')
+	const previewNew = window.open('', '_blank')!
 
-	const previewContainer: HTMLIFrameElement = document.getElementById(
-		'wz-preview-container'
-	)! as HTMLIFrameElement
+	const windowContent =
+		'<!DOCTYPE html><html><head>' +
+		PREVIEW.contentDocument!.head.innerHTML +
+		'</head><body>' +
+		PREVIEW.contentDocument!.body.innerHTML +
+		'</body></html>'
 
-	previewContainer.contentDocument!.body.innerHTML = JSON.stringify(
-		'',
-		undefined,
-		3
-	)
-	preview.onclick = () => {
-		const previewNew = window.open('', '_blank')!
-
-		const windowContent =
-			'<!DOCTYPE html><html><head>' +
-			previewContainer.contentDocument!.head.innerHTML +
-			'</head><body>' +
-			previewContainer.contentDocument!.body.innerHTML +
-			'</body></html>'
-
-		previewNew.document.write(windowContent)
-	}
+	previewNew.document.write(windowContent)
 }
 
 interface parsedElement {

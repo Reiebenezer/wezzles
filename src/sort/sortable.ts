@@ -1,7 +1,7 @@
 import interact from 'interactjs'
-import { notify } from '../functions'
+import { getBounds, notify } from '../functions'
 import { a_an } from "../typing"
-import { playgroundItems } from "../global"
+import { ARROW, playgroundItems } from "../global"
 import {
 	insert,
 	goToTrash,
@@ -12,7 +12,6 @@ import {
 } from '../animations'
 import { DEFAULT_GAP } from '../config'
 
-const arrow = document.getElementById('wz-arrow') as HTMLCanvasElement
 const deleteIcon = document.getElementById('wz-delete-icon')!
 
 export function makePlaygroundItem(list: HTMLElement) {
@@ -27,8 +26,8 @@ export function makePlaygroundItem(list: HTMLElement) {
 		const target = e.target! as HTMLElement
 
 		if (
-			arrow.dataset.src &&
-			arrow.dataset.dst &&
+			ARROW.dataset.src &&
+			ARROW.dataset.dst &&
 			(
 				(target.classList.contains('puzzle-piece') && target.closest('#wz-playground') !== null) ||
 				target.id === 'wz-delete-icon' ||
@@ -40,35 +39,6 @@ export function makePlaygroundItem(list: HTMLElement) {
 	
 	document.addEventListener('touchmove', e => {
 		const { clientX, clientY } = e.targetTouches[0]
-
-		function hovered(parent: HTMLElement) {
-			let hoveredChild: HTMLElement | undefined
-
-			for (const child of [...parent.children] as HTMLElement[]) {
-				const { top, left, width, height } =
-					child.getBoundingClientRect()
-
-				if (
-					top <= clientY &&
-					top + height > clientY &&
-					left <= clientX &&
-					left + width > clientX
-				) {
-					hoveredChild = child
-
-					if (hoveredChild.classList.contains('wz-separator')) return hoveredChild
-					
-					if (child.hasChildNodes()) {
-						const temp = hovered(child)
-
-						if (temp !== undefined) hoveredChild = temp
-					}
-				}
-			}
-
-			return hoveredChild
-		}
-
 
 		const h = hovered(list)
 
@@ -82,6 +52,33 @@ export function makePlaygroundItem(list: HTMLElement) {
 			
 			h?.classList.add('wz-arrow-hovered')
 		}
+
+		function hovered(parent: HTMLElement) {
+			let hoveredChild: HTMLElement | undefined
+
+			for (const child of [...parent.children] as HTMLElement[]) {
+				const { x, y, w, h } = getBounds(child)
+
+				if (
+					x <= clientY &&
+					x + h > clientY &&
+					y <= clientX &&
+					y + w > clientX
+				) {
+					hoveredChild = child
+					if (hoveredChild.classList.contains('wz-separator'))
+						return hoveredChild
+
+					if (child.hasChildNodes()) {
+						const temp = hovered(child)
+						if (temp !== undefined) hoveredChild = temp
+					}
+				}
+			}
+
+			return hoveredChild
+		}
+
 	})
 
 	document.addEventListener('mouseout', e => 
@@ -101,7 +98,7 @@ export function makeItemsSortable(list: HTMLElement) {
 		onstart: e => {
 			console.log('started dragging')
 
-			arrow.dataset.offset =
+			ARROW.dataset.offset =
 				e.target.getBoundingClientRect().left +
 				e.target.getBoundingClientRect().width +
 				100 +
@@ -115,18 +112,16 @@ export function makeItemsSortable(list: HTMLElement) {
 		},
 		onmove: e => {
 			const target = e.target as HTMLElement
+			
+			const targetBounds = getBounds(target)
+			const targetRightEdge = targetBounds.x + targetBounds.w
 
-			const targetRightEdge =
-				target.getBoundingClientRect().left +
-				target.getBoundingClientRect().width
-
-			arrow.dataset.src = `${targetRightEdge} ${
-				target.getBoundingClientRect().top +
-				target.getBoundingClientRect().height / 2
+			ARROW.dataset.src = `${targetRightEdge} ${
+				targetBounds.y + targetBounds.h / 2
 			}`
-			arrow.dataset.dst = `${e.clientX} ${e.clientY}`
+			ARROW.dataset.dst = `${e.clientX} ${e.clientY}`
 
-			arrow.dataset.offset =
+			ARROW.dataset.offset =
 				e.clientX > targetRightEdge
 					? e.clientX + 100 + ''
 					: targetRightEdge + 100 + ''
@@ -138,6 +133,8 @@ export function makeItemsSortable(list: HTMLElement) {
 			const hovered = document.querySelector('.wz-arrow-hovered')! as HTMLElement
 			if (!hovered) return
 
+			const hoveredBounds = getBounds(hovered)
+
 			const allowed = hovered.dataset.id
 				? playgroundItems[hovered.dataset.id].allowedNestElements
 				: 'all'
@@ -148,21 +145,16 @@ export function makeItemsSortable(list: HTMLElement) {
 				allowed !== 'none'
 			) {
 				if (hovered !== deleteIcon)
-					arrow.dataset.offset =
-						hovered.getBoundingClientRect().left +
-						hovered.getBoundingClientRect().width +
-						100 +
-						''
+					ARROW.dataset.offset =
+						hoveredBounds.x + hoveredBounds.w + 100 + ''
 
-				arrow.dataset.dst = `${
-					hovered.getBoundingClientRect().left +
-					hovered.getBoundingClientRect().width +
-					10
+				ARROW.dataset.dst = `${
+					hoveredBounds.x + hoveredBounds.w + 10
 				} ${
-					hovered.getBoundingClientRect().top +
-					hovered.getBoundingClientRect().height / 2
+					hoveredBounds.y + hoveredBounds.h / 2
 				}`
 			}
+
 		},
 		onend: e => {
 			console.log('ended dragging')
@@ -248,8 +240,8 @@ export function makeItemsSortable(list: HTMLElement) {
 
 			removeSeparators()
 
-			delete arrow.dataset.src
-			delete arrow.dataset.dst
+			delete ARROW.dataset.src
+			delete ARROW.dataset.dst
 
 			document.body.style.cursor = ''
 			for (const holder of document.querySelectorAll('.wz-arrow-hovered'))
@@ -277,13 +269,6 @@ export function makeItemsSortable(list: HTMLElement) {
 				return isChild
 			}
 		},
+		
 	})
 }
-
-/**
- * FEATURES OF THE SORTABLE PLAYGROUND
- * - upon dragging, an arrow will show up. This arrow determines the destination of the element.
- * - the arrow will come from the right side of the selected div, then point to any of the hovered
- * elements or between them.
- * - upon dropping, the element will move to that space, and the others will move to adjust.
- */
