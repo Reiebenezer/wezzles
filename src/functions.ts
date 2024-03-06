@@ -95,3 +95,12 @@ export function addToOptions() {
     })
 }
 
+export function getBounds(source: HTMLElement, offset = false) {
+    const coords = source.getBoundingClientRect()
+    return {
+        x: offset ? source.offsetLeft : coords.left,
+        y: offset ? source.offsetTop  : coords.top,
+        w: coords.width,
+        h: coords.height
+    }
+}
