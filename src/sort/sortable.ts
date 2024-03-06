@@ -22,22 +22,22 @@ export function makePlaygroundItem(list: HTMLElement) {
 		if (child.hasChildNodes()) makePlaygroundItem(child)
 	}
 
-	document.addEventListener('mouseover', (e: Event) => {
+	document.onmouseover = (e: Event) => {
 		const target = e.target! as HTMLElement
 
 		if (
 			ARROW.dataset.src &&
 			ARROW.dataset.dst &&
-			(
-				(target.classList.contains('puzzle-piece') && target.closest('#wz-playground') !== null) ||
+			((target.classList.contains('puzzle-piece') &&
+				target.closest('#wz-playground') !== null) ||
 				target.id === 'wz-delete-icon' ||
 				target.classList.contains('wz-separator'))
 		) {
 			target.classList.add('wz-arrow-hovered')
 		}
-	})
+	}
 	
-	document.addEventListener('touchmove', e => {
+	document.ontouchmove = e => {
 		const { clientX, clientY } = e.targetTouches[0]
 
 		const h = hovered(list)
@@ -79,11 +79,9 @@ export function makePlaygroundItem(list: HTMLElement) {
 			return hoveredChild
 		}
 
-	})
+	}
 
-	document.addEventListener('mouseout', e => 
-		(e.target as HTMLElement)?.classList.remove('wz-arrow-hovered')
-	)
+	document.onmouseout = e => (e.target as HTMLElement)?.classList.remove('wz-arrow-hovered')
 
 }
 
