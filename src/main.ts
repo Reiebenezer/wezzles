@@ -5,6 +5,9 @@ import { makeItemsSortable, makePlaygroundItem } from './sort/sortable'
 import { hideProperties } from './sort/properties'
 import { ARROW, ARROWHEAD, ARROWPATH, PLAYGROUND } from './global'
 import { ARROW_COLOR, ARROW_WIDTH } from './config'
+import recordKeyboard from './keyboard'
+
+recordKeyboard()
 
 addToOptions()
 hideProperties()
