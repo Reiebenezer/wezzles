@@ -145,7 +145,8 @@ aside {
   aspect-ratio: 1;
 
   position: fixed;
-  bottom: 0.75rem;
+  bottom: 3rem;
+  
 
   background: hsl(359, 60%, 37%);
   color: white;
@@ -254,5 +255,10 @@ aside {
 
   body:not(:has(.puzzle-piece.wz-selected)) #wz-properties {
     display: none;
+  }
+
+  #wz-delete-icon {
+    /* transform: translate(-1rem); */
+    bottom: 9rem;
   }
 }
