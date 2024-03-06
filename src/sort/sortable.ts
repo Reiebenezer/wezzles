@@ -163,6 +163,7 @@ export function makeItemsSortable(list: HTMLElement) {
 					hovered.getBoundingClientRect().height / 2
 				}`
 			}
+
 		},
 		onend: e => {
 			console.log('ended dragging')
@@ -277,6 +278,7 @@ export function makeItemsSortable(list: HTMLElement) {
 				return isChild
 			}
 		},
+		
 	})
 }
 
