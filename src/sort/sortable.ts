@@ -1,5 +1,5 @@
 import interact from 'interactjs'
-import { getBounds, notify } from '../functions'
+import { getBounds, isMobile, notify } from '../functions'
 import { a_an } from "../typing"
 import { ARROW, playgroundItems } from "../global"
 import {
@@ -102,7 +102,12 @@ export function makeItemsSortable(list: HTMLElement) {
 				100 +
 				''
 
-			deleteIcon.style.left = list.offsetLeft + DEFAULT_GAP + 'px'
+			deleteIcon.style.left =
+				list.offsetLeft +
+				deleteIcon.offsetWidth +
+				(isMobile() ? -DEFAULT_GAP / 2 : DEFAULT_GAP) +
+				'px'
+				
 			deleteIcon.style.setProperty('--delay', '0ms')
 			deleteIcon.style.scale = '1'
 

@@ -104,3 +104,7 @@ export function getBounds(source: HTMLElement, offset = false) {
         h: coords.height
     }
 }
+
+export function isMobile() {
+    return screen.width <= 820
+}
