@@ -32,7 +32,6 @@ export async function parse(force?: boolean) {
 
 	}
 	PREVIEW.contentDocument!.body.innerHTML = parsedHTML.innerHTML
-
 	// console.timeEnd('Parsed in')
 }
 
@@ -100,7 +99,7 @@ function processStyling(parsedHTML: HTMLDivElement) {
 	const styleArray: { [element: string]: { [name: string]: string } } = {}
 
 	parsedHTML.querySelectorAll('style').forEach(styleTag => {
-		const parentID = styleTag.parentElement!.id ?? 'body'
+		const parentID = styleTag.parentElement!.id || 'body'
 		const [stylename, stylevalue] = styleTag.innerHTML.split(':')
 
 		if (SHOW_INLINE_STYLES)
@@ -145,7 +144,7 @@ export function openPreview() {
 	const windowContent =
 		'<!DOCTYPE html><html><head>' +
 		PREVIEW.contentDocument!.head.innerHTML +
-		'</head><body>' +
+		'</head><body id="body">' +
 		PREVIEW.contentDocument!.body.innerHTML +
 		'</body></html>'
 
