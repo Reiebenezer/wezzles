@@ -60,10 +60,10 @@ export function makePlaygroundItem(list: HTMLElement) {
 				const { x, y, w, h } = getBounds(child)
 
 				if (
-					x <= clientY &&
-					x + h > clientY &&
-					y <= clientX &&
-					y + w > clientX
+					y <= clientY &&
+					y + h > clientY &&
+					x <= clientX &&
+					x + w > clientX
 				) {
 					hoveredChild = child
 					if (hoveredChild.classList.contains('wz-separator'))
