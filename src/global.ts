@@ -26,7 +26,7 @@ export const ARROWHEAD: SVGGElement = ARROW.querySelector(
 ) as SVGGElement
 
 export const PREVIEW = document.getElementById(
-	'wz-preview-container'
+	'wz-preview'
 ) as HTMLIFrameElement
 
 export const puzzleOptions: Puzzle[] = [
