@@ -114,6 +114,8 @@ export function makeItemsSortable(list: HTMLElement) {
 			const targetBounds = getBounds(target)
 			const targetRightEdge = targetBounds.x + targetBounds.w
 
+			const maxOffset = (50 + Math.floor(window.screen.width / 100))
+
 			ARROW.dataset.src = `${targetRightEdge} ${
 				targetBounds.y + targetBounds.h / 2
 			}`
@@ -121,8 +123,8 @@ export function makeItemsSortable(list: HTMLElement) {
 
 			ARROW.dataset.offset =
 				e.clientX > targetRightEdge
-					? e.clientX + 100 + ''
-					: targetRightEdge + 100 + ''
+					? e.clientX + maxOffset + ''
+					: targetRightEdge + maxOffset + ''
 
 			document.documentElement.style.cursor = 'grabbing'
 			target.style.cursor = 'grabbing'
@@ -144,7 +146,7 @@ export function makeItemsSortable(list: HTMLElement) {
 			) {
 				if (hovered !== deleteIcon)
 					ARROW.dataset.offset =
-						hoveredBounds.x + hoveredBounds.w + 100 + ''
+						hoveredBounds.x + hoveredBounds.w + maxOffset + ''
 
 				ARROW.dataset.dst = `${
 					hoveredBounds.x + hoveredBounds.w + 10

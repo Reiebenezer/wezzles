@@ -81,18 +81,18 @@ export function bindInput(initValue: string, input: HTMLInputElement, callback: 
 }
 
 export function addToOptions() {
-    const optionContainer = document.getElementById('wz-options')
+    const optionContainer = document.getElementById('wz-options')!
 
     puzzleOptions.forEach(puzzle => {
-        const el = document.createElement('div')
-        el.classList.add('puzzle-piece')
+		const el = document.createElement('div')
+		el.classList.add('puzzle-piece')
 
-        el.dataset.id = puzzle.name
-        el.dataset.name = puzzle.displayname
+		el.dataset.id = puzzle.name
+		el.dataset.name = puzzle.displayname
 
-        optionContainer?.appendChild(el)
-        el.onclick = () => addWezzle(el)
-    })
+		optionContainer?.appendChild(el)
+		el.onclick = () => addWezzle(el)
+	})
 }
 
 export function getBounds(source: HTMLElement, offset = false) {
