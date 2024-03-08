@@ -61,14 +61,20 @@ export function getAllPuzzleChildrenIDs(element: HTMLElement) {
     return IDs
 }
 
-export function bindInput(initValue: string, input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, callback: (changedValue: string) => any) {
+export function bindInput(initValue: string, input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, keyupCallback?: (changedValue: string) => any, changeCallback?: (changedValue: string) => any) {
     input.value = initValue
+    input.focus()
 
-    if (input.tagName === 'SELECT')
-        input.onchange = () => callback(input.value)
+    if (keyupCallback) input.oninput = () => keyupCallback(input.value);
+    if (changeCallback) {
+        input.onkeydown = e => {
+            if (e.code === 'Enter') changeCallback(input.value) 
+            if (e.code === 'Escape') input.blur()
+        }
 
-    else
-        input.onkeyup = () => callback(input.value)
+        input.onchange = () => changeCallback(input.value);
+        input.onblur = () => changeCallback(input.value);
+    }
 }
 
 export function addToOptions() {

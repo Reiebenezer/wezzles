@@ -32,13 +32,21 @@ button:empty::before {
     content: 'Button';
 }
 
-header {
+header,
+footer {
     padding: 1rem;
     min-height: 2rem;
     width: 100%;
 
-    background-color: slateblue;
     color: white;
+}
+
+header {
+    background-color: slateblue;
+}
+
+footer {
+    background-color: darkslateblue;
 }
 
 input {
@@ -63,4 +71,17 @@ h6:empty::after {
 
 p:empty::after {
     content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis dignissimos commodi, quaerat atque iusto libero.';
+}
+
+#processing-parse {
+    font-weight: 500;
+
+    position: fixed;
+    inset: 0;
+
+    background-color: white;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
 }

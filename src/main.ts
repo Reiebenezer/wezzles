@@ -1,6 +1,6 @@
 import { addToOptions, getBounds } from './functions'
 import { currentlyAnimating } from './animations'
-import parse from './parsing/parse'
+import parse, { decrementParseTimeout } from './parsing/parse'
 import { makeItemsSortable, makePlaygroundItem } from './sort/sortable'
 import { hideProperties } from './sort/properties'
 import { ARROW, ARROWHEAD, ARROWPATH, PLAYGROUND } from './global'
@@ -37,6 +37,8 @@ let mainBounds = getBounds(document.querySelector('main')!)
 window.onresize = () => mainBounds = getBounds(document.querySelector('main')!)
 
 function animate() {
+	decrementParseTimeout()
+
 	const source = ARROW.dataset.src?.split(' ').map(_ => +_)
 	const dest = ARROW.dataset.dst?.split(' ').map(_ => +_)
 	let offset = +(ARROW.dataset.offset ?? 0)

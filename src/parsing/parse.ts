@@ -1,24 +1,47 @@
 import { SHOW_INLINE_STYLES } from '../config'
 import { getAllPuzzleChildrenIDs, isSameArray } from '../functions'
-import { camelToDash } from "../typing"
-import { PLAYGROUND, PREVIEW, playgroundItems } from "../global"
-import { WezzleProperty } from "../types"
+import { camelToDash } from '../typing'
+import { PLAYGROUND, PREVIEW, playgroundItems } from '../global'
+import { WezzleProperty } from '../types'
 import processProperties from './processProps'
 
 let cachedElements = getAllPuzzleChildrenIDs(PLAYGROUND)
+let timeout: number
+let parsedHTML: HTMLDivElement
+
+export function decrementParseTimeout() {
+	timeout--
+}
 
 export default async function parse(force?: boolean) {
-	if (!force && isSameArray(cachedElements, getAllPuzzleChildrenIDs(PLAYGROUND))) return
+	if (
+		!force &&
+		isSameArray(cachedElements, getAllPuzzleChildrenIDs(PLAYGROUND))
+	)
+		return
 	cachedElements = getAllPuzzleChildrenIDs(PLAYGROUND)
-	
+
 	// console.time('Parsed in')
 
 	const parsedElementArray: parsedElement[] = []
 
+	if (!force) {
+		PREVIEW.contentDocument!.body.innerHTML =
+			'<p id="processing-parse">Producing your preview..."</p>'
+
+		if (timeout <= 0)
+			PREVIEW.contentDocument!.getElementById(
+				'processing-parse'
+			)?.animate([{ opacity: 0 }, { opacity: 1 }], {
+				duration: 300,
+				timeline: PREVIEW.contentDocument!.timeline,
+			})
+	}
+
+	timeout = 50
 	getElementsFromDom(PLAYGROUND, parsedElementArray)
-
-	let parsedHTML = generateHTML(parsedElementArray)
-
+	parsedHTML = await generateHTML(parsedElementArray)
+	
 	const stylehead = processStyling(parsedHTML)
 
 	if (stylehead) {
@@ -27,12 +50,18 @@ export default async function parse(force?: boolean) {
 
 		if (PREVIEW.contentDocument?.querySelector('style')) {
 			PREVIEW.contentDocument?.querySelector('style')?.remove()
-		} 
+		}
 
 		PREVIEW.contentDocument!.head.appendChild(head)
-
 	}
-	PREVIEW.contentDocument!.body.innerHTML = parsedHTML.innerHTML
+
+	const interval = setInterval(() => {
+		if (timeout <= 0 || force) {
+			PREVIEW.contentDocument!.body.innerHTML = parsedHTML.innerHTML
+			
+			clearInterval(interval)
+		}
+	}, 10)
 	// console.timeEnd('Parsed in')
 }
 
@@ -87,9 +116,7 @@ function returnDOMElement(parsed: parsedElement) {
 		}
 
 		if (name === 'title' && parsed.properties.titleSize) {
-			domElement = document.createElement(
-				parsed.properties.titleSize
-			)
+			domElement = document.createElement(parsed.properties.titleSize)
 		}
 	}
 	processProperties(parsed.properties, domElement)
@@ -111,7 +138,6 @@ function processStyling(parsedHTML: HTMLDivElement) {
 
 		if (SHOW_INLINE_STYLES)
 			styleTag.parentElement!.style.setProperty(stylename, stylevalue)
-
 		else if (stylename) {
 			if (!styleArray[parentID]) styleArray[parentID] = {}
 			styleArray[parentID][stylename] = stylevalue
@@ -122,10 +148,10 @@ function processStyling(parsedHTML: HTMLDivElement) {
 
 	// Parse the stylearray into a css string
 	let stringified = ''
-	for (const [ selector, properties ] of Object.entries(styleArray)) {
+	for (const [selector, properties] of Object.entries(styleArray)) {
 		stringified += `#${selector} {\n`
 
-		for (const [ key, value ] of Object.entries(properties)) {
+		for (const [key, value] of Object.entries(properties)) {
 			stringified += `\t${camelToDash(key)}: ${value};\n`
 		}
 

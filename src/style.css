@@ -99,7 +99,9 @@ main {
 }
 
 .puzzle-piece {
-  background-color: color-mix(in srgb, purple 50%, white);
+  --bg: color-mix(in srgb, purple 50%, white);
+
+  background-color: var(--bg);
 
   border-radius: 1e1px;
   border: 1px solid purple;
@@ -119,7 +121,7 @@ main {
 
   overflow: visible;
 
-  transition: scale 150ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: scale 150ms cubic-bezier(0.165, 0.84, 0.44, 1), background-color 150ms cubic-bezier(0.165, 0.84, 0.44, 1);
   
   touch-action: none;
   position: relative;
@@ -137,7 +139,7 @@ main {
 }
 
 .puzzle-piece.wz-arrow-hovered {
-  scale: 1.05;
+  background-color: color-mix(in srgb, var(--bg) 70%, white);
 }
 
 #wz-delete-icon.wz-arrow-hovered {
