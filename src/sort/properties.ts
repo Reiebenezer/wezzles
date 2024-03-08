@@ -1,7 +1,7 @@
 import { camelToDash, dashToCamel } from '../typing'
 import { playgroundItems } from '../global'
-import { parse } from '../parsing'
-import { bindInput } from '../functions'
+import parse from '../parsing/parse'
+import { bindInput, notify } from '../functions'
 import { WezzleProperty } from '../types'
 
 const propertiesPanel = document.getElementById('wz-properties')!
@@ -16,7 +16,7 @@ export function showProperties(id: string) {
 		return
 	}
 
-	for (const [key, value] of Object.entries(properties)) {
+	for (const [key, value] of Object.entries(properties).reverse()) {
 		const dashKey = 'wz-property-' + camelToDash(key)
 		const propertyModifier = document.getElementById(dashKey)!
 
@@ -36,7 +36,6 @@ export function showProperties(id: string) {
 							?.firstElementChild as HTMLInputElement,
 						properties
 					)
-
 					;(
 						propertyModifier.children.item(0)!
 							.firstElementChild as HTMLInputElement
@@ -52,12 +51,30 @@ export function showProperties(id: string) {
 					break
 			}
 		} else {
-			const input = propertyModifier.firstElementChild as HTMLInputElement
+			const input = propertyModifier.firstElementChild
 
 			switch (key) {
 				case 'textContent':
-					processProperty.textContent(input, properties)
+					processProperty.textContent(
+						input as HTMLTextAreaElement,
+						properties
+					)
 					propertyModifier.onkeyup = () => parse(true)
+					break
+
+				case 'placeholder':
+					processProperty.placeholder(properties)
+					propertyModifier.onkeyup = () => parse(true)
+					break
+
+				case 'value':
+					processProperty.value(properties)
+					propertyModifier.onkeyup = () => parse(true)
+					break
+
+				case 'titleSize':
+					processProperty.titleSize(properties)
+					propertyModifier.onchange = () => parse(true)
 					break
 
 				default:
@@ -85,32 +102,71 @@ export const processProperty = {
 	) => {
 		const stylePropertyObject = properties.style!
 		nameModifier.classList.remove('value-error', 'value-valid')
-
-		bindInput(stylePropertyObject.name, nameModifier, val => {
-			const validProps = [...Object.keys(document.body.style)]
-			const modifiedVal = dashToCamel(val)
-
-			if (val.length === 0) {
-				nameModifier.classList.remove('value-error', 'value-valid')
-				stylePropertyObject.name = val
-			} else if (validProps.includes(modifiedVal)) {
-				nameModifier.classList.replace('value-error', 'value-valid') ||
-					nameModifier.classList.add('value-valid')
-				stylePropertyObject.name = val
-			} else
-				nameModifier.classList.replace('value-valid', 'value-error') ||
-					nameModifier.classList.add('value-error')
-		})
-
+		const validProps = [...Object.keys(document.body.style)]
+		
 		bindInput(stylePropertyObject.value, valueModifier, val => {
-			stylePropertyObject.value = dashToCamel(val)
+			stylePropertyObject.value = val.trim()
 		})
+
+		bindInput(
+			stylePropertyObject.name,
+			nameModifier,
+			val => {
+				if (val.length === 0) {
+					nameModifier.classList.remove('value-error', 'value-valid')
+					stylePropertyObject.name = val.trim()
+				} else if (validProps.includes(dashToCamel(val))) {
+					nameModifier.classList.replace(
+						'value-error',
+						'value-valid'
+					) || nameModifier.classList.add('value-valid')
+					stylePropertyObject.name = val.trim()
+				} else
+					nameModifier.classList.replace(
+						'value-valid',
+						'value-error'
+					) || nameModifier.classList.add('value-error')
+			},
+
+			val => {
+				if (val.length && !validProps.includes(dashToCamel(val)))
+					notify.error(`${val} is not a valid style property!`)
+			}
+		)
 	},
-	textContent: (modifier: HTMLInputElement, properties: WezzleProperty) => {
+	textContent: (
+		modifier: HTMLTextAreaElement,
+		properties: WezzleProperty
+	) => {
 		bindInput(
 			properties.textContent!,
 			modifier,
 			val => (properties.textContent = val)
+		)
+	},
+	value: (properties: WezzleProperty) => {
+		bindInput(
+			properties.value!,
+			document.getElementById('wz-property-value')!
+				.firstElementChild as HTMLInputElement,
+			val => (properties.value = val)
+		)
+	},
+	placeholder: (properties: WezzleProperty) => {
+		bindInput(
+			properties.placeholder!,
+			document.getElementById('wz-property-placeholder')!
+				.firstElementChild as HTMLInputElement,
+			val => (properties.placeholder = val)
+		)
+	},
+	titleSize: (properties: WezzleProperty) => {
+		bindInput(
+			properties.titleSize!,
+			document.getElementById('wz-property-title-size')!
+				.firstElementChild as HTMLSelectElement,
+			undefined,
+			val => (properties.titleSize = val)
 		)
 	},
 }

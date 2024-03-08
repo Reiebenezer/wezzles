@@ -1,7 +1,8 @@
 import Toastify from "toastify-js"
-import { PuzzleChildArray } from "./types"
+import { Puzzle, PuzzleChildArray, PuzzleGroup } from "./types"
 import { puzzleOptions } from "./global"
 import { addWezzle } from "./animations"
+import { DEFAULT_GAP } from "./config"
 
 export const notify = {
     error: (message: string) => {
@@ -45,21 +46,7 @@ export function returnAsHTMLElementArray(parent: HTMLElement) {
 }
 
 export function isSameArray(a: PuzzleChildArray, b: PuzzleChildArray) {
-    if (a === b) return true
-    if (a.length !== b.length) return false
-
-    for (let i = 0; i < a.length; i++) {
-        const item_a = a[i]
-        const item_b = b[i]
-
-        if (typeof item_a === 'object' && typeof item_b === 'object') {
-            if (item_a.id !== item_b.id) return false
-
-            return isSameArray(item_a.children, item_b.children)
-        } else if (item_a !== item_b) return false
-    }
-
-    return true
+    return JSON.stringify(a) === JSON.stringify(b)
 }
 
 export function getAllPuzzleChildrenIDs(element: HTMLElement) {
@@ -74,16 +61,65 @@ export function getAllPuzzleChildrenIDs(element: HTMLElement) {
     return IDs
 }
 
-export function bindInput(initValue: string, input: HTMLInputElement, callback: (changedValue: string) => any) {
+export function bindInput(initValue: string, input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, keyupCallback?: (changedValue: string) => any, changeCallback?: (changedValue: string) => any) {
     input.value = initValue
+    input.focus()
 
-    input.onkeyup = () => callback(input.value)
+    if (keyupCallback) input.oninput = () => keyupCallback(input.value);
+    if (changeCallback) {
+        input.onkeydown = e => {
+            if (e.code === 'Enter') changeCallback(input.value) 
+            if (e.code === 'Escape') input.blur()
+        }
+
+        input.onchange = () => changeCallback(input.value);
+        input.onblur = () => changeCallback(input.value);
+    }
 }
 
 export function addToOptions() {
+    // Get the option container
     const optionContainer = document.getElementById('wz-options')!
+    
+    // Get the category container
+    const categoryContainer = document.getElementById('wz-categories')!
 
-    puzzleOptions.forEach(puzzle => {
+    // Get the sorted options
+    const sortedOptions = puzzleOptions.sort((a, b) => a.group - b.group)
+
+    for (const [key, value] of Object.entries(PuzzleGroup).filter(item => Number.isNaN(+item[0]))) {
+        const btn = document.createElement('button')
+        btn.classList.add('wz-group')
+
+        btn.dataset.name = key
+        btn.innerHTML = key[0]
+
+        btn.onclick = e => {
+            e.stopPropagation()
+            
+            const el = Array.from(optionContainer.children).find(
+				opt =>
+					(opt as HTMLElement).dataset.id ===
+					sortedOptions.filter(item => item.group === value)[0].name
+			)
+
+            optionContainer.scrollTo({
+                behavior: 'smooth',
+                top: isMobile() ? 0 : (el as HTMLElement)?.offsetTop - DEFAULT_GAP + 1,
+                left: isMobile() ? (el as HTMLElement)?.offsetLeft - DEFAULT_GAP + 1 : 0
+            })
+        }
+
+        categoryContainer.appendChild(btn)
+    }
+
+    sortedOptions.forEach((puzzle: Puzzle) => {
+        // Process the exclude calls for puzzle pieces
+        if (!puzzle.include && puzzle.exclude) {
+            puzzle.include = puzzleOptions.map(item => item.name).filter(p => p !== puzzle.name && !puzzle.exclude?.includes(p))
+        }
+
+        // Create option elements for each puzzle piece
 		const el = document.createElement('div')
 		el.classList.add('puzzle-piece')
 

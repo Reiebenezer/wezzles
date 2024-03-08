@@ -11,12 +11,15 @@
   <link rel="stylesheet" href="src/style.css">
   <link rel="stylesheet" href="src/properties.css">
 
-  <script type="module" src="/src/external-styles.ts"></script>
+  <script type="module" src="/src/external.ts"></script>
 
 </head>
 
 <body>
   <main>
+    <div id="wz-categories">
+      
+    </div>
     <div id="wz-options">
 
     </div>
@@ -32,21 +35,33 @@
     <aside>
       <iframe src="preview.html" frameborder="0" id="wz-preview"></iframe>
       <div id="wz-properties">
-        <label id="wz-property-text-content">Text Content<input type="text"></label>
+        <label id="wz-property-text-content">Text Content<textarea type="text" rows="5"></textarea></label>
         <div id="wz-property-style">
           <label id="wz-property-style-name">Style Name<input type="text"></label>
           <label id="wz-property-style-value">Style Value<input type="text"></label>
         </div>
+        <label id="wz-property-placeholder">Placeholder<input type="text"></label>
+        <label id="wz-property-value">Initial Value<input type="text"></label>
+        <label id="wz-property-title-size">Size
+          <select>
+            <option value="h1" selected>Header</option>
+            <option value="h2">Subheader</option>
+            <option value="h3">Subheader 2</option>
+            <option value="h4">Subheader 3</option>
+            <option value="h5">Subheader 4</option>
+            <option value="h6">Subheader 5</option>
+          </select>
+        </label>
       </div>
     </aside>
 
+    <svg id="wz-arrow">
+      <path d="" fill="transparent"/>
+      <g transform="translate(-1000, -1000)">
+        <path d="M0 -10 L-10 0 L0 10 Z"/>
+      </g>
+    </svg>
   </main>
-  <svg id="wz-arrow">
-    <path d="" fill="transparent"/>
-    <g transform="translate(-1000, -1000)">
-      <path d="M0 -10 L-10 0 L0 10 Z"/>
-    </g>
-  </svg>
 
 
 

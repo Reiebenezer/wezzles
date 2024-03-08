@@ -1,4 +1,4 @@
-import { openPreview } from "./parsing"
+import { openPreview } from "./parsing/parse"
 
 const keypresses = new Set()
 export default function recordKeyboard() {
@@ -17,7 +17,7 @@ export default function recordKeyboard() {
 }
 
 function processKeys(e: Event) {
-    keyCombination(e, true, ['ControlLeft', 'ControlRight'], 'KeyP') && openPreview()
+    keyCombination(e, true, ['ControlLeft', 'ControlRight'], ['ShiftLeft', 'ShiftRight'], 'KeyP') && openPreview()
 }
 
 function keyCombination(e: Event, preventDefault: boolean, ...keys: Array<string[]|string>) {
