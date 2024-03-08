@@ -1,15 +1,16 @@
-import { SHOW_INLINE_STYLES } from './config'
-import { getAllPuzzleChildrenIDs, isSameArray } from './functions'
-import { camelToDash } from "./typing"
-import { PLAYGROUND, PREVIEW, playgroundItems } from "./global"
-import { WezzleProperty } from "./types"
+import { SHOW_INLINE_STYLES } from '../config'
+import { getAllPuzzleChildrenIDs, isSameArray } from '../functions'
+import { camelToDash } from "../typing"
+import { PLAYGROUND, PREVIEW, playgroundItems } from "../global"
+import { WezzleProperty } from "../types"
+import processProperties from './processProps'
 
 let cachedElements = getAllPuzzleChildrenIDs(PLAYGROUND)
 
-export async function parse(force?: boolean) {
+export default async function parse(force?: boolean) {
 	if (!force && isSameArray(cachedElements, getAllPuzzleChildrenIDs(PLAYGROUND))) return
 	cachedElements = getAllPuzzleChildrenIDs(PLAYGROUND)
-
+	
 	// console.time('Parsed in')
 
 	const parsedElementArray: parsedElement[] = []
@@ -126,16 +127,6 @@ function processStyling(parsedHTML: HTMLDivElement) {
 	}
 
 	return stringified
-}
-
-function processProperties(properties: WezzleProperty, element: HTMLElement) {
-	if (properties.style?.name && properties.style.value) {
-		element.innerHTML = `${properties.style.name}:${properties.style.value}`
-	}
-
-	if (properties.textContent) {
-		element.innerText = properties.textContent ?? ''
-	}
 }
 
 export function openPreview() {

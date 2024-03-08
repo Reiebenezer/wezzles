@@ -1,6 +1,6 @@
 import { camelToDash, dashToCamel } from '../typing'
 import { playgroundItems } from '../global'
-import { parse } from '../parsing'
+import parse from '../parsing/parse'
 import { bindInput } from '../functions'
 import { WezzleProperty } from '../types'
 
@@ -52,11 +52,21 @@ export function showProperties(id: string) {
 					break
 			}
 		} else {
-			const input = propertyModifier.firstElementChild as HTMLInputElement
+			const input = propertyModifier.firstElementChild
 
 			switch (key) {
 				case 'textContent':
-					processProperty.textContent(input, properties)
+					processProperty.textContent(input as HTMLTextAreaElement, properties)
+					propertyModifier.onkeyup = () => parse(true)
+					break
+				
+				case 'placeholder':
+					processProperty.placeholder(properties)
+					propertyModifier.onkeyup = () => parse(true)
+					break
+
+				case 'value':
+					processProperty.value(properties)
 					propertyModifier.onkeyup = () => parse(true)
 					break
 
@@ -106,11 +116,25 @@ export const processProperty = {
 			stylePropertyObject.value = dashToCamel(val)
 		})
 	},
-	textContent: (modifier: HTMLInputElement, properties: WezzleProperty) => {
+	textContent: (modifier: HTMLTextAreaElement, properties: WezzleProperty) => {
 		bindInput(
 			properties.textContent!,
 			modifier,
 			val => (properties.textContent = val)
 		)
 	},
+	value: (properties: WezzleProperty) => {
+		bindInput(
+			properties.value!,
+			document.getElementById('wz-property-value')!.firstElementChild as HTMLInputElement,
+			val => properties.value = val
+		)
+	},
+	placeholder: (properties: WezzleProperty) => {
+		bindInput(
+			properties.placeholder!,
+			document.getElementById('wz-property-placeholder')!.firstElementChild as HTMLInputElement,
+			val => properties.placeholder = val
+		)
+	}
 }

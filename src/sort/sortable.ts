@@ -131,12 +131,13 @@ export function makeItemsSortable(list: HTMLElement) {
 
 			
 			const hovered = document.querySelector('.wz-arrow-hovered')! as HTMLElement
+
 			if (!hovered) return
 
 			const hoveredBounds = getBounds(hovered)
 
 			const allowed = hovered.dataset.id
-				? playgroundItems[hovered.dataset.id].allowedNestElements
+				? playgroundItems[hovered.dataset.id].include
 				: 'all'
 
 			if (
@@ -172,9 +173,18 @@ export function makeItemsSortable(list: HTMLElement) {
 				if (hovered === document.getElementById('wz-delete-icon')) {
 					goToTrash(target, () => {
 						target.remove()
-
+						deleteFromPlaygroundItems(target)
+						
 						deleteIcon.style.setProperty('--delay', '100ms')
 						deleteIcon.style.scale = '0'
+
+						function deleteFromPlaygroundItems(target: HTMLElement) {
+							delete playgroundItems[target.dataset.id ?? '']
+							
+							if (target.hasChildNodes()) {
+								[...target.children].forEach(child => deleteFromPlaygroundItems(child as HTMLElement))
+							}
+						}
 					})
 
 					notify.info(`${target.dataset.name} element deleted`)
@@ -184,10 +194,10 @@ export function makeItemsSortable(list: HTMLElement) {
 						  hovered.parentElement !==
 								document.getElementById('wz-playground')
 							? playgroundItems[hovered.parentElement.dataset.id!]
-									.allowedNestElements
+									.include
 							: 'all'
 						: playgroundItems[hovered.dataset.id!]
-								.allowedNestElements
+								.include
 
 					const id = target.dataset.id!.split('-')[0]
 
@@ -198,8 +208,8 @@ export function makeItemsSortable(list: HTMLElement) {
 							)} ${hovered.dataset.name}!`
 						)
 					} else if (
-						allowed.includes('all') ||
-						allowed.includes(id)
+						allowed!.includes('all') ||
+						allowed!.includes(id)
 					) {
 						if (hoveredIsChildOfTarget(target)) {
 							notify.error(

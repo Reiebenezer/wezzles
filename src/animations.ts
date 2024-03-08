@@ -10,6 +10,7 @@ import { AnimationTypes, PLAYGROUND } from './global'
 import { playgroundItems } from './global'
 import { puzzleOptions } from './global'
 import { hideProperties, showProperties } from './sort/properties'
+import { Puzzle } from './types'
 
 /**
  * Prevents handling of logic while this is true
@@ -518,7 +519,7 @@ export function addWezzle(option: HTMLElement) {
 
 	// Clones the properties of the template defined in puzzleOptions
 	// JSON stringify/parse is used so that the original one is not modified
-	const puzzle = JSON.parse(
+	const puzzle: Puzzle = JSON.parse(
 		JSON.stringify(
 			puzzleOptions.find(value => value.name === clonedWezzle.dataset.id)!
 		)
@@ -539,18 +540,31 @@ export function addWezzle(option: HTMLElement) {
 	// Get the selected element in the playground (the glowing one)
 	const selected = document.querySelector('.wz-selected') as HTMLElement
 
+	// Prevent addition for some elements if one exists on the board
+	if (
+		puzzle.existOnce &&
+		Object.entries(playgroundItems).find(
+			existingPuzzle => existingPuzzle[0].split('-')[0] === puzzle.name
+		)
+	) {
+		return notify.error(
+			`${a_an(puzzle.displayname).toUpperCase()} ${
+				puzzle.displayname
+			} already exists in the playground!`
+		)
+	}
+
 	// Add the new puzzle data to the playgroundItems global array
 	playgroundItems[id] = {
 		name: clonedWezzle.dataset.id!,
 		tag: puzzle.tag,
 		properties: puzzle.properties,
-		allowedNestElements: puzzle.allowedNestElements,
+		include: puzzle.include,
 	}
 
 	// prevent disallowed elements from being nested into the selected element
 	if (selected) {
-		const selectedAllowed =
-			playgroundItems[selected.dataset.id!].allowedNestElements
+		const selectedAllowed = playgroundItems[selected.dataset.id!].include
 
 		if (selectedAllowed === 'none') {
 			return notify.error(
@@ -558,10 +572,9 @@ export function addWezzle(option: HTMLElement) {
 					selected.dataset.name!
 				)} ${selected.dataset.name!}!`
 			)
-
 		} else if (
 			selectedAllowed !== 'all' &&
-			!selectedAllowed.includes(playgroundItems[id].name)
+			!selectedAllowed?.includes(playgroundItems[id].name)
 		) {
 			return notify.error(
 				`You cannot add ${a_an(clonedWezzle.dataset.name!)} ${
@@ -605,7 +618,7 @@ export function addWezzle(option: HTMLElement) {
 		// Return the resize rect to the playground
 		PLAYGROUND.prepend(resizeAnimationRect)
 
-		// Revert the resize rect's positioning 
+		// Revert the resize rect's positioning
 		resizeAnimationRect.style.position = ''
 
 		// Append the cloned wezzle to the destination container
@@ -625,7 +638,6 @@ export function addWezzle(option: HTMLElement) {
 				timeline: document.timeline,
 			}
 		).onfinish = () => {
-
 			// Show the wezzle
 			followWezzle(clonedWezzle)
 

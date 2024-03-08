@@ -1,6 +1,6 @@
 import { addToOptions, getBounds } from './functions'
 import { currentlyAnimating } from './animations'
-import { parse } from './parsing'
+import parse from './parsing/parse'
 import { makeItemsSortable, makePlaygroundItem } from './sort/sortable'
 import { hideProperties } from './sort/properties'
 import { ARROW, ARROWHEAD, ARROWPATH, PLAYGROUND } from './global'
