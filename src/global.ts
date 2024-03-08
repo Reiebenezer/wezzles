@@ -24,7 +24,7 @@ export const puzzleOptions: Puzzle[] = [
 		displayname: 'Generic Container',
 		properties: {},
 		include: 'all',
-		group: PuzzleGroup.container
+		group: PuzzleGroup.container,
 	},
 	{
 		name: 'button',
@@ -34,7 +34,7 @@ export const puzzleOptions: Puzzle[] = [
 			textContent: '',
 		},
 		include: ['inlinestyle', 'text'],
-		group: PuzzleGroup.interactive
+		group: PuzzleGroup.interactive,
 	},
 	{
 		name: 'inlinestyle',
@@ -47,7 +47,7 @@ export const puzzleOptions: Puzzle[] = [
 			},
 		},
 		include: 'none',
-		group: PuzzleGroup.style
+		group: PuzzleGroup.style,
 	},
 	{
 		name: 'ptext',
@@ -57,7 +57,7 @@ export const puzzleOptions: Puzzle[] = [
 			textContent: '',
 		},
 		include: ['inlinestyle'],
-		group: PuzzleGroup.text
+		group: PuzzleGroup.text,
 	},
 	{
 		name: 'input',
@@ -68,7 +68,7 @@ export const puzzleOptions: Puzzle[] = [
 			placeholder: '',
 		},
 		include: ['inlinestyle'],
-		group: PuzzleGroup.interactive
+		group: PuzzleGroup.interactive,
 	},
 	{
 		name: 'header',
@@ -77,17 +77,18 @@ export const puzzleOptions: Puzzle[] = [
 		properties: {},
 		exclude: ['input', 'footer'],
 		group: PuzzleGroup.container,
-		existOnce: true
+		existOnce: true,
 	},
 	{
 		name: 'title',
-		tag: 'h2',
+		tag: 'none',
 		displayname: 'Title Text',
 		properties: {
 			textContent: '',
+			titleSize: 'h1',
 		},
 		include: ['inlinestyle'],
-		group: PuzzleGroup.text
+		group: PuzzleGroup.text,
 	},
 	{
 		name: 'footer',
@@ -96,7 +97,6 @@ export const puzzleOptions: Puzzle[] = [
 		properties: {},
 		exclude: ['header'],
 		group: PuzzleGroup.container,
-		existOnce: true
+		existOnce: true,
 	},
-	
 ]

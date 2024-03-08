@@ -11,7 +11,7 @@ export default function processProperties(properties: WezzleProperty, element: H
 	}
 
 	if (properties.value) {
-		; (element as HTMLInputElement).setAttribute('value', properties.value)
+		(element as HTMLInputElement).setAttribute('value', properties.value)
 	}
 
 	if (properties.placeholder) {

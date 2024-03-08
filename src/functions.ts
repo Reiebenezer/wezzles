@@ -61,10 +61,14 @@ export function getAllPuzzleChildrenIDs(element: HTMLElement) {
     return IDs
 }
 
-export function bindInput(initValue: string, input: HTMLInputElement | HTMLTextAreaElement, callback: (changedValue: string) => any) {
+export function bindInput(initValue: string, input: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, callback: (changedValue: string) => any) {
     input.value = initValue
 
-    input.onkeyup = () => callback(input.value)
+    if (input.tagName === 'SELECT')
+        input.onchange = () => callback(input.value)
+
+    else
+        input.onkeyup = () => callback(input.value)
 }
 
 export function addToOptions() {

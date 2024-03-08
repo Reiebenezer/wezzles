@@ -85,6 +85,12 @@ function returnDOMElement(parsed: parsedElement) {
 		if (name === 'inlinestyle') {
 			domElement = document.createElement('style')
 		}
+
+		if (name === 'title' && parsed.properties.titleSize) {
+			domElement = document.createElement(
+				parsed.properties.titleSize
+			)
+		}
 	}
 	processProperties(parsed.properties, domElement)
 

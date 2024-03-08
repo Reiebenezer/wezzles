@@ -18,6 +18,7 @@ export interface WezzleProperty {
     style?: { name: string; value: string} 
     value?: string
     placeholder?:string
+    titleSize?: string
 }
 
 export type PuzzleChildArray = Array<string | { id: string; children: PuzzleChildArray} >

@@ -70,6 +70,11 @@ export function showProperties(id: string) {
 					propertyModifier.onkeyup = () => parse(true)
 					break
 
+				case 'titleSize':
+					processProperty.titleSize(properties)
+					propertyModifier.onchange = () => parse(true)
+					break
+
 				default:
 					break
 			}
@@ -113,7 +118,7 @@ export const processProperty = {
 		})
 
 		bindInput(stylePropertyObject.value, valueModifier, val => {
-			stylePropertyObject.value = dashToCamel(val)
+			stylePropertyObject.value = val
 		})
 	},
 	textContent: (modifier: HTMLTextAreaElement, properties: WezzleProperty) => {
@@ -135,6 +140,13 @@ export const processProperty = {
 			properties.placeholder!,
 			document.getElementById('wz-property-placeholder')!.firstElementChild as HTMLInputElement,
 			val => properties.placeholder = val
+		)
+	},
+	titleSize: (properties: WezzleProperty) => {
+		bindInput(
+			properties.titleSize!,
+			document.getElementById('wz-property-title-size')!.firstElementChild as HTMLSelectElement,
+			val => properties.titleSize = val
 		)
 	}
 }
