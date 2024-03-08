@@ -41,6 +41,8 @@ export default async function parse(force?: boolean) {
 	timeout = 50
 	getElementsFromDom(PLAYGROUND, parsedElementArray)
 	parsedHTML = await generateHTML(parsedElementArray)
+
+	console.log(parsedHTML)
 	
 	const stylehead = processStyling(parsedHTML)
 
@@ -117,6 +119,7 @@ function returnDOMElement(parsed: parsedElement) {
 
 		if (name === 'title' && parsed.properties.titleSize) {
 			domElement = document.createElement(parsed.properties.titleSize)
+			domElement.id = parsed.id
 		}
 	}
 	processProperties(parsed.properties, domElement)
