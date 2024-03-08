@@ -567,6 +567,8 @@ export function addWezzle(option: HTMLElement) {
 		const selectedAllowed = playgroundItems[selected.dataset.id!].include
 
 		if (selectedAllowed === 'none') {
+			delete playgroundItems[id]
+			
 			return notify.error(
 				`You cannot add anything in ${a_an(
 					selected.dataset.name!
@@ -576,6 +578,8 @@ export function addWezzle(option: HTMLElement) {
 			selectedAllowed !== 'all' &&
 			!selectedAllowed?.includes(playgroundItems[id].name)
 		) {
+			delete playgroundItems[id]
+
 			return notify.error(
 				`You cannot add ${a_an(clonedWezzle.dataset.name!)} ${
 					clonedWezzle.dataset.name
