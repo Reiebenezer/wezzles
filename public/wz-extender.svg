@@ -1,0 +1,5 @@
+<!-- divided by 2 -->
+<!-- No extra height. -->
+<svg height="34" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com" fill="salmon" stroke="gray">
+  <path d="M 30 0 C 30 0 30 35 30 35 C 0 5 0 85 30 55 L 30 90 L 120 90 L 120 0 L 30 0 Z"></path>
+</svg>

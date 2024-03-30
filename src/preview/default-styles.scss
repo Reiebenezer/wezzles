@@ -1,0 +1,96 @@
+@use 'sass:meta';
+
+@mixin color-lighten($property, $color, $amount) {
+    #{$property}: color-mix(in srgb, $color (100% - $amount), white)
+}
+
+@mixin empty-content($selectors...) {
+    @each $selector, $content in meta.keywords($selectors) {
+        #{$selector}:empty::after {
+            content: $content;
+        }
+    }
+}
+
+$text-color: #080310;
+
+$bg-color: white;
+$bg-accent: color-mix(in srgb, bisque 60%, black);
+
+$accent: chocolate;
+
+:root {
+    font-family: 'Grandstander Variable', 'sans-serif';
+}
+
+body.show-outline * {
+    outline: 2px solid hsla(34, 57%, 70%, 0.6);
+    outline-offset: -1px;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6, input, textarea, select, div, header, footer):empty::after {
+    color: transparentize($color: $text-color, $amount: 0.6);
+}
+
+:is(button):empty::after {
+    color: transparentize($color: $accent, $amount: 0.6);
+}
+
+@include empty-content(
+    $div: '<Container>',
+    $header: '<Header>',
+    $footer: '<Footer>',
+    $button: '<Button>',
+    $p: '<Paragraph Text>',
+    $h1: '<Heading>',
+    $h2: '<Subheading>',
+    $h3: '<Subheading 2>',
+    $h4: '<Subheading 3>',
+    $h5: '<Subheading 4>',
+    $h6: '<Subheading 5>',
+);
+
+div, header, footer {
+    padding: 0.5rem;
+}
+
+button {
+    font-family: var(--font);
+    font-weight: bold;
+
+    padding: 0.4rem 0.8rem;
+
+    border: 1px solid $accent;
+    border-radius: 5px;
+
+    background-color: white;
+    color: $accent;
+
+    &:hover {
+        background-color: color-mix(in srgb, burlywood 40%, white);
+    }
+}
+
+p {
+    font-weight: normal;
+    line-height: 1.4;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.1;
+}
+
+input,
+select,
+textarea {
+    padding: 0.25rem;
+    margin: 0.25rem;
+
+    border-radius: 4px;
+    border: 2px solid $bg-accent;
+
+    font-family: inherit;
+
+    resize: vertical;
+    display: block;
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wezzles</title>
+  </head>
+  <body>
+    <template>
+      <div class="wz">
+        <p class="name"></p>
+      </div>
+      <div class="wz-extendable">
+        <p class="name"></p>
+        <div class="wz-extender">
+          <div class="contents"></div>
+        </div>
+      </div>
+    </template>
+
+    <div id="app">
+      <div id="wz-groups"></div>
+      <div id="wz-templates"></div>
+      <section>
+        <div id="left-panel">
+          <div id="wz-playground"></div>
+          <div id="wz-properties"></div>
+        </div>
+        <iframe src="/src/preview/preview.html" id="wz-preview" width="100%" height="100%" frameborder="0"></iframe>
+      </section>
+
+    </div>
+    <script type="module" src="/src/main.ts" defer></script>
+  </body>
+</html>

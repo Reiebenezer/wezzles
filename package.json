@@ -1,0 +1,28 @@
+{
+  "name": "wezzles-2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/animejs": "^3.1.12",
+    "@types/dragula": "^3.7.4",
+    "sass": "^1.72.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@fontsource-variable/grandstander": "^5.0.20",
+    "@fontsource-variable/montserrat": "^5.0.18",
+    "@fontsource-variable/open-sans": "^5.0.28",
+    "@phosphor-icons/webcomponents": "^2.0.7",
+    "animejs": "^3.2.2",
+    "dom-autoscroller": "^2.3.4",
+    "dragula": "^3.7.3",
+    "split.js": "^1.6.5"
+  }
+}
