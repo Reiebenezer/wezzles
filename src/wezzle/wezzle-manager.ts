@@ -262,10 +262,6 @@ export default class WezzleManager {
 					)
 				},
 				removeOnSpill: true,
-				slideFactorX:
-					global.util.deviceTypeByWidth() === 'phone' ? 30 : 0,
-				slideFactorY:
-					global.util.deviceTypeByWidth() === 'phone' ? 30 : 0,
 			}
 		)
 
