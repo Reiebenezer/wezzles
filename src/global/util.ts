@@ -75,7 +75,8 @@ export class ExtendedInputElement extends ExtendedElement {
             this.element instanceof HTMLTextAreaElement
         ) {
             ;(this.element as HTMLInputElement).value = initialValue ?? ''
-            ;(this.element as HTMLInputElement).oninput = () => callbackOnChange((this.element as HTMLInputElement).value)
+            ;(this.element as HTMLInputElement).oninput = () => {callbackOnChange((this.element as HTMLInputElement).value)}
+            ;(this.element as HTMLInputElement).onkeydown = e => { if (e.ctrlKey && (e.code === 'KeyZ' || e.code === 'KeyY')) e.preventDefault() }
         }
 
         else if (this.element instanceof HTMLSelectElement)  {
@@ -87,6 +88,7 @@ export class ExtendedInputElement extends ExtendedElement {
                 (this.element as HTMLSelectElement).options[0].selected = true
             }
             this.element.onchange = () => callbackOnChange((this.element as HTMLSelectElement).value)
+            this.element.onkeydown = e => { if (e.ctrlKey && (e.code === 'KeyZ' || e.code === 'KeyY')) e.preventDefault() }
         }
 
         return this

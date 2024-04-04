@@ -37,6 +37,7 @@ export const templates: WezzleData[] = [
 						value: 'horizontal',
 					},
 				],
+				value: 'auto'
 			},
 		],
 	},

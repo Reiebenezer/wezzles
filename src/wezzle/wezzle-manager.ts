@@ -216,9 +216,11 @@ export default class WezzleManager {
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
 				instance.undoHistory.push({
 					source,
-					srcIndex: [...source.children].findIndex(item => item === el),
+					srcIndex: [...source.children].findIndex(
+						item => item === el
+					),
 					dest: null,
-					destIndex: null
+					destIndex: null,
 				})
 			})
 			.on('drop', (el, target, source) => {
@@ -230,22 +232,25 @@ export default class WezzleManager {
 						source,
 						srcIndex: Number.POSITIVE_INFINITY,
 						dest: target,
-						destIndex: [...target.children].findIndex(item => item === el)
+						destIndex: [...target.children].findIndex(
+							item => item === el
+						),
 					})
 				} else {
-					const hist = instance.undoHistory[instance.undoHistory.length-1]
-					
-					hist.dest = target
-					hist.destIndex = 
-						[...target.children].findIndex(item => item === el)
+					const hist =
+						instance.undoHistory[instance.undoHistory.length - 1]
 
+					hist.dest = target
+					hist.destIndex = [...target.children].findIndex(
+						item => item === el
+					)
 				}
 
 				this.#historyManager.add({
 					undoAction: () => {
 						if (source === this.template_container) {
 							WezzleInstance.removeInstance(el as HTMLElement)
-							
+
 							const hist = instance.undoHistory.pop()
 							if (hist) instance.redoHistory.push(hist)
 
@@ -255,10 +260,13 @@ export default class WezzleManager {
 						const hist = instance.undoHistory.pop()
 						if (!hist) return
 
-						const sibling = hist.source.children.item(hist.srcIndex + (hist.srcIndex <= (hist.destIndex ?? 0) ? 0 : 1))
+						const sibling = hist.source.children.item(
+							hist.srcIndex +
+								(hist.srcIndex <= (hist.destIndex ?? 0) ? 0 : 1)
+						)
 
 						if (sibling) hist.source.insertBefore(el, sibling)
-						else 		 hist.source.appendChild(el)
+						else hist.source.appendChild(el)
 
 						instance.redoHistory.push(hist)
 					},
@@ -268,19 +276,18 @@ export default class WezzleManager {
 						}
 
 						const hist = instance.redoHistory.pop()
-						if (!hist) return 
+						if (!hist) return
 
 						const sibling = hist.dest?.children.item(
-							(hist.destIndex ?? 0) 
+							hist.destIndex ?? 0
 						)
 
 						if (sibling) hist.dest?.insertBefore(el, sibling)
-						else 		 hist.dest?.appendChild(el)
+						else hist.dest?.appendChild(el)
 
 						instance.undoHistory.push(hist)
-					}
+					},
 				})
-				
 			})
 			.on('shadow', (_, container) => {
 				if (!container.classList.contains('contents')) return
@@ -317,7 +324,7 @@ export default class WezzleManager {
 						if (!hist) return
 
 						instance.undoHistory.push(hist)
-					}
+					},
 				})
 			})
 
@@ -368,8 +375,11 @@ export default class WezzleManager {
 					':is(.wz, .wz-extendable).selected'
 				) !== null
 			)
-
-			if (!selectedElement) return
+				
+			if (!selectedElement) {
+				this.property_container.innerHTML = ''
+				return
+			}
 
 			const selectedWezzle = WezzleInstance.getInstance(
 				selectedElement as HTMLElement
@@ -507,7 +517,7 @@ export default class WezzleManager {
 
 				const cloned = clone(this.#clipboard, this.instance_container)
 				let parent = cloned.element.parentElement
-			
+
 				this.#historyManager.add({
 					undoAction: () => {
 						WezzleInstance.removeInstance(cloned.element)
@@ -515,10 +525,9 @@ export default class WezzleManager {
 					redoAction: () => {
 						WezzleInstance.instances.add(cloned)
 						parent?.appendChild(cloned.element)
-					}
+					},
 				})
 				console.log('Pasted Wezzle')
-
 			})
 
 			.on('copy', () => {
@@ -545,13 +554,17 @@ export default class WezzleManager {
 				this.#clipboard = WezzleInstance.getInstance(
 					selected as HTMLElement
 				)
-				
-				const instance = WezzleInstance.getInstance(selected as HTMLElement)
+
+				const instance = WezzleInstance.getInstance(
+					selected as HTMLElement
+				)
 				const hist = instance.undoHistory.pop()
 
 				console.log(instance, hist)
 
-				const sibling = hist?.dest?.children.item((hist?.destIndex ?? -2) + 1)
+				const sibling = hist?.dest?.children.item(
+					(hist?.destIndex ?? -2) + 1
+				)
 
 				WezzleInstance.removeInstance(selected as HTMLElement)
 
@@ -559,14 +572,16 @@ export default class WezzleManager {
 					undoAction: () => {
 						console.log(hist)
 						if (hist && hist.dest) {
-							this.#clipboard?.addTo(hist.dest as HTMLElement, sibling ?? undefined)
-							
+							this.#clipboard?.addTo(
+								hist.dest as HTMLElement,
+								sibling ?? undefined
+							)
+
 							this.#clipboard?.undoHistory.push(hist)
 							instance.undoHistory.push(hist)
 						}
-						
+
 						this.#clipboard = undefined
-						
 					},
 					redoAction: () => {
 						this.#clipboard = instance
@@ -793,18 +808,48 @@ export default class WezzleManager {
 	}
 
 	#handleProps(instance: WezzleInstance) {
-		if (!instance.element.classList.contains('selected')) return
-
 		this.property_container.innerHTML = ''
 		const properties = instance.data.properties
 
+		let isprocessing = false
+
 		properties.forEach(property => {
-			let el: global.util.ExtendedElement
+			let el: global.util.ExtendedInputElement
 			const additionalElements = []
 
 			const update = (val: string) => {
+				const oldValue = property.value ?? ''
 				property.value = val
+
 				this.parse()
+
+				if (!isprocessing) {
+					isprocessing = true
+					const addUndoState = async (oldvalue: string, input: global.util.ExtendedInputElement) => {
+						await new Promise(resolve => setTimeout(resolve, 700))
+
+						const newValue = (input.element as HTMLInputElement)
+							.value
+
+						console.log(newValue)
+
+						this.#historyManager.add({
+							undoAction: () => {
+								property.value = oldvalue
+								input.bind(oldvalue, update)
+								this.parse()
+							},
+							redoAction: () => {
+								property.value = newValue
+								input.bind(newValue, update)
+								this.parse()
+							},
+						})
+					}
+
+					addUndoState(oldValue, el).then(() => isprocessing = false).catch(err => {console.error(err); isprocessing = false})
+				}
+				
 			}
 
 			switch (property.input_type) {
