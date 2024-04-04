@@ -1,0 +1,26 @@
+[
+    {
+        "combo": "ctrl z",
+        "action": "undo"
+    },
+    {
+        "combo": "ctrl y",
+        "action": "redo"
+    },
+    {
+        "combo":"ctrl x",
+        "action":"cut"
+    },
+    {
+        "combo":"ctrl c",
+        "action": "copy"
+    },
+    {
+        "combo":"ctrl v",
+        "action": "paste"
+    },
+    {
+        "combo":"ctrl d",
+        "action": "duplicate"
+    }
+]

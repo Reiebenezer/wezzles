@@ -23,6 +23,7 @@
     "animejs": "^3.2.2",
     "dom-autoscroller": "^2.3.4",
     "dragula": "^3.7.3",
+    "shortcutjs": "^1.6.0",
     "split.js": "^1.6.5"
   }
 }
