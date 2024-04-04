@@ -97,7 +97,7 @@ export default class WezzleManager {
 
 		sortedTemplates.forEach(data => {
 			const wz = new Wezzle(data).addTo(this.template_container)
-			wz.element.onclick = () => {
+			const add = () => {
 				const cloned = wz.element.cloneNode(true) as HTMLElement
 				this.instance_container.appendChild(cloned)
 
@@ -113,6 +113,10 @@ export default class WezzleManager {
 						)
 					},
 				})
+			}
+			wz.element.onclick = add
+			wz.element.onkeydown = e => {
+				if (e.code === 'Space' || e.code === 'Enter') add()
 			}
 		})
 
