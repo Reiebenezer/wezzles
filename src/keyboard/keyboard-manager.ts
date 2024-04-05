@@ -1,27 +1,33 @@
-import { shortcutJS } from "shortcutjs";
+import { shortcutJS } from 'shortcutjs'
 import shortcuts from '../../shortcuts.json'
 
 export default class KeyboardManager {
-    static instance?: KeyboardManager
+	static #instance?: KeyboardManager
 
-    constructor() {
-        if (KeyboardManager.instance) {
-            throw new Error('KeyboardManager is instantiated already!')
-        }
+	constructor() {
+		if (KeyboardManager.#instance) 
+            throw new ReferenceError('You cannot create another instance!')
 
-        KeyboardManager.instance = this
-    }
+		KeyboardManager.#instance = this
+	}
 
-    init() {
-        shortcutJS.loadFromJson(shortcuts)
+	static get instance() {
+		if (!KeyboardManager.#instance)
+			KeyboardManager.#instance = new KeyboardManager()
 
-        return this
-    }
+		return KeyboardManager.#instance
+	}
 
-    on(shortcutName: string, action: (ev: KeyboardEvent) => void) {
-        if (shortcutJS.isPaused()) return this
-        
-        shortcutJS.subscribe(shortcutName, action)
-        return this
-    }
+	init() {
+		shortcutJS.loadFromJson(shortcuts)
+
+		return this
+	}
+
+	on(shortcutName: string, action: (ev: KeyboardEvent) => void) {
+		if (shortcutJS.isPaused()) return this
+
+		shortcutJS.subscribe(shortcutName, action)
+		return this
+	}
 }

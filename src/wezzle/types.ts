@@ -1,29 +1,47 @@
+import { WezzleInstance } from './wezzle'
+
 export interface WezzleData {
-    name: string
-    extendable: boolean
-    parsed_name: string
-    group: WezzleGroup
-    properties: WezzleProperty[]
+	name: string
+	extendable: boolean
+	parsed_name: string
+	group: WezzleGroup
+	properties: WezzleProperty[]
 }
 
 export enum WezzleGroup {
-    container,
-    text,
-    interactable,
-    style
+	container,
+	text,
+	interactable,
+	style,
 }
 
 export interface WezzleProperty {
-    token: 
-        | 'Text Content' 
-        | 'Placeholder'
-        | 'Initial Value'
-        | 'Alignment'
-        | 'Style Name'
-        | 'Style Value'
-        | 'Input Type'
+	token:
+		| 'Text Content'
+		| 'Placeholder'
+		| 'Initial Value'
+		| 'Alignment'
+		| 'Style Name'
+		| 'Style Value'
+		| 'Input Type'
 
-    input_type: 'text' | 'multiline-text' | 'number' | 'select' | 'text-with-datalist'
-    options?: {value: string, display_text: string}[]
-    value?: string
+	input_type:
+		| 'text'
+		| 'multiline-text'
+		| 'number'
+		| 'select'
+		| 'text-with-datalist'
+	options?: { value: string; display_text: string }[]
+	value?: string
 }
+
+export type parsedWezzle =
+	| WezzleInstance
+	| { parent: WezzleInstance; children: parsedWezzle[] }
+
+export type parsedStringWezzle =
+	| string
+	| { parent: string; children: parsedStringWezzle[] }
+    
+export type parsedWezzleData = WezzleData | { parent: WezzleData; children: parsedWezzleData[]} 
+

@@ -1,5 +1,5 @@
 import { util } from '../global'
-import { WezzleGroup, type WezzleData } from './types'
+import { WezzleGroup, type WezzleData, parsedWezzleData } from './types'
 
 const template = document.querySelector('template')!.content
 
@@ -50,6 +50,11 @@ export default class Wezzle {
 		)
 	}
 
+	get contents() {
+		if (!this.data.extendable) return null
+		return this.element.querySelector(':scope > .wz-extender > .contents') as HTMLElement
+	}
+
 	addTo(container: HTMLElement, before?: Element): Wezzle {
 		before
 			? container.insertBefore(this.element, before)
@@ -69,11 +74,14 @@ export class WezzleInstance extends Wezzle {
 
 	constructor(template: Wezzle)
 	constructor(el: HTMLElement)
-	constructor(templateOrElement: Wezzle | HTMLElement) {
+	constructor(data: WezzleData)
+	constructor(templateOrElement: Wezzle | HTMLElement | WezzleData) {
 		const data =
 			templateOrElement instanceof HTMLElement
 				? Wezzle.getInstance(templateOrElement)!.data
-				: templateOrElement.data
+				: templateOrElement instanceof Wezzle
+					? templateOrElement.data
+					: templateOrElement
 
 		templateOrElement instanceof HTMLElement
 			? super(data, templateOrElement)
@@ -107,5 +115,17 @@ export class WezzleInstance extends Wezzle {
 	static removeInstance(el: HTMLElement) {
 		this.instances.delete(this.getInstance(el))
 		el.remove()
+	}
+
+	static loadFromData(data: parsedWezzleData[], parent: HTMLElement) {
+		data.forEach(item => {
+			if ('parent' in item) { // Not WezzleData
+				const instance = new WezzleInstance(item.parent).addTo(parent)
+				this.loadFromData(item.children, instance.contents!)
+
+			} else {
+				new WezzleInstance(item).addTo(parent)
+			}
+		})
 	}
 }

@@ -3,17 +3,18 @@
 import dragula from 'dragula'
 import Wezzle, { WezzleInstance } from './wezzle'
 import autoScroll from 'dom-autoscroller'
-import { WezzleGroup } from './types'
+import { WezzleGroup, parsedStringWezzle, parsedWezzle } from './types'
 import * as global from '../global'
-import { templates } from './templates'
+import templates from './templates'
 import Split from 'split.js'
 
 import anime from 'animejs'
 import { KeyboardManager } from '../keyboard'
 import { HistoryManager } from '../history'
+import { FileManager } from '../filesystem'
 
 export default class WezzleManager {
-	static instance: WezzleManager
+	static #instance: WezzleManager
 
 	drake?: dragula.Drake
 
@@ -26,24 +27,26 @@ export default class WezzleManager {
 	property_container = document.getElementById('wz-properties')!
 
 	#splitInstance?: Split.Instance
-	#keyboardManager?: KeyboardManager
 	#clipboard?: WezzleInstance
-	#historyManager = new HistoryManager()
 
 	constructor() {
-		if (WezzleManager.instance) {
-			console.error('You cannot create another instance!')
-			return WezzleManager.instance
-		}
+		if (WezzleManager.#instance)
+			throw new ReferenceError('You cannot create another instance!')
 
-		WezzleManager.instance = this
+		WezzleManager.#instance = this
+	}
+
+	static get instance() {
+		if (!WezzleManager.#instance)
+			WezzleManager.#instance = new WezzleManager()
+		return WezzleManager.#instance
 	}
 
 	init() {
 		// Set up panels
 		this.#setupPanel()
 
-		// Add resizeObserver
+		// When user resizes the screen, panels are set up again
 		if (visualViewport) visualViewport.onresize = () => this.#setupPanel()
 
 		this.#setupClickEvents()
@@ -102,7 +105,7 @@ export default class WezzleManager {
 				this.instance_container.appendChild(cloned)
 
 				this.#addInstance(cloned, this.drake)
-				this.#historyManager.add({
+				HistoryManager.instance.add({
 					undoAction: () => {
 						WezzleInstance.removeInstance(cloned)
 					},
@@ -250,7 +253,7 @@ export default class WezzleManager {
 					)
 				}
 
-				this.#historyManager.add({
+				HistoryManager.instance.add({
 					undoAction: () => {
 						if (source === this.template_container) {
 							WezzleInstance.removeInstance(el as HTMLElement)
@@ -304,7 +307,7 @@ export default class WezzleManager {
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
 				WezzleInstance.instances.delete(instance)
 
-				this.#historyManager.add({
+				HistoryManager.instance.add({
 					undoAction: () => {
 						WezzleInstance.instances.add(instance)
 
@@ -379,7 +382,7 @@ export default class WezzleManager {
 					':is(.wz, .wz-extendable).selected'
 				) !== null
 			)
-				
+
 			if (!selectedElement) {
 				this.property_container.innerHTML = ''
 				return
@@ -469,7 +472,7 @@ export default class WezzleManager {
 	}
 
 	#setupKeyboard() {
-		this.#keyboardManager = new KeyboardManager().init()
+		KeyboardManager.instance.init()
 
 		// Paste action
 		const clone = (
@@ -512,7 +515,7 @@ export default class WezzleManager {
 		}
 
 		// Handle wezzle actions
-		this.#keyboardManager
+		KeyboardManager.instance
 			.on('paste', e => {
 				if (!this.#clipboard) return
 				if (document.activeElement !== document.body) return
@@ -522,7 +525,7 @@ export default class WezzleManager {
 				const cloned = clone(this.#clipboard, this.instance_container)
 				let parent = cloned.element.parentElement
 
-				this.#historyManager.add({
+				HistoryManager.instance.add({
 					undoAction: () => {
 						WezzleInstance.removeInstance(cloned.element)
 					},
@@ -572,7 +575,7 @@ export default class WezzleManager {
 
 				WezzleInstance.removeInstance(selected as HTMLElement)
 
-				this.#historyManager.add({
+				HistoryManager.instance.add({
 					undoAction: () => {
 						console.log(hist)
 						if (hist && hist.dest) {
@@ -614,7 +617,7 @@ export default class WezzleManager {
 					selected.nextElementSibling as HTMLElement
 				)
 
-				this.#historyManager.add({
+				HistoryManager.instance.add({
 					undoAction: () => {
 						WezzleInstance.removeInstance(cloned.element)
 					},
@@ -630,8 +633,8 @@ export default class WezzleManager {
 				console.log('Duplicated Wezzle')
 			})
 
-			.on('undo', () => this.#historyManager.undo())
-			.on('redo', () => this.#historyManager.redo())
+			.on('undo', () => HistoryManager.instance.undo())
+			.on('redo', () => HistoryManager.instance.redo())
 	}
 
 	#addInstance(el: Element, drake?: dragula.Drake) {
@@ -659,7 +662,7 @@ export default class WezzleManager {
 			),
 		] as HTMLElement[]
 
-		const parsed = getWezzleOrder(children)
+		const parsed = FileManager.instance.getWezzleOrder(children)
 
 		const parsedElements = document.createElement('div')
 		updatePreview(parsed, parsedElements)
@@ -668,38 +671,7 @@ export default class WezzleManager {
 		this.preview_container.contentDocument!.body.innerHTML =
 			parsedElements.innerHTML
 
-		type parsedWezzle =
-			| WezzleInstance
-			| { parent: WezzleInstance; children: parsedWezzle[] }
-		type parsedStringWezzle =
-			| string
-			| { parent: string; children: parsedStringWezzle[] }
-
 		global.dev.logJSON(parsed.map(getParsedName))
-
-		function getWezzleOrder(elements: HTMLElement[]) {
-			const arr = new Array<parsedWezzle>()
-
-			elements.forEach(el => {
-				const contents = el.querySelector(
-					':scope > .wz-extender > .contents'
-				)
-
-				if (contents === null || !contents.hasChildNodes())
-					arr.push(WezzleInstance.getInstance(el))
-				else
-					arr.push({
-						parent: WezzleInstance.getInstance(el),
-						children: getWezzleOrder([
-							...contents.querySelectorAll(
-								':scope > :is(.wz, .wz-extendable)'
-							),
-						] as HTMLElement[]),
-					})
-			})
-
-			return arr
-		}
 
 		function getParsedName(wz: parsedWezzle): parsedStringWezzle {
 			return wz instanceof WezzleInstance
@@ -829,7 +801,10 @@ export default class WezzleManager {
 
 				if (!isprocessing) {
 					isprocessing = true
-					const addUndoState = async (oldvalue: string, input: global.util.ExtendedInputElement) => {
+					const addUndoState = async (
+						oldvalue: string,
+						input: global.util.ExtendedInputElement
+					) => {
 						await new Promise(resolve => setTimeout(resolve, 700))
 
 						const newValue = (input.element as HTMLInputElement)
@@ -837,7 +812,7 @@ export default class WezzleManager {
 
 						console.log(newValue)
 
-						this.#historyManager.add({
+						HistoryManager.instance.add({
 							undoAction: () => {
 								property.value = oldvalue
 								input.bind(oldvalue, update)
@@ -851,9 +826,13 @@ export default class WezzleManager {
 						})
 					}
 
-					addUndoState(oldValue, el).then(() => isprocessing = false).catch(err => {console.error(err); isprocessing = false})
+					addUndoState(oldValue, el)
+						.then(() => (isprocessing = false))
+						.catch(err => {
+							console.error(err)
+							isprocessing = false
+						})
 				}
-				
 			}
 
 			switch (property.input_type) {

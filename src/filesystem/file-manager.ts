@@ -1,0 +1,86 @@
+import { parsedWezzleData, parsedWezzle } from "../wezzle/types"
+import { WezzleInstance } from "../wezzle/wezzle"
+
+export default class FileManager {
+	static #instance: FileManager
+
+	fileExtension = '.wzzl'
+    instance_container = document.getElementById('wz-playground')!
+
+	constructor() {
+		if (FileManager.#instance)
+            throw new ReferenceError('You cannot create another instance!')
+
+		FileManager.#instance = this
+	}
+
+    static get instance() {
+        if (!FileManager.#instance)
+            FileManager.#instance = new FileManager()
+
+        return FileManager.#instance
+    }
+    
+	download() {
+        
+        const children = [...this.instance_container.querySelectorAll(':scope > :is(.wz, .wz-extendable)')] as HTMLElement[]
+        const wzData = this.getWezzleOrder(children).map(function map(wz): parsedWezzleData {
+            if (wz instanceof WezzleInstance) {
+                return wz.data
+            } else {
+                return {
+                    parent: wz.parent.data,
+                    children: wz.children.map(map)
+                }
+            }
+        })
+
+		const blob = new Blob([JSON.stringify(wzData)], { type: 'application/json' })
+		const url  = URL.createObjectURL(blob)
+		const link = document.createElement('a')
+		link.href = url
+		link.download = 'wezzle-data.wzzl'
+		link.click()
+		URL.revokeObjectURL(url)
+    }
+
+	async upload() {
+		const input = document.createElement('input')
+		input.type = 'file'
+		input.onchange = async (e) => {
+			const files = (e.target as HTMLInputElement).files
+			if (!files) return
+			
+			const wzData = JSON.parse(await files[0].text()) as parsedWezzleData[]
+			console.log(wzData)
+
+			WezzleInstance.loadFromData(wzData, this.instance_container)
+		}
+
+		input.click()
+	}
+
+	getWezzleOrder(elements: HTMLElement[]) {
+		const arr = new Array<parsedWezzle>()
+
+		elements.forEach(el => {
+			const contents = el.querySelector(
+				':scope > .wz-extender > .contents'
+			)
+
+			if (contents === null || !contents.hasChildNodes())
+				arr.push(WezzleInstance.getInstance(el))
+			else
+				arr.push({
+					parent: WezzleInstance.getInstance(el),
+					children: this.getWezzleOrder([
+						...contents.querySelectorAll(
+							':scope > :is(.wz, .wz-extendable)'
+						),
+					] as HTMLElement[]),
+				})
+		})
+
+		return arr
+	}
+}

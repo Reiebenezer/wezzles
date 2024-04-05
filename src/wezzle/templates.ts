@@ -1,7 +1,7 @@
 import { camelToDisplay } from '../global/util'
 import { WezzleData, WezzleGroup } from './types'
 
-export const templates: WezzleData[] = [
+const templates: WezzleData[] = [
 	{
 		name: 'Paragraph Text',
 		extendable: false,
@@ -215,3 +215,4 @@ export const templates: WezzleData[] = [
 		],
 	},
 ]
+export default templates
