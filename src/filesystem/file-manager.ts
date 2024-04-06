@@ -64,6 +64,8 @@ export default class FileManager {
 		input.onchange = async (e) => {
 			const files = (e.target as HTMLInputElement).files
 			if (!files) return
+			if (!files[0].name.endsWith('.wzzl')) 
+				return alert('Error. Filename is invalid!')
 			
 			const wzData = JSON.parse(await files[0].text()) as parsedWezzleData[]
 			console.log(wzData)
