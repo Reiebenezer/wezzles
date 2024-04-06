@@ -65,7 +65,7 @@ export default class FileManager {
 			const files = (e.target as HTMLInputElement).files
 			if (!files) return
 			if (!files[0].name.endsWith('.wzzl')) 
-				return alert('Error. Filename is invalid!')
+				return alert('Error: The uploaded file is not a wezzle project!')
 			
 			const wzData = JSON.parse(await files[0].text()) as parsedWezzleData[]
 			console.log(wzData)
