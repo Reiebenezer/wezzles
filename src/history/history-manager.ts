@@ -22,7 +22,8 @@ export default class HistoryManager {
 		this.undoHistory.push(item)
 		this.redoHistory.length = 0
 
-		// console.log(this.undoHistory)
+		;(document.getElementById('toolbar-undo') as HTMLButtonElement).disabled = false
+		;(document.getElementById('toolbar-redo') as HTMLButtonElement).disabled = true
 	}
 
 	undo() {
@@ -32,7 +33,11 @@ export default class HistoryManager {
 		last.undoAction()
 		this.redoHistory.push(last)
 
-		// console.log(this.undoHistory)
+		;(document.getElementById('toolbar-redo') as HTMLButtonElement).disabled = false
+
+		if (this.undoHistory.length === 0) 
+			(document.getElementById('toolbar-undo') as HTMLButtonElement).disabled = true
+	
 	}
 
 	redo() {
@@ -42,7 +47,10 @@ export default class HistoryManager {
 		last.redoAction()
 		this.undoHistory.push(last)
 
-		// console.log(this.undoHistory)
+		;(document.getElementById('toolbar-undo') as HTMLButtonElement).disabled = false
+
+		if (this.redoHistory.length === 0) 
+			(document.getElementById('toolbar-redo') as HTMLButtonElement).disabled = true
 	}
 }
 

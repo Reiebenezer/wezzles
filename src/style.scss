@@ -84,6 +84,42 @@
 	@include phone-query($flex-direction: column-reverse);
 }
 
+#wz-toolbar {
+	$color: desaturate($color: chocolate, $amount: 50);
+
+	background-color: $color;
+	padding: 0;
+
+	display: flex;
+	
+	button {
+		aspect-ratio: 1;
+		height: 100%;
+
+		margin: 0;
+		padding: 0.4rem;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		border: none;
+
+		background-color: $color;
+		color: white;
+
+		&:disabled {
+			color: transparentize($color: white, $amount: 0.5);
+		}
+
+		&:not(:disabled):hover {
+			background-color: transparentize($color: bisque, $amount: 0.2);
+			color: $color;
+		}
+
+	}
+}
+
 #wz-groups {
 	grid-column-end: span 2;
 	background-color: burlywood;
@@ -102,6 +138,10 @@
 
 		&.active {
 			background-color: bisque;
+		}
+
+		&:hover {
+			background-color: transparentize($color: bisque, $amount: 0.5);
 		}
 	}
 }

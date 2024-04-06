@@ -61,6 +61,7 @@ export default class FileManager {
 	async upload() {
 		const input = document.createElement('input')
 		input.type = 'file'
+		input.accept = '.wzzl'
 		input.onchange = async (e) => {
 			const files = (e.target as HTMLInputElement).files
 			if (!files) return
