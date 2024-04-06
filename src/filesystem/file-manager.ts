@@ -1,3 +1,4 @@
+import { KeyboardManager } from "../keyboard"
 import { parsedWezzleData, parsedWezzle } from "../wezzle/types"
 import { WezzleInstance } from "../wezzle/wezzle"
 
@@ -12,6 +13,19 @@ export default class FileManager {
             throw new ReferenceError('You cannot create another instance!')
 
 		FileManager.#instance = this
+
+		KeyboardManager.instance.on('save', e => {
+			e.preventDefault()
+
+			const filename = prompt('Save Wezzle Project', 'My Wezzle Project')
+			if (filename)
+				this.download(filename)
+		})
+
+		.on('upload', e => {
+			e.preventDefault()
+			this.upload()
+		})
 	}
 
     static get instance() {
@@ -21,7 +35,7 @@ export default class FileManager {
         return FileManager.#instance
     }
     
-	download() {
+	download(filename: string) {
         
         const children = [...this.instance_container.querySelectorAll(':scope > :is(.wz, .wz-extendable)')] as HTMLElement[]
         const wzData = this.getWezzleOrder(children).map(function map(wz): parsedWezzleData {
@@ -39,7 +53,7 @@ export default class FileManager {
 		const url  = URL.createObjectURL(blob)
 		const link = document.createElement('a')
 		link.href = url
-		link.download = 'wezzle-data.wzzl'
+		link.download = `${filename}.wzzl`
 		link.click()
 		URL.revokeObjectURL(url)
     }

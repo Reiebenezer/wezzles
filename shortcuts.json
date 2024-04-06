@@ -22,5 +22,13 @@
     {
         "combo":"ctrl d",
         "action": "duplicate"
+    },
+    {
+        "combo":"ctrl s",
+        "action": "save"
+    },
+    {
+        "combo":"ctrl o",
+        "action": "upload"
     }
 ]
