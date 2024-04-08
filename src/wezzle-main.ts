@@ -3,8 +3,8 @@ import '@fontsource-variable/montserrat'
 import 'dragula/dist/dragula.min.css'
 import '@phosphor-icons/web/regular'
 
-import './style/wezzles.scss'
-import './style/panels.scss'
+import './wezzle-project/style/wezzles.scss'
+import './wezzle-project/style/panels.scss'
 
 import WezzleManager from './wezzle-project/wezzle/wezzle-manager'
 import Wezzle, { WezzleInstance } from './wezzle-project/wezzle/wezzle'
