@@ -44,7 +44,7 @@ function animateSplashscreen() {
 function loadProjects() {
 	const username = 'user1'
 
-	fetch('http://wezzles-api.vercel.app/fetch', {
+	fetch('https://wezzles-api.vercel.app/fetch', {
 		method: 'POST',
 		mode: 'no-cors',
 		headers: {
