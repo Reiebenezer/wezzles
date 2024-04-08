@@ -23,7 +23,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 index: './index.html',
-                preview: './src/preview/preview.html'
+                wezzle_project: './wezzle-project.html',
+                preview: './src/wezzle-project/preview/preview.html'
             }
         }
     }
