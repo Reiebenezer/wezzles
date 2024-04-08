@@ -1,0 +1,155 @@
+@use 'sass:meta';
+@import './util';
+
+.gutter {
+	background-color: chocolate;
+	background-repeat: no-repeat;
+	background-position: center;
+
+	&.gutter-horizontal {
+		background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+		cursor: col-resize;
+	}
+
+	&.gutter-vertical {
+		background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+		cursor: row-resize;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	font-family: 'Montserrat Variable', 'Open Sans Variable', sans-serif;
+}
+
+$wz-bg: url('/wz.svg');
+$wz-extendable-bg: url('/wz-extendable.svg');
+$wz-style-bg: url('/wz-style.svg');
+
+.wz,
+.wz-extendable {
+	--wezzle-width: 160px;
+	--wezzle-height: 40px;
+
+	--extender-width: 40px;
+
+	position: relative;
+	isolation: isolate;
+
+	width: fit-content;
+
+	display: flex;
+	justify-content: left;
+
+	user-select: none;
+	touch-action: none;
+
+	scroll-margin: 1rem;
+
+	cursor: pointer;
+
+	&.selected {
+		z-index: 1;
+		filter: drop-shadow(0 0 4px gray);
+	}
+
+	&.gu-mirror {
+		cursor: grabbing;
+	}
+
+	> p {
+		display: flex;
+		align-items: center;
+
+		min-width: var(--wezzle-width);
+		height: var(--wezzle-height);
+
+		padding: 0.5rem;
+		position: relative;
+
+		font-size: 0.9rem;
+		font-weight: 600;
+
+		pointer-events: none;
+
+		&::before {
+			content: '';
+
+			position: absolute;
+			inset: -13px 0 0;
+
+			width: var(--wezzle-width);
+
+			background-repeat: no-repeat;
+			background-position: right;
+			background-size: cover;
+
+			z-index: -1;
+		}
+	}
+
+	> .wz-extender {
+		display: flex;
+		justify-content: left;
+
+		&::before {
+			content: '';
+
+			width: 40px;
+			height: var(--wezzle-height);
+
+			background: url('/wz-extender.svg') left/cover no-repeat;
+			margin-left: -13px;
+		}
+
+		.contents {
+			display: none;
+		}
+
+		&.expanded > .contents {
+			display: block;
+			background-color: olivedrab;
+
+			padding: 1rem;
+			width: calc(var(--wezzle-width) + 2rem);
+		}
+	}
+}
+
+.wz > p::before {
+	background-image: $wz-bg;
+}
+
+.wz-extendable > p::before {
+	background-image: $wz-extendable-bg;
+}
+
+.wz-style > p::before {
+	background-image: $wz-style-bg;
+}
+
+#wz-playground :is(.wz, .wz-extendable) {
+	cursor: grab;
+
+	.wz-extender {
+		cursor: pointer;
+
+		.contents {
+			cursor: auto;
+		}
+	}
+}
+
+.wz-extender {
+	--content: url('/wz-extender.svg');
+}
+
+// Animation
+
+@media (prefers-reduced-motion) {
+}

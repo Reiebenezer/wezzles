@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/animejs": "^3.1.12",
     "@types/dragula": "^3.7.4",
+    "@types/lodash": "^4.17.0",
     "sass": "^1.72.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
@@ -20,10 +21,11 @@
     "@fontsource-variable/grandstander": "^5.0.20",
     "@fontsource-variable/montserrat": "^5.0.18",
     "@fontsource-variable/open-sans": "^5.0.28",
-    "@phosphor-icons/webcomponents": "^2.0.7",
+    "@phosphor-icons/web": "^2.1.1",
     "animejs": "^3.2.2",
     "dom-autoscroller": "^2.3.4",
     "dragula": "^3.7.3",
+    "lodash": "^4.17.21",
     "shortcutjs": "^1.6.0",
     "split.js": "^1.6.5"
   }

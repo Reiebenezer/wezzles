@@ -1,7 +1,11 @@
 import '@fontsource-variable/open-sans'
 import '@fontsource-variable/montserrat'
 import 'dragula/dist/dragula.min.css'
-import './style.scss'
+import '@phosphor-icons/web/regular'
+
+import './style/wezzles.scss'
+import './style/panels.scss'
+
 import WezzleManager from './wezzle/wezzle-manager'
 import Wezzle, { WezzleInstance } from './wezzle/wezzle'
 import { FileManager } from './filesystem'

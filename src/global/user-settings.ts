@@ -1,1 +1,2 @@
-export let showPreviewOutlines = false
+export let showWezzleOutlines = false
+export let showEmptyWezzlePlaceholders = false

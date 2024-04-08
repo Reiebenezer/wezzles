@@ -1,0 +1,23 @@
+@mixin portrait-query($args...) {
+	@media screen and (orientation: portrait) {
+		@each $prop, $val in meta.keywords($args) {
+			#{$prop}: $val;
+		}
+	}
+}
+
+@mixin tablet-query($args...) {
+	@media screen and (min-width: 421px) and (max-width: 820px) {
+		@each $prop, $val in meta.keywords($args) {
+			#{$prop}: $val;
+		}
+	}
+}
+
+@mixin phone-query($args...) {
+	@media screen and (max-width: 420px) {
+		@each $prop, $val in meta.keywords($args) {
+			#{$prop}: $val;
+		}
+	}
+}

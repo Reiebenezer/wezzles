@@ -6,7 +6,7 @@
 
 @mixin empty-content($selectors...) {
     @each $selector, $content in meta.keywords($selectors) {
-        #{$selector}:empty::after {
+        body.show-placeholders #{$selector}:empty::after {
             content: $content;
         }
     }

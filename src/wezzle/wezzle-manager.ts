@@ -1,18 +1,20 @@
 /// <reference path="./.d.ts" />
 
 import dragula from 'dragula'
-import Wezzle, { WezzleInstance } from './wezzle'
 import autoScroll from 'dom-autoscroller'
+import Split from 'split.js'
+import anime from 'animejs'
+
+import Wezzle, { WezzleInstance } from './wezzle'
 import { WezzleGroup, parsedStringWezzle, parsedWezzle } from './types'
+
 import * as global from '../global'
 import templates from './templates'
-import Split from 'split.js'
 
-import anime from 'animejs'
 import { KeyboardManager } from '../keyboard'
 import { HistoryManager } from '../history'
 import { FileManager } from '../filesystem'
-import toolbar from './toolbar'
+import { toolbar } from '../toolbar'
 import { shortcutJS } from 'shortcutjs'
 
 export default class WezzleManager {
@@ -95,7 +97,8 @@ export default class WezzleManager {
 				new global.util.ExtendedElement('button')
 					.id('toolbar-' + item.name)
 					.append(
-						new global.util.ExtendedElement(item.icon)
+						new global.util.ExtendedElement('span')
+							.class('ph', item.icon)
 							.setProp('title', item.description ?? '')
 							.setProp('weight', 'bold')
 							.setProp('size', '1rem')
@@ -105,6 +108,8 @@ export default class WezzleManager {
 								.get(item.command)!
 								.callbacks.forEach(callback => callback(e))
 						}
+
+						else item.command()
 					})
 
 			this.toolbar_container.appendChild(button.element)

@@ -1,8 +1,18 @@
 import '@fontsource-variable/grandstander'
 import './preview.scss'
-import { showPreviewOutlines } from '../global/user-settings'
+import { util } from '../global'
 
-if (showPreviewOutlines) document.body.classList.add('show-outline')
+function update() {
+    document.body.classList.toggle('show-outline', util.getUserSettings().get('showWezzleOutlines') as boolean)
+    document.body.classList.toggle('show-placeholders', util.getUserSettings().get('showEmptyWezzlePlaceholders') as boolean)
+}
+
+window.addEventListener('message', ev => {
+    if (ev.data === 'settings-update')
+        update()
+})
+
+update()
 
 document.onkeydown = e => {
     if (e.ctrlKey && (e.code === 'KeyS' || e.code === 'KeyO'))
