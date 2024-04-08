@@ -1,31 +1,46 @@
-import '@fontsource-variable/open-sans'
 import '@fontsource-variable/montserrat'
-import 'dragula/dist/dragula.min.css'
+import '@fontsource-variable/grandstander'
+
 import '@phosphor-icons/web/regular'
 
-import './style/wezzles.scss'
-import './style/panels.scss'
+import anime from 'animejs'
 
-import WezzleManager from './wezzle/wezzle-manager'
-import Wezzle, { WezzleInstance } from './wezzle/wezzle'
-import { FileManager } from './filesystem'
+import './welcome-page/style.scss'
 
-const manager = WezzleManager.instance.init()
-const fs = FileManager.instance
+//
+const app = document.getElementById('app') as HTMLElement
+const splashscreen = fetch('/splashscreen.svg')
 
-declare global {
-	interface Window {
-		wz: {
-			manager: WezzleManager,
-			instances: Set<Wezzle>,
-			playgroundInstances: Set<WezzleInstance>,
+document.addEventListener('DOMContentLoaded', () => {
+	splashscreen
+		.then(response => response.text())
+		.then(contents => {
+			app.innerHTML = contents + app.innerHTML
+            app.style.display = ''
+
+			animateSplashscreen()
+		})
+})
+
+function animateSplashscreen() {
+	const splashscreen = document.getElementById('splashscreen') as HTMLElement
+
+	anime({
+		targets: '#splashscreen path[mask]',
+		strokeDashoffset: [anime.setDashoffset, 0],
+		easing: 'easeInOutSine',
+		duration: 700,
+		delay: anime.stagger(300, { from: 'last' }),
+
+		complete() {
+			splashscreen.classList.add('completed')
+			app.classList.add('loaded')
+
+			loadProjects()
 		},
-		fs: FileManager
-	}
+	})
 }
-window.wz = {
-	manager,
-	instances: Wezzle.instances,
-	playgroundInstances: WezzleInstance.instances,
+
+function loadProjects() {
+	// const projectStorage = 
 }
-window.fs = fs

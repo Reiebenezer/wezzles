@@ -1,45 +1,27 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wezzles</title>
-  </head>
-  <body>
-    <template>
-      <div class="wz" tabindex="1">
-        <p class="name"></p>
-      </div>
-      <div class="wz-extendable" tabindex="1">
-        <p class="name"></p>
-        <div class="wz-extender">
-          <div class="contents"></div>
-        </div>
-      </div>
-    </template>
-
-    <div id="app">
-      <div id="wz-toolbar"></div>
-      <div id="wz-groups"></div>
-      <div id="wz-templates"></div>
-      <section>
-        <div id="left-panel">
-          <div id="wz-playground"></div>
-          <div id="wz-properties"></div>
-        </div>
-        <iframe src="/src/preview/preview.html" id="wz-preview" width="100%" height="100%" frameborder="0" allowfullscreen="false" referrerpolicy="same-origin"></iframe>
-      </section>
+</head>
+<body>
+    <div id="app" style="display: none;">
+        <nav>
+            <button id="create-new">Create a project <span class="ph ph-arrow-up-right"></span></button>
+            <button id="open-saved">Open Saved Projects <span class="ph ph-arrow-elbow-right-down"></span></button>
+        </nav>
     </div>
-    <dialog id="wz-settings">
-      <div>
-        <span class="close ph ph-x-circle"></span>
-        <h1>Wezzle Settings</h1>
-        <div class="area">
-        </div>
-      </div>
-    </dialog>
-
+    <ul id="saved-projects" style="display: none;">
+        <h1>My Saved Projects</h1>
+        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
+        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
+        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
+        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
+        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
+    </ul>
     <script type="module" src="/src/main.ts" defer></script>
-  </body>
+</body>
 </html>

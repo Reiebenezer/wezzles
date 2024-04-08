@@ -1,5 +1,5 @@
 import { shortcutJS } from 'shortcutjs'
-import shortcuts from '../../shortcuts.json'
+import shortcuts from './shortcuts.json'
 
 export default class KeyboardManager {
 	static #instance?: KeyboardManager
