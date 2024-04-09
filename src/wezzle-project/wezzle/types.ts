@@ -45,3 +45,14 @@ export type parsedStringWezzle =
     
 export type parsedWezzleData = WezzleData | { parent: WezzleData; children: parsedWezzleData[]} 
 
+export interface ExportWezzleData {
+	name: string
+	properties: {
+		token: string
+		value?: string
+	}[]
+}
+
+export type ExportWezzle =
+	| ExportWezzleData
+	| { parent: ExportWezzleData; children: ExportWezzle[] }

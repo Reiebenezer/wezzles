@@ -27,6 +27,7 @@
     "dragula": "^3.7.3",
     "lodash": "^4.17.21",
     "shortcutjs": "^1.6.0",
-    "split.js": "^1.6.5"
+    "split.js": "^1.6.5",
+    "sweetalert2": "^11.10.7"
   }
 }

@@ -1,5 +1,5 @@
 import { KeyboardManager } from "../keyboard"
-import { parsedWezzleData, parsedWezzle } from "../wezzle/types"
+import { parsedWezzle, WezzleData, ExportWezzle, ExportWezzleData } from "../wezzle/types"
 import { WezzleInstance } from "../wezzle/wezzle"
 
 export default class FileManager {
@@ -36,18 +36,26 @@ export default class FileManager {
     }
     
 	download(filename: string) {
-        
         const children = [...this.instance_container.querySelectorAll(':scope > :is(.wz, .wz-extendable)')] as HTMLElement[]
-        const wzData = this.getWezzleOrder(children).map(function map(wz): parsedWezzleData {
+        const wzData = this.getWezzleOrder(children).map(function map(wz): ExportWezzle {
             if (wz instanceof WezzleInstance) {
-                return wz.data
+                return minify(wz.data)
             } else {
                 return {
-                    parent: wz.parent.data,
+                    parent: minify(wz.parent.data),
                     children: wz.children.map(map)
                 }
             }
         })
+
+		function minify(data: WezzleData) {
+			return {
+				name: data.name,
+				properties: data.properties.map(item => {
+					return { token: item.token, value: item.value }
+				}),
+			}
+		}
 
 		const blob = new Blob([JSON.stringify(wzData)], { type: 'application/json' })
 		const url  = URL.createObjectURL(blob)
@@ -68,9 +76,7 @@ export default class FileManager {
 			if (!files[0].name.endsWith('.wzzl')) 
 				return alert('Error: The uploaded file is not a wezzle project!')
 			
-			const wzData = JSON.parse(await files[0].text()) as parsedWezzleData[]
-			console.log(wzData)
-
+			const wzData = JSON.parse(await files[0].text()) as ExportWezzleData[]
 			WezzleInstance.loadFromData(wzData, this.instance_container)
 		}
 

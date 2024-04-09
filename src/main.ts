@@ -42,19 +42,5 @@ function animateSplashscreen() {
 }
 
 function loadProjects() {
-	const username = 'user1'
-
-	fetch('https://wezzles-api.vercel.app/fetch', {
-		method: 'POST',
-		mode: 'no-cors',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ username })
-	})
-		.then(response => {
-			console.log(response)
-			return response.text()
-		})
-		.then(text => console.log(text))
+	
 }

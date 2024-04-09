@@ -1,5 +1,6 @@
 import { util } from '../global'
-import { WezzleGroup, type WezzleData, parsedWezzleData } from './types'
+import templates from './templates'
+import { WezzleGroup, type WezzleData, ExportWezzleData, ExportWezzle } from './types'
 
 const template = document.querySelector('template')!.content
 
@@ -117,15 +118,33 @@ export class WezzleInstance extends Wezzle {
 		el.remove()
 	}
 
-	static loadFromData(data: parsedWezzleData[], parent: HTMLElement) {
+	static loadFromData(data: ExportWezzle[], parent: HTMLElement) {
 		data.forEach(item => {
 			if ('parent' in item) { // Not WezzleData
-				const instance = new WezzleInstance(item.parent).addTo(parent)
-				this.loadFromData(item.children, instance.contents!)
+				const data = mergeWithTemplate(item.parent)
 
+				if (data) {
+					const instance = new WezzleInstance(data).addTo(parent)
+					this.loadFromData(item.children, instance.contents!)
+				}
 			} else {
-				new WezzleInstance(item).addTo(parent)
+				const data = mergeWithTemplate(item)
+				if (data) new WezzleInstance(data).addTo(parent)
 			}
 		})
+
+		function mergeWithTemplate(data: ExportWezzleData): WezzleData | null {
+			const template = util.cloneObject(
+				templates.find(template => template.name === data.name) ?? {}
+			) as WezzleData
+
+			if (!template) return null
+			data.properties.forEach(prop => {
+				const p = template.properties.find(p => p.token === prop.token)
+				if (p) p.value = prop.value
+			})
+
+			return template
+		}
 	}
 }
