@@ -29,3 +29,7 @@ window.wz = {
 	playgroundInstances: WezzleInstance.instances,
 }
 window.fs = fs
+
+window.addEventListener('beforeunload', () => {
+	fs.saveLocalProject()
+})

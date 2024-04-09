@@ -22,11 +22,13 @@ export default class WezzleManager {
 
 	drake?: dragula.Drake
 
-	toolbar_container  = document.getElementById('wz-toolbar')!
-	group_container    = document.getElementById('wz-groups')!
+	toolbar_container = document.getElementById('wz-toolbar')!
+	group_container = document.getElementById('wz-groups')!
 	template_container = document.getElementById('wz-templates')!
 	instance_container = document.getElementById('wz-playground')!
-	preview_container  = document.getElementById('wz-preview')! as HTMLIFrameElement
+	preview_container = document.getElementById(
+		'wz-preview'
+	)! as HTMLIFrameElement
 	property_container = document.getElementById('wz-properties')!
 
 	#splitInstance?: Split.Instance
@@ -61,7 +63,14 @@ export default class WezzleManager {
 
 		this.#setupKeyboard()
 
+		// Set up project
+		this.#setupProject()
+
 		return this
+	}
+
+	#setupProject() {
+		FileManager.instance.getLocalProject()
 	}
 
 	#setupPanel() {
@@ -93,30 +102,31 @@ export default class WezzleManager {
 		toolbar.forEach(item => {
 			if (document.getElementById('toolbar-' + item.name)) return
 
-			const button = 
-				new global.util.ExtendedElement('button')
-					.id('toolbar-' + item.name)
-					.append(
-						new global.util.ExtendedElement('span')
-							.class('ph', item.icon)
-							.setProp('title', item.description ?? '')
-							.setProp('weight', 'bold')
-							.setProp('size', '1rem')
-					).onclick(e => {
-						if (typeof item.command === 'string') {
-							shortcutJS.actions
-								.get(item.command)!
-								.callbacks.forEach(callback => callback(e))
-						}
-
-						else item.command()
-					})
+			const button = new global.util.ExtendedElement('button')
+				.id('toolbar-' + item.name)
+				.append(
+					new global.util.ExtendedElement('span')
+						.class('ph', item.icon)
+						.setProp('title', item.description ?? '')
+						.setProp('weight', 'bold')
+						.setProp('size', '1rem')
+				)
+				.onclick(e => {
+					if (typeof item.command === 'string') {
+						shortcutJS.actions
+							.get(item.command)!
+							.callbacks.forEach(callback => callback(e))
+					} else item.command()
+				})
 
 			this.toolbar_container.appendChild(button.element)
 		})
-
-		;(document.getElementById('toolbar-undo') as HTMLButtonElement).disabled = true
-		;(document.getElementById('toolbar-redo') as HTMLButtonElement).disabled = true
+		;(
+			document.getElementById('toolbar-undo') as HTMLButtonElement
+		).disabled = true
+		;(
+			document.getElementById('toolbar-redo') as HTMLButtonElement
+		).disabled = true
 	}
 
 	#setupGroupsAndTemplates() {
