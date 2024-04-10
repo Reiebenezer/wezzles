@@ -11,7 +11,6 @@
 }
 
 html, body {
-    scrollbar-gutter: stable;
     background-color: var(--bg);
 }
 
@@ -20,7 +19,7 @@ html, body {
     padding: 4rem;
 
     display: grid;
-    justify-content: center;
+    justify-items: center;
     align-items: center;
 
     font-family: 'Grandstander Variable', 'Montserrat Variable';

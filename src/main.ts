@@ -55,17 +55,34 @@ function animateSplashscreen() {
 async function load() {
 	const newbtn = document.getElementById('create-new') as HTMLButtonElement
 	const openbtn = document.getElementById('open-file') as HTMLButtonElement
+	const recentbtn = document.getElementById('open-recent') as HTMLButtonElement
+
+	try {
+		const projData = localStorage.getItem('local-project-data')
+		if (!projData) throw new Error()
+		const data = JSON.parse(projData) as Array<any>
+
+		if (data.length > 0) recentbtn.style.display = ''
+	} catch (error) {
+		localStorage.removeItem('local-project-data')
+	}
+
+	recentbtn.onclick = toProject
 
 	openbtn.onclick = async () => {
 		FileManager.instance
 			.uploadFromHome()
 			.then((data: ExportWezzle[]) => {
 				localStorage.setItem('local-project-data', JSON.stringify(data))
+				toProject()
 			})
 	}
 	newbtn.onclick = () => {
 		localStorage.removeItem('local-project-data')
+		toProject()
+	}
 
+	function toProject() {
 		swup.navigate('/project')
 		swup.hooks.on('animation:in:end', loadProject)
 	}
