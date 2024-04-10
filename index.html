@@ -6,22 +6,20 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wezzles</title>
+    <script type="module" src="/src/preload.ts"></script>
+    <link rel="stylesheet" href="/src/welcome-page/style.scss">
+    <link rel="stylesheet" href="/src/wezzle-project/style/panels.scss">
+    <link rel="stylesheet" href="/src/wezzle-project/style/wezzles.scss">
 </head>
 <body>
-    <div id="app" style="display: none;">
-        <nav>
-            <button id="create-new">Create a project <span class="ph ph-arrow-up-right"></span></button>
-            <button id="open-saved">Open Saved Projects <span class="ph ph-arrow-elbow-right-down"></span></button>
-        </nav>
-    </div>
-    <ul id="saved-projects" style="display: none;">
-        <h1>My Saved Projects</h1>
-        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
-        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
-        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
-        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
-        <li class="wz-project">Lorem ipsum, dolor sit amet consectetur adipisicing.</li>
-    </ul>
+    <main id="swup" class="transition-fade">
+        <div id="app" style="opacity: 0;">
+            <nav>
+                <button id="create-new">Create a project <span class="ph ph-plus"></span></button>
+                <button id="open-file">Import a Project File <span class="ph ph-file-arrow-up"></span></button>
+            </nav>
+        </div>
+    </main>
     <script type="module" src="/src/main.ts" defer></script>
 </body>
 </html>

@@ -47,7 +47,7 @@ export default class WezzleManager {
 		return WezzleManager.#instance
 	}
 
-	init() {
+	async init() {
 		// Set up panels
 		this.#setupPanel()
 

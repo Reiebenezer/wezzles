@@ -15,7 +15,7 @@ export default class FileManager {
 
 		FileManager.#instance = this
 
-		KeyboardManager.instance.on('save', e => {
+		KeyboardManager.instance.init().on('save', e => {
 			e.preventDefault()
 
 			const filename = prompt('Save Wezzle Project', 'My Wezzle Project')
@@ -86,6 +86,34 @@ export default class FileManager {
 		}
 
 		input.click()
+	}
+
+	async uploadFromHome(): Promise<ExportWezzle[]> {
+		const input = document.createElement('input')
+		input.type = 'file'
+		input.accept = '.wzzl'
+		let wzData: ExportWezzle[] | undefined;
+
+		input.onchange = async (e) => {
+			const files = (e.target as HTMLInputElement).files
+			if (!files) return
+			if (!files[0].name.endsWith('.wzzl')) {
+				Swal.fire({
+					icon: "error",
+					title: "Upload Error",
+					text: 'The uploaded file is not a wezzle project!'
+				})
+				return
+			}
+			
+			wzData = JSON.parse(await files[0].text()) as ExportWezzle[]
+		}
+
+		input.click()
+		return new Promise<ExportWezzle[]>(resolve => setInterval(() => {
+			if (wzData !== undefined)
+				resolve(wzData)
+		}, 1))
 	}
 
 	getWezzleOrder(elements: HTMLElement[]) {

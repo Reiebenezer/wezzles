@@ -1,22 +1,24 @@
-import '@fontsource-variable/montserrat'
-import '@fontsource-variable/grandstander'
-
-import '@phosphor-icons/web/regular'
-
 import anime from 'animejs'
 
-import './welcome-page/style.scss'
+import { FileManager } from './wezzle-project/filesystem'
+import { ExportWezzle } from './wezzle-project/wezzle/types'
+
+import Swup from "swup"
+import loadProject from './wezzle-main'
 
 //
 const app = document.getElementById('app') as HTMLElement
 const splashscreen = fetch('/splashscreen.svg')
 
+const swup = new Swup()
+
 document.addEventListener('DOMContentLoaded', () => {
+	
 	splashscreen
 		.then(response => response.text())
 		.then(contents => {
 			app.innerHTML = contents + app.innerHTML
-            app.style.display = ''
+            app.style.opacity = '1'
 
 			animateSplashscreen()
 		})
@@ -28,19 +30,34 @@ function animateSplashscreen() {
 	anime({
 		targets: '#splashscreen path[mask]',
 		strokeDashoffset: [anime.setDashoffset, 0],
-		easing: 'easeInOutSine',
-		duration: 700,
-		delay: anime.stagger(300, { from: 'last' }),
+		easing: 'easeInOutQuart',
+		duration: 800,
+		delay: anime.stagger(70, { from: 'last' }),
 
 		complete() {
 			splashscreen.classList.add('completed')
 			app.classList.add('loaded')
 
-			loadProjects()
+			load()
 		},
 	})
 }
 
-function loadProjects() {
-	
+async function load() {
+	const newbtn = document.getElementById('create-new') as HTMLButtonElement
+	const openbtn = document.getElementById('open-file') as HTMLButtonElement
+
+	openbtn.onclick = async () => {
+		FileManager.instance
+			.uploadFromHome()
+			.then((data: ExportWezzle[]) => {
+				localStorage.setItem('local-project-data', JSON.stringify(data))
+			})
+	}
+	newbtn.onclick = () => {
+		localStorage.removeItem('local-project-data')
+
+		swup.navigate('/project', { history: 'replace' })
+		swup.hooks.on('animation:in:end', loadProject)
+	}
 }

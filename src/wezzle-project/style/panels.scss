@@ -1,7 +1,15 @@
 @use 'sass:meta';
 @import './util';
 
-#app {
+html.is-changing .transition-fade {
+  transition: opacity 0.25s;
+  opacity: 1;
+}
+html.is-animating .transition-fade {
+  opacity: 0;
+}
+
+#project-app {
 	display: flex;
 	flex-direction: column;
 
@@ -9,6 +17,8 @@
 	inset: 5%;
 
 	user-select: none;
+
+	transition: opacity 250ms ease-out;
 
 	> section {
 		background-color: gray;

@@ -2,12 +2,13 @@ import { util } from '../global'
 import templates from './templates'
 import { WezzleGroup, type WezzleData, ExportWezzleData, ExportWezzle } from './types'
 
-const template = document.querySelector('template')!.content
-
 export default class Wezzle {
 	data: WezzleData
 	element: HTMLElement
 	text: HTMLParagraphElement
+
+	template = (document.getElementById('wz-tmp') as HTMLTemplateElement)
+		?.content
 
 	static instances = new Set<Wezzle>()
 
@@ -23,10 +24,10 @@ export default class Wezzle {
 		this.element =
 			element ??
 			(data.extendable
-				? (template
+				? (this.template!
 						.querySelector('.wz-extendable')!
 						.cloneNode(true) as HTMLElement)
-				: (template
+				: (this.template!
 						.querySelector('.wz')!
 						.cloneNode(true) as HTMLElement))
 
@@ -53,7 +54,9 @@ export default class Wezzle {
 
 	get contents() {
 		if (!this.data.extendable) return null
-		return this.element.querySelector(':scope > .wz-extender > .contents') as HTMLElement
+		return this.element.querySelector(
+			':scope > .wz-extender > .contents'
+		) as HTMLElement
 	}
 
 	addTo(container: HTMLElement, before?: Element): Wezzle {

@@ -2,6 +2,12 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+    optimizeDeps: {
+        include: [
+            "@fontsource-variable/grandstander",
+            "@phosphor-icons/web/regular"
+        ]
+    },
     plugins: [
         VitePWA({
             manifest: {
@@ -23,7 +29,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 index: './index.html',
-                wezzle_project: './wezzle-project.html',
+                project: './project.html',
                 preview: './src/wezzle-project/preview/preview.html'
             }
         }
