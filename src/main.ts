@@ -66,7 +66,7 @@ async function load() {
 	newbtn.onclick = () => {
 		localStorage.removeItem('local-project-data')
 
-		swup.navigate('project', { history: 'replace' })
+		swup.navigate('/project')
 		swup.hooks.on('animation:in:end', loadProject)
 	}
 }
