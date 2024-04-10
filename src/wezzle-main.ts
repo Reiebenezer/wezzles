@@ -1,7 +1,7 @@
 import WezzleManager from './wezzle-project/wezzle/wezzle-manager'
 import { FileManager } from './wezzle-project/filesystem'
 
-if (window.location.pathname === '/project')
+if (window.location.pathname !== '/')
 	window.location.href = '/'
 
 export default function load() {
