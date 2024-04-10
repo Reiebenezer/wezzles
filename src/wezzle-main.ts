@@ -8,9 +8,8 @@ export default function load() {
 	WezzleManager.instance.init().then(() => {
 		document.getElementById('project-app')?.style.setProperty('opacity', '1')
 	})
-	const fs = FileManager.instance
-	
+
 	window.addEventListener('beforeunload', () => {
-		fs.saveLocalProject()
+		FileManager.instance.saveLocalProject()
 	})
 }

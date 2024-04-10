@@ -83,7 +83,7 @@ async function load() {
 	}
 
 	function toProject() {
-		swup.navigate('/project')
-		swup.hooks.on('animation:in:end', loadProject)
+		swup.navigate('/project', { history: 'replace' })
+		swup.hooks.on('page:view', loadProject)
 	}
 }

@@ -175,6 +175,9 @@ export default class FileManager {
 		if (!data_str) return
 
 		const data = JSON.parse(data_str) as ExportWezzle[]
-		WezzleInstance.loadFromData(data, this.instance_container)
+		WezzleInstance.loadFromData(
+			data,
+			this.instance_container ?? document.getElementById('wz-playground')
+		)
 	}
 }
