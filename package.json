@@ -22,7 +22,7 @@
     "@fontsource-variable/montserrat": "^5.0.18",
     "@fontsource-variable/open-sans": "^5.0.28",
     "@phosphor-icons/web": "^2.1.1",
-    "@swup/route-name-plugin": "^4.1.0",
+    "@swup/preload-plugin": "^3.2.10",
     "animejs": "^3.2.2",
     "dom-autoscroller": "^2.3.4",
     "dragula": "^3.7.3",

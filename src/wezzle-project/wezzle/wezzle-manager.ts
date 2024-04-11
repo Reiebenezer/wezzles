@@ -485,13 +485,14 @@ export default class WezzleManager {
 
 				if (sortedInstances.length === 0) return
 
-				const firstElementVisible =
-					entries[0].isIntersecting &&
-					entries[0].target ===
-						this.template_container.children.item(0)
+				const firstElementVisible = 
+					activeElements.has(
+						this.template_container.children.item(0) as HTMLElement
+					)
 
-				const wzGroup = firstElementVisible
-					? Wezzle.getInstance(
+				const wzGroup = 
+					firstElementVisible
+						? Wezzle.getInstance(
 							this.template_container.children.item(
 								0
 							) as HTMLElement
@@ -507,9 +508,17 @@ export default class WezzleManager {
 			}
 		)
 
-		for (const template of this.template_container.children) {
-			scrollObserver.observe(template)
-		}
+		;[...this.template_container.children].forEach((template, index) => {
+			anime({
+				targets: template,
+				opacity: [0, 1],
+				translateY: ['100%', '0%'],
+				delay: index * 100,
+				complete() {
+					scrollObserver.observe(template)
+				},
+			})
+		})
 	}
 
 	#setupKeyboard() {

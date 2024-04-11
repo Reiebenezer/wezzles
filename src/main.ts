@@ -4,8 +4,8 @@ import { FileManager } from './wezzle-project/filesystem'
 import { ExportWezzle } from './wezzle-project/wezzle/types'
 
 import Swup from "swup"
-import SwupRouteNamePlugin from '@swup/route-name-plugin'
 import loadProject from './wezzle-main'
+import SwupPreloadPlugin from '@swup/preload-plugin'
 
 //
 const app = document.getElementById('app') as HTMLElement
@@ -13,11 +13,7 @@ const splashscreen = fetch('/splashscreen.svg')
 
 const swup = new Swup({
 	plugins: [
-		new SwupRouteNamePlugin({
-			routes: [
-				{ name: 'project', path: '/project' }
-			]
-		})
+		new SwupPreloadPlugin()
 	]
 })
 
@@ -29,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (!projData) throw new Error()
 		const data = JSON.parse(projData) as Array<any>
 
-		if (data.length > 0) recentbtn.style.opacity = '1'
+		if (data.length > 0) recentbtn.style.display = ''
 	} catch (error) {
 		localStorage.removeItem('local-project-data')
 	}
@@ -54,9 +50,11 @@ function animateSplashscreen() {
 		duration: 800,
 		delay: anime.stagger(70, { from: 'last' }),
 
-		complete() {
+		complete: async() => {
 			splashscreen.classList.add('completed')
 			app.classList.add('loaded')
+
+			await swup.preload!('/project')
 
 			load()
 		},

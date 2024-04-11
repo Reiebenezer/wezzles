@@ -11,6 +11,8 @@ export default defineConfig({
     plugins: [
         VitePWA({
             manifest: {
+                name: 'Wezzles',
+                description: 'Web development, without the code.',
                 icons: [
                     {
                         src: '/logo.png',
@@ -18,7 +20,7 @@ export default defineConfig({
                         type: 'image/png',
                         purpose: 'any maskable'
                     }
-                ]
+                ],
             }
         }),
     ],

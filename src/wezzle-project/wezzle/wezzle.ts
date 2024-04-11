@@ -1,3 +1,4 @@
+import anime from 'animejs'
 import { util } from '../global'
 import templates from './templates'
 import { WezzleGroup, type WezzleData, ExportWezzleData, ExportWezzle } from './types'
@@ -122,17 +123,31 @@ export class WezzleInstance extends Wezzle {
 	}
 
 	static loadFromData(data: ExportWezzle[], parent: HTMLElement) {
-		data.forEach(item => {
+		data.forEach((item, index) => {
 			if ('parent' in item) { // Not WezzleData
 				const data = mergeWithTemplate(item.parent)
 
 				if (data) {
 					const instance = new WezzleInstance(data).addTo(parent)
+					anime({
+						targets: instance.element,
+						opacity: [0, 1],
+						translateY: ['100%', '0%'],
+						delay: (index + 1) * 100,
+					})
 					this.loadFromData(item.children, instance.contents!)
 				}
 			} else {
 				const data = mergeWithTemplate(item)
-				if (data) new WezzleInstance(data).addTo(parent)
+				if (data) {
+					const instance = new WezzleInstance(data).addTo(parent)
+					anime({
+						targets: instance.element,
+						opacity: [0, 1],
+						translateY: ['100%', '0%'],
+						delay: index * 100,
+					})
+				}
 			}
 		})
 

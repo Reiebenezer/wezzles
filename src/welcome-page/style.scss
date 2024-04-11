@@ -94,3 +94,8 @@ html.is-changing .transition-fade {
 html.is-animating .transition-fade {
   opacity: 0;
 }
+
+#wz-loader {
+    background-image: url('/wz-extendable.svg'), url('/wz-extender.svg'), url('/wz.svg');
+    opacity: 0;
+}
