@@ -233,10 +233,15 @@ html.is-animating .transition-fade {
     width: var(--size);
     height: var(--size);
 
-    align-self: center;
-    justify-self: center;
+    // align-self: center;
+    // justify-self: center;
 
     border-radius: 0 1rem;
+
+	left: 50%;
+	top: 50%;
+
+	translate: -50% -50%;
 
     
     > div {
