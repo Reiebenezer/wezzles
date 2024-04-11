@@ -48,6 +48,8 @@ export default class WezzleManager {
 	}
 
 	async init() {
+		this.#setupKeyboard()
+
 		// Set up panels
 		this.#setupPanel()
 
@@ -61,7 +63,6 @@ export default class WezzleManager {
 		this.#setupAutoscroll()
 		this.#setupObservers()
 
-		this.#setupKeyboard()
 
 		// Set up project
 		this.#setupProject()
@@ -522,8 +523,6 @@ export default class WezzleManager {
 	}
 
 	#setupKeyboard() {
-		KeyboardManager.instance.init()
-
 		// Paste action
 		const clone = (
 			wz: WezzleInstance,
@@ -566,6 +565,7 @@ export default class WezzleManager {
 
 		// Handle wezzle actions
 		KeyboardManager.instance
+			.init()
 			.on('paste', e => {
 				if (!this.#clipboard) return
 				if (document.activeElement !== document.body) return
@@ -584,7 +584,7 @@ export default class WezzleManager {
 						parent?.appendChild(cloned.element)
 					},
 				})
-				console.log('Pasted Wezzle')
+				// console.log('Pasted Wezzle')
 			})
 
 			.on('copy', () => {
@@ -598,7 +598,7 @@ export default class WezzleManager {
 					selected as HTMLElement
 				)
 
-				console.log('Copied Wezzle')
+				// console.log('Copied Wezzle')
 			})
 
 			.on('cut', () => {
@@ -646,7 +646,7 @@ export default class WezzleManager {
 					},
 				})
 
-				console.log('Cut Wezzle')
+				// console.log('Cut Wezzle')
 			})
 
 			.on('duplicate', ev => {
@@ -680,7 +680,7 @@ export default class WezzleManager {
 					},
 				})
 
-				console.log('Duplicated Wezzle')
+				// console.log('Duplicated Wezzle')
 			})
 
 			.on('undo', () => HistoryManager.instance.undo())
@@ -722,6 +722,8 @@ export default class WezzleManager {
 			parsedElements.innerHTML
 
 		global.dev.logJSON(parsed.map(getParsedName))
+
+		FileManager.instance.saveLocalProject()
 
 		function getParsedName(wz: parsedWezzle): parsedStringWezzle {
 			return wz instanceof WezzleInstance

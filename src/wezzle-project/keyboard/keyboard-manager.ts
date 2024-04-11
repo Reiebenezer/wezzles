@@ -19,7 +19,8 @@ export default class KeyboardManager {
 	}
 
 	init() {
-		shortcutJS.loadFromJson(shortcuts)
+		if (shortcutJS.actions.size === 0)
+			shortcutJS.loadFromJson(shortcuts)
 
 		return this
 	}
