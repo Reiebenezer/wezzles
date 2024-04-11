@@ -62,7 +62,7 @@ async function load() {
 		if (!projData) throw new Error()
 		const data = JSON.parse(projData) as Array<any>
 
-		if (data.length > 0) recentbtn.style.display = ''
+		if (data.length > 0) recentbtn.style.opacity = '1'
 	} catch (error) {
 		localStorage.removeItem('local-project-data')
 	}
