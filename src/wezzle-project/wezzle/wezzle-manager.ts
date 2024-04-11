@@ -517,6 +517,9 @@ export default class WezzleManager {
 				delay: index * 100,
 				complete() {
 					scrollObserver.observe(template)
+					template.classList.remove('preloading')
+					;(template as HTMLElement).style.opacity = ''
+					;(template as HTMLElement).style.transform = ''
 				},
 			})
 		})

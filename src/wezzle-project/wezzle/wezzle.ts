@@ -129,27 +129,31 @@ export class WezzleInstance extends Wezzle {
 
 				if (data) {
 					const instance = new WezzleInstance(data).addTo(parent)
-					anime({
-						targets: instance.element,
-						opacity: [0, 1],
-						translateY: ['100%', '0%'],
-						delay: (index + 1) * 100,
-					})
+					wzAnimate(instance.element, index)
 					this.loadFromData(item.children, instance.contents!)
 				}
 			} else {
 				const data = mergeWithTemplate(item)
 				if (data) {
 					const instance = new WezzleInstance(data).addTo(parent)
-					anime({
-						targets: instance.element,
-						opacity: [0, 1],
-						translateY: ['100%', '0%'],
-						delay: index * 100,
-					})
+					wzAnimate(instance.element, index)
 				}
 			}
 		})
+
+		function wzAnimate(target: HTMLElement, index: number) {
+			anime({
+				targets: target,
+				opacity: [0, 1],
+				translateY: ['100%', '0%'],
+				delay: index * 100,
+				complete() {
+					target.classList.remove('preloading')
+					target.style.opacity = ''
+					target.style.transform = ''
+				}
+			})
+		}
 
 		function mergeWithTemplate(data: ExportWezzleData): WezzleData | null {
 			const template = util.cloneObject(

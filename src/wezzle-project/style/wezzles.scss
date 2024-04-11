@@ -50,7 +50,10 @@ $wz-style-bg: url('/wz-style.svg');
 	touch-action: none;
 
 	scroll-margin: 1rem;
-	opacity: 0;
+	
+	&.preloading {
+		opacity: 0;
+	}
 
 	cursor: pointer;
 
