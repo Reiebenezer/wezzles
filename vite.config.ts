@@ -16,8 +16,20 @@ export default defineConfig({
 				description: 'Web development, without the code.',
 				icons: [
 					{
-						src: '/logo.png',
+						src: '/logo1024.png',
+						sizes: '1024x1024',
+						type: 'image/png',
+						purpose: 'any maskable',
+					},
+					{
+						src: '/logo512.png',
 						sizes: '512x512',
+						type: 'image/png',
+						purpose: 'any maskable',
+					},
+					{
+						src: '/logo128.png',
+						sizes: '128x128',
 						type: 'image/png',
 						purpose: 'any maskable',
 					},
