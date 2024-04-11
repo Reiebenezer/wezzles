@@ -22,6 +22,17 @@ const swup = new Swup({
 })
 
 document.addEventListener('DOMContentLoaded', () => {
+	const recentbtn = document.getElementById('open-recent') as HTMLButtonElement
+
+	try {
+		const projData = localStorage.getItem('local-project-data')
+		if (!projData) throw new Error()
+		const data = JSON.parse(projData) as Array<any>
+
+		if (data.length > 0) recentbtn.style.opacity = '1'
+	} catch (error) {
+		localStorage.removeItem('local-project-data')
+	}
 	
 	splashscreen
 		.then(response => response.text())
@@ -56,16 +67,6 @@ async function load() {
 	const newbtn = document.getElementById('create-new') as HTMLButtonElement
 	const openbtn = document.getElementById('open-file') as HTMLButtonElement
 	const recentbtn = document.getElementById('open-recent') as HTMLButtonElement
-
-	try {
-		const projData = localStorage.getItem('local-project-data')
-		if (!projData) throw new Error()
-		const data = JSON.parse(projData) as Array<any>
-
-		if (data.length > 0) recentbtn.style.opacity = '1'
-	} catch (error) {
-		localStorage.removeItem('local-project-data')
-	}
 
 	recentbtn.onclick = toProject
 
