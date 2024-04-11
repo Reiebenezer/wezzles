@@ -245,6 +245,8 @@ html.is-animating .transition-fade {
     
         > h1 {
             margin-bottom: 2rem;
+
+			font-size: clamp(1.5rem, 5vw, 2.5rem);
         }
 
         .close {
@@ -265,6 +267,8 @@ html.is-animating .transition-fade {
 
             display: grid;
             grid-template-columns: 1fr auto;
+			gap: 0.25rem;
+
             max-width: 24rem;
 
             margin-block: 0.5rem;
