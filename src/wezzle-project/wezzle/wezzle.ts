@@ -1,7 +1,13 @@
 import anime from 'animejs'
 import { util } from '../global'
 import templates from './templates'
-import { WezzleGroup, type WezzleData, ExportWezzleData, ExportWezzle } from './types'
+import {
+	WezzleGroup,
+	type WezzleData,
+	ExportWezzleData,
+	ExportWezzle,
+} from './types'
+import WezzleManager from './wezzle-manager'
 
 export default class Wezzle {
 	data: WezzleData
@@ -25,12 +31,12 @@ export default class Wezzle {
 		this.element =
 			element ??
 			(data.extendable
-				? (this.template!
-						.querySelector('.wz-extendable')!
-						.cloneNode(true) as HTMLElement)
-				: (this.template!
-						.querySelector('.wz')!
-						.cloneNode(true) as HTMLElement))
+				? (this.template!.querySelector('.wz-extendable')!.cloneNode(
+						true
+				  ) as HTMLElement)
+				: (this.template!.querySelector('.wz')!.cloneNode(
+						true
+				  ) as HTMLElement))
 
 		if (this.data.group === WezzleGroup.style) {
 			this.element.classList.add('wz-style')
@@ -74,8 +80,18 @@ export default class Wezzle {
 export class WezzleInstance extends Wezzle {
 	static instances = new Set<WezzleInstance>()
 
-	undoHistory: Array<{ source: Element, dest: Element | null, srcIndex: number, destIndex: number | null }>
-	redoHistory: Array<{ source: Element, dest: Element | null, srcIndex: number, destIndex: number | null }>
+	undoHistory: Array<{
+		source: Element
+		dest: Element | null
+		srcIndex: number
+		destIndex: number | null
+	}>
+	redoHistory: Array<{
+		source: Element
+		dest: Element | null
+		srcIndex: number
+		destIndex: number | null
+	}>
 
 	constructor(template: Wezzle)
 	constructor(el: HTMLElement)
@@ -85,8 +101,8 @@ export class WezzleInstance extends Wezzle {
 			templateOrElement instanceof HTMLElement
 				? Wezzle.getInstance(templateOrElement)!.data
 				: templateOrElement instanceof Wezzle
-					? templateOrElement.data
-					: templateOrElement
+				? templateOrElement.data
+				: templateOrElement
 
 		templateOrElement instanceof HTMLElement
 			? super(data, templateOrElement)
@@ -124,18 +140,31 @@ export class WezzleInstance extends Wezzle {
 
 	static loadFromData(data: ExportWezzle[], parent: HTMLElement) {
 		data.forEach((item, index) => {
-			if ('parent' in item) { // Not WezzleData
+			if ('parent' in item) {
+				// Not WezzleData
 				const data = mergeWithTemplate(item.parent)
 
 				if (data) {
-					const instance = new WezzleInstance(data).addTo(parent)
+					const instance = new WezzleInstance(data)
+
+					if (instance.data.extendable)
+						WezzleManager.instance.drake.containers.push(
+							instance.contents!
+						)
+					instance.addTo(parent)
 					wzAnimate(instance.element, index)
 					this.loadFromData(item.children, instance.contents!)
 				}
 			} else {
 				const data = mergeWithTemplate(item)
 				if (data) {
-					const instance = new WezzleInstance(data).addTo(parent)
+					const instance = new WezzleInstance(data)
+					if (instance.data.extendable)
+						WezzleManager.instance.drake.containers.push(
+							instance.contents!
+						)
+					instance.addTo(parent)
+
 					wzAnimate(instance.element, index)
 				}
 			}
@@ -151,7 +180,7 @@ export class WezzleInstance extends Wezzle {
 					target.classList.remove('preloading')
 					target.style.opacity = ''
 					target.style.transform = ''
-				}
+				},
 			})
 		}
 

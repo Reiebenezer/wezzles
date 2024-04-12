@@ -202,6 +202,10 @@ const templates: WezzleData[] = [
 						value: 'number',
 						display_text: 'Number',
 					},
+					{
+						value: 'password',
+						display_text: 'Password'
+					}
 				],
 			},
 			{

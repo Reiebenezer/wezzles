@@ -20,7 +20,35 @@ import { shortcutJS } from 'shortcutjs'
 export default class WezzleManager {
 	static #instance: WezzleManager
 
-	drake?: dragula.Drake
+	drake = dragula({
+		copy: (_, source) => {
+			return source === this.template_container
+		},
+		accepts: (el, target) => {
+			return (
+				(target === this.instance_container ||
+					target?.closest('#wz-playground') ===
+						this.instance_container) &&
+				target !== this.property_container &&
+				el !== undefined &&
+				target !== undefined &&
+				![...el.querySelectorAll('.contents')].includes(target)
+			)
+		},
+		invalid: (_, target) => {
+			return (
+				target === undefined || target.classList.contains('wz-extender')
+			)
+		},
+		moves: el => {
+			return (
+				el !== undefined &&
+				(el.classList.contains('wz') ||
+					el.classList.contains('wz-extendable'))
+			)
+		},
+		removeOnSpill: true,
+	})
 
 	toolbar_container = document.getElementById('wz-toolbar')!
 	group_container = document.getElementById('wz-groups')!
@@ -48,6 +76,9 @@ export default class WezzleManager {
 	}
 
 	async init() {
+		// Set up project
+		this.#setupProject()
+
 		this.#setupKeyboard()
 
 		// Set up panels
@@ -61,11 +92,8 @@ export default class WezzleManager {
 
 		this.#setupDrag()
 		this.#setupAutoscroll()
+
 		this.#setupObservers()
-
-
-		// Set up project
-		this.#setupProject()
 
 		return this
 	}
@@ -224,40 +252,10 @@ export default class WezzleManager {
 	}
 
 	#setupDrag() {
-		this.drake = dragula(
-			[this.template_container, this.instance_container],
-			{
-				copy: (_, source) => {
-					return source === this.template_container
-				},
-				accepts: (el, target) => {
-					return (
-						(target === this.instance_container ||
-							target?.closest('#wz-playground') ===
-								this.instance_container) &&
-						target !== this.property_container &&
-						el !== undefined &&
-						target !== undefined &&
-						![...el.querySelectorAll('.contents')].includes(target)
-					)
-				},
-				invalid: (_, target) => {
-					return (
-						target === undefined ||
-						target.classList.contains('wz-extender')
-					)
-				},
-				moves: el => {
-					return (
-						el !== undefined &&
-						(el.classList.contains('wz') ||
-							el.classList.contains('wz-extendable'))
-					)
-				},
-				removeOnSpill: true,
-			}
+		this.drake.containers.push(
+			this.template_container,
+			this.instance_container
 		)
-
 		this.drake
 			.on('drag', (el, source) => {
 				if (source === this.template_container) return
@@ -486,14 +484,12 @@ export default class WezzleManager {
 
 				if (sortedInstances.length === 0) return
 
-				const firstElementVisible = 
-					activeElements.has(
-						this.template_container.children.item(0) as HTMLElement
-					)
+				const firstElementVisible = activeElements.has(
+					this.template_container.children.item(0) as HTMLElement
+				)
 
-				const wzGroup = 
-					firstElementVisible
-						? Wezzle.getInstance(
+				const wzGroup = firstElementVisible
+					? Wezzle.getInstance(
 							this.template_container.children.item(
 								0
 							) as HTMLElement
