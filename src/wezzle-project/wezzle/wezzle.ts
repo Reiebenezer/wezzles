@@ -21,7 +21,7 @@ export default class Wezzle {
 
 	constructor(data: WezzleData, element?: HTMLElement) {
 		// Create a clone of the data rather than referencing it
-		this.data = util.cloneObject(data)
+		this.data = util.cloneObject(data) as WezzleData
 
 		// Add Property Identifiers for every specified property
 		this.data.properties.forEach(prop => {
@@ -189,7 +189,8 @@ export class WezzleInstance extends Wezzle {
 				templates.find(template => template.name === data.name) ?? {}
 			) as WezzleData
 
-			if (!template) return null
+			if (Object.entries(template).length === 0) return null
+
 			data.properties.forEach(prop => {
 				const p = template.properties.find(p => p.token === prop.token)
 				if (p) p.value = prop.value

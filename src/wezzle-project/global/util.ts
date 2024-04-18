@@ -97,9 +97,10 @@ export class ExtendedInputElement extends ExtendedElement {
 				)
 		} else if (
 			this.element instanceof HTMLInputElement ||
-			this.element instanceof HTMLTextAreaElement
+			this.element instanceof HTMLTextAreaElement &&
+			typeof initialValue === 'string'
 		) {
-			;(this.element as HTMLInputElement).value = initialValue ?? ''
+			;(this.element as HTMLInputElement).value = (initialValue as string) ?? ''
 			;(this.element as HTMLInputElement).oninput = () => {
 				callbackOnChange((this.element as HTMLInputElement).value)
 			}
@@ -107,10 +108,10 @@ export class ExtendedInputElement extends ExtendedElement {
 				if (e.ctrlKey && (e.code === 'KeyZ' || e.code === 'KeyY'))
 					e.preventDefault()
 			}
-		} else if (this.element instanceof HTMLSelectElement) {
+		} else if (this.element instanceof HTMLSelectElement && typeof initialValue === 'string') {
 			const option = (
 				this.element as HTMLSelectElement
-			).options.namedItem(initialValue ?? '')
+			).options.namedItem((initialValue as string) ?? '')
 
 			if (option) {
 				option.selected = true
@@ -146,7 +147,7 @@ export function deviceTypeByWidth() {
 }
 
 export function cloneObject(obj: object) {
-	return JSON.parse(JSON.stringify(obj))
+	return JSON.parse(JSON.stringify(obj)) as object
 }
 
 let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')

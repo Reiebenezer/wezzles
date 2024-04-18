@@ -20,10 +20,13 @@ export interface WezzleProperty {
 		| 'Text Content'
 		| 'Placeholder'
 		| 'Initial Value'
-		| 'Alignment'
-		| 'Style Name'
+		| 'Orientation'
+		| 'Style Type'
 		| 'Style Value'
 		| 'Input Type'
+		| 'Value (Units)'
+		| 'Image URL'
+		| 'Alternative Caption'
 
 	input_type:
 		| 'text'

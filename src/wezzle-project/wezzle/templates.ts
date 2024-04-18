@@ -21,13 +21,9 @@ const templates: WezzleData[] = [
 		parsed_name: 'div',
 		properties: [
 			{
-				token: 'Alignment',
+				token: 'Orientation',
 				input_type: 'select',
 				options: [
-					{
-						display_text: 'Automatic',
-						value: 'auto',
-					},
 					{
 						display_text: 'Vertical',
 						value: 'vertical',
@@ -37,7 +33,7 @@ const templates: WezzleData[] = [
 						value: 'horizontal',
 					},
 				],
-				value: 'auto'
+				value: 'horizontal'
 			},
 		],
 	},
@@ -169,7 +165,7 @@ const templates: WezzleData[] = [
 		parsed_name: 'style',
 		properties: [
 			{
-				token: 'Style Name',
+				token: 'Style Type',
 				input_type: 'text-with-datalist',
 				options: [...getComputedStyle(document.body)].map(item => {
 					return {
@@ -218,5 +214,219 @@ const templates: WezzleData[] = [
 			},
 		],
 	},
+	{
+		name: 'Margin',
+		extendable: false,
+		group: WezzleGroup.style,
+		parsed_name: 'style',
+		properties: [
+			{
+				token: 'Style Type',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Margin (All Sides)',
+						value: 'margin'
+					},
+					{
+						display_text: 'Top Margin',
+						value: 'margin-top'
+					},
+					{
+						display_text: 'Right Margin',
+						value: 'margin-right'
+					},
+					{
+						display_text: 'Left Margin',
+						value: 'margin-left'
+					},
+					{
+						display_text: 'Bottom Margin',
+						value: 'margin-bottom'
+					},
+					{
+						display_text: 'Top and Bottom Margin',
+						value: 'margin-block'
+					},
+					{
+						display_text: 'Left and Right Margin',
+						value: 'margin-inline'
+					}
+				],
+				value: 'margin'
+			},
+			{
+				token: 'Value (Units)',
+				input_type: 'number',
+				value: '1'
+			}
+		]
+	},
+	{
+		name: 'Padding',
+		extendable: false,
+		group: WezzleGroup.style,
+		parsed_name: 'style',
+		properties: [
+			{
+				token: 'Style Type',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Padding (All Sides)',
+						value: 'padding'
+					},
+					{
+						display_text: 'Top Padding',
+						value: 'padding-top'
+					},
+					{
+						display_text: 'Right Padding',
+						value: 'padding-right'
+					},
+					{
+						display_text: 'Left Padding',
+						value: 'padding-left'
+					},
+					{
+						display_text: 'Bottom Padding',
+						value: 'padding-bottom'
+					},
+					{
+						display_text: 'Top and Bottom Padding',
+						value: 'padding-block'
+					},
+					{
+						display_text: 'Left and Right Padding',
+						value: 'padding-inline'
+					}
+				],
+				value: 'padding'
+			},
+			{
+				token: 'Value (Units)',
+				input_type: 'number',
+				value: '1'
+			}
+		]
+	},
+	{
+		name: 'Alignment', // justify-content
+		extendable: false,
+		group: WezzleGroup.style,
+		parsed_name: 'style',
+		properties: [
+			{
+				token: 'Style Type',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Vertical Alignment',
+						value: 'align-items'
+					},
+					{
+						display_text: 'Horizontal Alignment',
+						value: 'justify-items'
+					}
+				],
+				value: 'align-items'
+			},
+			{
+				token: 'Style Value',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Beginning',
+						value: 'flex-start'
+					},
+					{
+						display_text: 'Center',
+						value: 'center'
+					},
+					{
+						display_text: 'End',
+						value: 'flex-end'
+					},
+					{
+						display_text: 'Fill Space',
+						value: 'stretch'
+					}
+				],
+				value: 'center'
+			}
+		]
+	},
+	{
+		name: 'Distribution',
+		extendable: false,
+		group: WezzleGroup.style,
+		parsed_name: 'style',
+		properties: [
+			{
+				token: 'Style Type',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Horizontal Distribution',
+						value: 'justify-content'
+					},
+					{
+						display_text: 'Vertical Distribution',
+						value: 'align-content'
+					}
+				],
+				value: 'justify-content'
+			},
+			{
+				token: 'Style Value',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Beginning',
+						value: 'flex-start'
+					},
+					{
+						display_text: 'Center',
+						value: 'center'
+					},
+					{
+						display_text: 'End',
+						value: 'flex-end'
+					},
+					{
+						display_text: 'Constant Object Margin',
+						value: 'space-around'
+					},
+					{
+						display_text: 'Spread Out',
+						value: 'space-between'
+					},
+					{
+						display_text: 'Equal Spacing',
+						value: 'space-evenly'
+					}
+				],
+				value: 'center'
+			}
+		]
+	},
+	{
+		name: 'Image',
+		extendable: false,
+		group: WezzleGroup.interactable,
+		parsed_name: 'img',
+		properties: [
+			{
+				token: 'Image URL',
+				input_type: 'text',
+			},
+			{
+				token: 'Alternative Caption',
+				input_type: 'text',
+				value: 'Image'
+			}
+		]
+	},
+	
 ]
 export default templates

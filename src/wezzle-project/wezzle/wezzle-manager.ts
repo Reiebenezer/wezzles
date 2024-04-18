@@ -1,21 +1,21 @@
 /// <reference path="./.d.ts" />
 
-import dragula from 'dragula'
-import autoScroll from 'dom-autoscroller'
-import Split from 'split.js'
-import anime from 'animejs'
+import dragula from "dragula"
+import autoScroll from "dom-autoscroller"
+import Split from "split.js"
+import anime from "animejs"
 
-import Wezzle, { WezzleInstance } from './wezzle'
-import { WezzleGroup, parsedStringWezzle, parsedWezzle } from './types'
+import Wezzle, { WezzleInstance } from "./wezzle"
+import { WezzleData, WezzleGroup, parsedStringWezzle, parsedWezzle } from "./types"
 
-import * as global from '../global'
-import templates from './templates'
+import * as global from "../global"
+import templates from "./templates"
 
-import { KeyboardManager } from '../keyboard'
-import { HistoryManager } from '../history'
-import { FileManager } from '../filesystem'
-import { toolbar } from '../toolbar'
-import { shortcutJS } from 'shortcutjs'
+import { KeyboardManager } from "../keyboard"
+import { HistoryManager } from "../history"
+import { FileManager } from "../filesystem"
+import { toolbar } from "../toolbar"
+import { shortcutJS } from "shortcutjs"
 
 export default class WezzleManager {
 	static #instance: WezzleManager
@@ -27,44 +27,41 @@ export default class WezzleManager {
 		accepts: (el, target) => {
 			return (
 				(target === this.instance_container ||
-					target?.closest('#wz-playground') ===
-						this.instance_container) &&
+					target?.closest("#wz-playground") === this.instance_container) &&
 				target !== this.property_container &&
 				el !== undefined &&
 				target !== undefined &&
-				![...el.querySelectorAll('.contents')].includes(target)
+				![...el.querySelectorAll(".contents")].includes(target)
 			)
 		},
 		invalid: (_, target) => {
-			return (
-				target === undefined || target.classList.contains('wz-extender')
-			)
+			return target === undefined || target.classList.contains("wz-extender")
 		},
 		moves: el => {
 			return (
 				el !== undefined &&
-				(el.classList.contains('wz') ||
-					el.classList.contains('wz-extendable'))
+				(el.classList.contains("wz") ||
+					el.classList.contains("wz-extendable"))
 			)
 		},
 		removeOnSpill: true,
 	})
 
-	toolbar_container = document.getElementById('wz-toolbar')!
-	group_container = document.getElementById('wz-groups')!
-	template_container = document.getElementById('wz-templates')!
-	instance_container = document.getElementById('wz-playground')!
+	toolbar_container = document.getElementById("wz-toolbar")!
+	group_container = document.getElementById("wz-groups")!
+	template_container = document.getElementById("wz-templates")!
+	instance_container = document.getElementById("wz-playground")!
 	preview_container = document.getElementById(
-		'wz-preview'
+		"wz-preview"
 	)! as HTMLIFrameElement
-	property_container = document.getElementById('wz-properties')!
+	property_container = document.getElementById("wz-properties")!
 
 	#splitInstance?: Split.Instance
 	#clipboard?: WezzleInstance
 
 	constructor() {
 		if (WezzleManager.#instance)
-			throw new ReferenceError('You cannot create another instance!')
+			throw new ReferenceError("You cannot create another instance!")
 
 		WezzleManager.#instance = this
 	}
@@ -103,45 +100,42 @@ export default class WezzleManager {
 	}
 
 	#setupPanel() {
-		const sizeData = localStorage.getItem('play-preview-sizes')
+		const sizeData = localStorage.getItem("play-preview-sizes")
 		const sizes = sizeData ? JSON.parse(sizeData) : [33, 67]
 
 		if (this.#splitInstance) this.#splitInstance.destroy()
-		this.#splitInstance = Split(['#left-panel', this.preview_container], {
+		this.#splitInstance = Split(["#left-panel", this.preview_container], {
 			direction:
-				global.util.deviceOrientation() === 'portrait'
-					? 'vertical'
-					: 'horizontal',
+				global.util.deviceOrientation() === "portrait"
+					? "vertical"
+					: "horizontal",
 			sizes,
-			minSize: global.util.deviceTypeByWidth() === 'phone' ? 150 : 250,
+			minSize: global.util.deviceTypeByWidth() === "phone" ? 150 : 250,
 			gutterSize:
-				global.util.deviceTypeByWidth() === 'desktop'
+				global.util.deviceTypeByWidth() === "desktop"
 					? 30
-					: global.util.deviceTypeByWidth() === 'tablet'
+					: global.util.deviceTypeByWidth() === "tablet"
 					? 20
 					: 10,
 			onDragEnd(sizes) {
-				localStorage.setItem(
-					'play-preview-sizes',
-					JSON.stringify(sizes)
-				)
+				localStorage.setItem("play-preview-sizes", JSON.stringify(sizes))
 			},
 		})
 
 		toolbar.forEach(item => {
-			if (document.getElementById('toolbar-' + item.name)) return
+			if (document.getElementById("toolbar-" + item.name)) return
 
-			const button = new global.util.ExtendedElement('button')
-				.id('toolbar-' + item.name)
+			const button = new global.util.ExtendedElement("button")
+				.id("toolbar-" + item.name)
 				.append(
-					new global.util.ExtendedElement('span')
-						.class('ph', item.icon)
-						.setProp('title', item.description ?? '')
-						.setProp('weight', 'bold')
-						.setProp('size', '1rem')
+					new global.util.ExtendedElement("span")
+						.class("ph", item.icon)
+						.setProp("title", item.description ?? "")
+						.setProp("weight", "bold")
+						.setProp("size", "1rem")
 				)
 				.onclick(e => {
-					if (typeof item.command === 'string') {
+					if (typeof item.command === "string") {
 						shortcutJS.actions
 							.get(item.command)!
 							.callbacks.forEach(callback => callback(e))
@@ -150,12 +144,10 @@ export default class WezzleManager {
 
 			this.toolbar_container.appendChild(button.element)
 		})
-		;(
-			document.getElementById('toolbar-undo') as HTMLButtonElement
-		).disabled = true
-		;(
-			document.getElementById('toolbar-redo') as HTMLButtonElement
-		).disabled = true
+		;(document.getElementById("toolbar-undo") as HTMLButtonElement).disabled =
+			true
+		;(document.getElementById("toolbar-redo") as HTMLButtonElement).disabled =
+			true
 	}
 
 	#setupGroupsAndTemplates() {
@@ -189,7 +181,7 @@ export default class WezzleManager {
 			}
 			wz.element.onclick = add
 			wz.element.onkeydown = e => {
-				if (e.code === 'Space' || e.code === 'Enter') add()
+				if (e.code === "Space" || e.code === "Enter") add()
 			}
 		})
 
@@ -197,20 +189,24 @@ export default class WezzleManager {
 		this.group_container.prepend(
 			...groups.map(
 				groupName =>
-					new global.util.ExtendedElement('button')
+					new global.util.ExtendedElement("button")
 						.html(groupName)
 						.onclick(() => {
+							
 							const groupIndex = new Map(
 								Object.entries(WezzleGroup)
 							).get(groupName)
+							
+							const el = [...Wezzle.instances.values()]
+								.find(item => item.data.group === groupIndex && item.element.closest('#wz-playground') === null)!
 
-							;[...Wezzle.instances.values()]
-								.find(item => item.data.group === groupIndex)
-								?.element.scrollIntoView({
-									inline: 'start',
+							// console.log(el)
+							
+							el.element.scrollIntoView({
+									inline: "start",
 									behavior: global.util.prefersReducedMotion
-										? 'instant'
-										: 'smooth',
+										? "instant"
+										: "smooth",
 								})
 						}).element
 			)
@@ -219,34 +215,33 @@ export default class WezzleManager {
 
 	#setupClickEvents() {
 		// Remove selected state on property panel on click outside
-		document.addEventListener('click', e => {
+		document.addEventListener("click", e => {
 			const target = e.target as HTMLElement
 
 			if (target === this.instance_container) {
-				if (!this.property_container.classList.contains('active'))
-					return
+				if (!this.property_container.classList.contains("active")) return
 
-				this.property_container.classList.remove('active')
+				this.property_container.classList.remove("active")
 				this.instance_container
-					.querySelector('.selected')
-					?.classList.remove('selected')
+					.querySelector(".selected")
+					?.classList.remove("selected")
 			} else if (target.closest(`#${this.instance_container.id}`)) {
 				if (
 					!(
-						target.classList.contains('wz') ||
-						target.classList.contains('wz-extendable')
+						target.classList.contains("wz") ||
+						target.classList.contains("wz-extendable")
 					)
 				)
 					return
 				;[
 					...this.instance_container.querySelectorAll(
-						':is(.wz, .wz-extendable).selected'
+						":is(.wz, .wz-extendable).selected"
 					),
 				]
 					.filter(el => el !== target)
-					.forEach(el => el.classList.remove('selected'))
+					.forEach(el => el.classList.remove("selected"))
 
-				target.classList.toggle('selected')
+				target.classList.toggle("selected")
 			}
 		})
 	}
@@ -257,20 +252,18 @@ export default class WezzleManager {
 			this.instance_container
 		)
 		this.drake
-			.on('drag', (el, source) => {
+			.on("drag", (el, source) => {
 				if (source === this.template_container) return
 
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
 				instance.undoHistory.push({
 					source,
-					srcIndex: [...source.children].findIndex(
-						item => item === el
-					),
+					srcIndex: [...source.children].findIndex(item => item === el),
 					dest: null,
 					destIndex: null,
 				})
 			})
-			.on('drop', (el, target, source) => {
+			.on("drop", (el, target, source) => {
 				this.#addInstance(el, this.drake)
 
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
@@ -325,9 +318,7 @@ export default class WezzleManager {
 						const hist = instance.redoHistory.pop()
 						if (!hist) return
 
-						const sibling = hist.dest?.children.item(
-							hist.destIndex ?? 0
-						)
+						const sibling = hist.dest?.children.item(hist.destIndex ?? 0)
 
 						if (sibling) hist.dest?.insertBefore(el, sibling)
 						else hist.dest?.appendChild(el)
@@ -336,14 +327,14 @@ export default class WezzleManager {
 					},
 				})
 			})
-			.on('shadow', (_, container) => {
-				if (!container.classList.contains('contents')) return
+			.on("shadow", (_, container) => {
+				if (!container.classList.contains("contents")) return
 				;(container as HTMLElement).style.maxHeight =
 					(container as HTMLElement).offsetHeight * 2 +
-					+getComputedStyle(container).padding.replace('px', '') +
-					'px'
+					+getComputedStyle(container).padding.replace("px", "") +
+					"px"
 			})
-			.on('remove', (el, container) => {
+			.on("remove", (el, container) => {
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
 				WezzleInstance.instances.delete(instance)
 
@@ -360,7 +351,7 @@ export default class WezzleManager {
 							? container.insertBefore(el, index)
 							: container.appendChild(el)
 
-						el.classList.remove('gu-hide')
+						el.classList.remove("gu-hide")
 
 						instance.redoHistory.push(hist)
 					},
@@ -376,11 +367,11 @@ export default class WezzleManager {
 			})
 
 		// Touch devices
-		this.template_container.addEventListener('touchmove', e => {
+		this.template_container.addEventListener("touchmove", e => {
 			const target = e.targetTouches[0].target as HTMLElement
 			if (
-				target.classList.contains('wz') ||
-				target.classList.contains('wz-extendable')
+				target.classList.contains("wz") ||
+				target.classList.contains("wz-extendable")
 			) {
 				e.preventDefault()
 			}
@@ -403,53 +394,54 @@ export default class WezzleManager {
 	}
 
 	#setupObservers() {
-		const mutObserver = new MutationObserver(mutations => {
+		const mutObserver = new MutationObserver(() => {
 			this.parse()
 
 			// Property selection
-			const selectedElement = mutations
-				.map(mut => mut.target)
-				.filter(el =>
-					(el as HTMLElement).classList.contains('selected')
-				)[0]
-
-			const isActive =
-				this.property_container.classList.contains('active')
+			const selectedElement = this.instance_container.querySelector('.selected')
+			const isActive = this.property_container.classList.contains("active")
 
 			this.property_container.classList.toggle(
-				'active',
+				"active",
 				this.instance_container.querySelector(
-					':is(.wz, .wz-extendable).selected'
+					":is(.wz, .wz-extendable).selected"
 				) !== null
 			)
-
+			
 			if (!selectedElement) {
-				this.property_container.innerHTML = ''
+				this.property_container.innerHTML = ""
 				return
 			}
 
 			const selectedWezzle = WezzleInstance.getInstance(
 				selectedElement as HTMLElement
 			)
+
 			this.#handleProps(selectedWezzle)
 
 			if (global.util.prefersReducedMotion) {
 				;(selectedElement as HTMLElement).scrollIntoView({
-					block: 'nearest',
+					block: "nearest",
 				})
 			} else {
-				this.property_container.ontransitionend = () =>
+				this.property_container.ontransitionstart = () =>
+					this.property_container.style.overflowY = ''
+
+				this.property_container.ontransitionend = () => {
+					this.property_container.style.overflowY = 'auto';
+
 					(selectedElement as HTMLElement).scrollIntoView({
-						behavior: 'smooth',
-						block: 'nearest',
+						behavior: "smooth",
+						block: "nearest",
 					})
+				}
 
 				if (!isActive) {
 					anime({
 						targets: [...this.property_container.children],
 						opacity: [0, 1],
-						translateX: ['100%', '0'],
-						easing: 'easeOutExpo',
+						translateX: ["100%", "0"],
+						easing: "easeOutExpo",
 						duration: 500,
 						delay: anime.stagger(100, { start: 350 }),
 					})
@@ -461,7 +453,7 @@ export default class WezzleManager {
 			mutObserver.observe(container, {
 				childList: true,
 				subtree: true,
-				attributeFilter: ['class'],
+				attributeFilter: ["class"],
 			})
 		}
 
@@ -490,14 +482,12 @@ export default class WezzleManager {
 
 				const wzGroup = firstElementVisible
 					? Wezzle.getInstance(
-							this.template_container.children.item(
-								0
-							) as HTMLElement
+							this.template_container.children.item(0) as HTMLElement
 					  )?.data.group
 					: sortedInstances.slice(-1)[0].data.group
 
 				;[...this.group_container.children].forEach((el, index) =>
-					el.classList.toggle('active', index === wzGroup)
+					el.classList.toggle("active", index === wzGroup)
 				)
 			},
 			{
@@ -509,13 +499,13 @@ export default class WezzleManager {
 			anime({
 				targets: template,
 				opacity: [0, 1],
-				translateY: ['100%', '0%'],
+				translateY: ["100%", "0%"],
 				delay: index * 100,
 				complete() {
 					scrollObserver.observe(template)
-					template.classList.remove('preloading')
-					;(template as HTMLElement).style.opacity = ''
-					;(template as HTMLElement).style.transform = ''
+					template.classList.remove("preloading")
+					;(template as HTMLElement).style.opacity = ""
+					;(template as HTMLElement).style.transform = ""
 				},
 			})
 		})
@@ -530,33 +520,30 @@ export default class WezzleManager {
 		) => {
 			const newElement = wz.element.cloneNode(true) as HTMLElement
 			const contents = newElement.querySelector(
-				':scope > .wz-extender > .contents'
+				":scope > .wz-extender > .contents"
 			) as HTMLElement
 
 			const newInstance = new WezzleInstance(newElement)
 
-			newInstance.data = global.util.cloneObject(wz.data)
+			newInstance.data = global.util.cloneObject(wz.data) as WezzleData
 			newInstance.text.innerHTML = wz.text.innerHTML
 
-			newElement.classList.remove('selected')
+			newElement.classList.remove("selected")
 			newInstance.addTo(parent, before)
 
 			if (!contents) return newInstance
 
-			contents.innerHTML = ''
-			contents.parentElement?.classList.remove('expanded')
+			contents.innerHTML = ""
+			contents.parentElement?.classList.remove("expanded")
 
 			this.drake?.containers.push(contents)
 
 			const children = wz.element.querySelectorAll(
-				':scope > .wz-extender > .contents > :is(.wz, .wz-extendable)'
+				":scope > .wz-extender > .contents > :is(.wz, .wz-extendable)"
 			)
 
 			children.forEach(child =>
-				clone(
-					WezzleInstance.getInstance(child as HTMLElement),
-					contents
-				)
+				clone(WezzleInstance.getInstance(child as HTMLElement), contents)
 			)
 
 			return newInstance
@@ -565,7 +552,7 @@ export default class WezzleManager {
 		// Handle wezzle actions
 		KeyboardManager.instance
 			.init()
-			.on('paste', e => {
+			.on("paste", e => {
 				if (!this.#clipboard) return
 				if (document.activeElement !== document.body) return
 
@@ -586,11 +573,10 @@ export default class WezzleManager {
 				// console.log('Pasted Wezzle')
 			})
 
-			.on('copy', () => {
+			.on("copy", () => {
 				if (getSelection()?.toString()) return
 
-				const selected =
-					this.instance_container.querySelector('.selected')
+				const selected = this.instance_container.querySelector(".selected")
 				if (!selected) return
 
 				this.#clipboard = WezzleInstance.getInstance(
@@ -600,20 +586,17 @@ export default class WezzleManager {
 				// console.log('Copied Wezzle')
 			})
 
-			.on('cut', () => {
+			.on("cut", () => {
 				if (getSelection()?.toString()) return
 
-				const selected =
-					this.instance_container.querySelector('.selected')
+				const selected = this.instance_container.querySelector(".selected")
 				if (!selected) return
 
 				this.#clipboard = WezzleInstance.getInstance(
 					selected as HTMLElement
 				)
 
-				const instance = WezzleInstance.getInstance(
-					selected as HTMLElement
-				)
+				const instance = WezzleInstance.getInstance(selected as HTMLElement)
 				const hist = instance.undoHistory.pop()
 
 				console.log(instance, hist)
@@ -648,13 +631,13 @@ export default class WezzleManager {
 				// console.log('Cut Wezzle')
 			})
 
-			.on('duplicate', ev => {
+			.on("duplicate", ev => {
 				ev.preventDefault()
 
 				if (getSelection()?.toString()) return
 
 				const selected = this.instance_container.querySelector(
-					'.selected'
+					".selected"
 				) as HTMLElement
 				if (!selected) return
 
@@ -682,24 +665,21 @@ export default class WezzleManager {
 				// console.log('Duplicated Wezzle')
 			})
 
-			.on('undo', () => HistoryManager.instance.undo())
-			.on('redo', () => HistoryManager.instance.redo())
+			.on("undo", () => HistoryManager.instance.undo())
+			.on("redo", () => HistoryManager.instance.redo())
 	}
 
 	#addInstance(el: Element, drake?: dragula.Drake) {
 		const instance = WezzleInstance.getInstance(el as HTMLElement)
 		const extender = instance?.element.querySelector(
-			':scope > .wz-extender'
+			":scope > .wz-extender"
 		) as HTMLElement
 
 		const extenderContainer = extender?.querySelector(
-			':scope > .contents'
+			":scope > .contents"
 		) as HTMLElement
 
-		if (
-			extenderContainer &&
-			!drake?.containers.includes(extenderContainer)
-		) {
+		if (extenderContainer && !drake?.containers.includes(extenderContainer)) {
 			drake?.containers.push(extenderContainer)
 		}
 	}
@@ -707,13 +687,13 @@ export default class WezzleManager {
 	parse() {
 		const children = [
 			...this.instance_container.querySelectorAll(
-				':scope > :is(.wz, .wz-extendable)'
+				":scope > :is(.wz, .wz-extendable)"
 			),
 		] as HTMLElement[]
 
 		const parsed = FileManager.instance.getWezzleOrder(children)
 
-		const parsedElements = document.createElement('div')
+		const parsedElements = document.createElement("div")
 		updatePreview(parsed, parsedElements)
 		parseStyles(parsedElements)
 
@@ -738,9 +718,7 @@ export default class WezzleManager {
 				const parsedElement =
 					wz instanceof WezzleInstance
 						? new global.util.ExtendedElement(wz.data.parsed_name)
-						: new global.util.ExtendedElement(
-								wz.parent.data.parsed_name
-						  )
+						: new global.util.ExtendedElement(wz.parent.data.parsed_name)
 
 				el.appendChild(parsedElement.element)
 				parseProps(
@@ -760,61 +738,78 @@ export default class WezzleManager {
 		) {
 			wezzle.data.properties.forEach(prop => {
 				switch (prop.token) {
-					case 'Text Content':
-						el.html(prop.value ?? '')
+					case "Text Content":
+						el.html(prop.value ?? "")
 						break
 
-					case 'Initial Value':
-						if (prop.input_type === 'multiline-text')
-							el.html(prop.value ?? '')
-						else if (prop.input_type === 'select')
+					case "Initial Value":
+						if (prop.input_type === "multiline-text")
+							el.html(prop.value ?? "")
+						else if (prop.input_type === "select")
 							el.children
-								.find(
-									item => item.getProp('value') === prop.value
-								)
-								?.setProp('selected', 'true')
-						else el.setProp('value', prop.value ?? '')
+								.find(item => item.getProp("value") === prop.value)
+								?.setProp("selected", "true")
+						else el.setProp("value", prop.value ?? "")
 
 						break
 
-					case 'Placeholder':
+					case "Placeholder":
 						el.setProp(
-							'placeholder',
-							prop.value || '<' + wezzle.data.name + '>'
+							"placeholder",
+							prop.value || "<" + wezzle.data.name + ">"
 						)
 						break
 
-					case 'Alignment':
-						if (!prop.value || prop.value === 'auto') break
+					case "Orientation":
+						if (!prop.value || prop.value === "auto") break
 
-						el.setStyle('display', 'flex').setStyle(
-							'flex-direction',
-							prop.value === 'horizontal' ? 'row' : 'column'
+						el.setStyle("display", "flex").setStyle(
+							"flex-direction",
+							prop.value === "horizontal" ? "row" : "column"
 						)
 
 						break
-					case 'Style Name':
-						el.setProp('data-name', prop.value ?? '')
+					case "Style Type":
+						el.setProp("data-name", prop.value ?? "")
 						break
 
-					case 'Style Value':
-						el.setProp('data-value', prop.value ?? '')
+					case "Style Value":
+						el.setProp("data-value", prop.value ?? "")
 						break
 
-					case 'Input Type':
-						el.setProp('type', prop.value ?? 'text')
+					case "Value (Units)":
+						el.setProp(
+							"data-value",
+							(prop.value ?? 0).toString() +
+							(global.util.getUserSettings().get('useRemsInsteadOfPixels')
+							? "rem"
+							: "px")
+						)
+						break
+
+					case "Input Type":
+						el.setProp("type", prop.value ?? "text")
+						break
+
+					case 'Image URL':
+						el.setProp('src', prop.value ?? '')
+						break
+
+					case 'Alternative Caption':
+						el.setProp('alt', prop.value ?? '')
+						break
 				}
 			})
 		}
 
 		function parseStyles(parsedElement: HTMLElement) {
-			const styleTags = parsedElement.querySelectorAll('style')
+			const styleTags = parsedElement.querySelectorAll("style")
 
 			styleTags.forEach(style => {
 				const nearestElement = global.util.findElementMatch(
 					style,
-					'previous',
-					el => el.tagName !== 'style'
+					"previous",
+					el => el.tagName !== "style"
 				)
 
 				if (nearestElement === null) {
@@ -835,7 +830,7 @@ export default class WezzleManager {
 	}
 
 	#handleProps(instance: WezzleInstance) {
-		this.property_container.innerHTML = ''
+		this.property_container.innerHTML = ""
 		const properties = instance.data.properties
 
 		let isprocessing = false
@@ -845,7 +840,7 @@ export default class WezzleManager {
 			const additionalElements = []
 
 			const update = (val: string) => {
-				const oldValue = property.value ?? ''
+				const oldValue = property.value ?? ""
 				property.value = val
 
 				this.parse()
@@ -858,10 +853,7 @@ export default class WezzleManager {
 					) => {
 						await new Promise(resolve => setTimeout(resolve, 700))
 
-						const newValue = (input.element as HTMLInputElement)
-							.value
-
-						console.log(newValue)
+						const newValue = (input.element as HTMLInputElement).value
 
 						HistoryManager.instance.add({
 							undoAction: () => {
@@ -887,41 +879,41 @@ export default class WezzleManager {
 			}
 
 			switch (property.input_type) {
-				case 'text':
-					el = new global.util.ExtendedInputElement('input')
-						.setProp('type', 'text')
+				case "text":
+					el = new global.util.ExtendedInputElement("input")
+						.setProp("type", "text")
 						.bind(property.value, update)
 					break
-				case 'multiline-text':
-					el = new global.util.ExtendedInputElement('textarea').bind(
+				case "multiline-text":
+					el = new global.util.ExtendedInputElement("textarea").bind(
 						property.value,
 						update
 					)
 					break
-				case 'number':
-					el = new global.util.ExtendedInputElement('input')
-						.setProp('type', 'number')
+				case "number":
+					el = new global.util.ExtendedInputElement("input")
+						.setProp("type", "number")
 						.bind(property.value, update)
 					break
-				case 'select':
-					el = new global.util.ExtendedInputElement('select')
+				case "select":
+					el = new global.util.ExtendedInputElement("select")
 					if (
 						property.options === undefined ||
 						property.options.length === 0
 					)
 						el.append(
-							new global.util.ExtendedElement('option')
-								.html('<No option added>')
-								.setProp('disabled', 'true')
-								.setProp('selected', 'true')
+							new global.util.ExtendedElement("option")
+								.html("<No option added>")
+								.setProp("disabled", "true")
+								.setProp("selected", "true")
 						)
 					else {
 						property.options.forEach(opt =>
 							el.append(
-								new global.util.ExtendedElement('option')
+								new global.util.ExtendedElement("option")
 									.html(opt.display_text)
 									.id(opt.value)
-									.setProp('value', opt.value)
+									.setProp("value", opt.value)
 							)
 						)
 					}
@@ -931,11 +923,11 @@ export default class WezzleManager {
 					)
 					break
 
-				case 'text-with-datalist':
+				case "text-with-datalist":
 					const uniqID = Math.random().toString(16).substring(2, 8)
-					el = new global.util.ExtendedInputElement('input')
-						.setProp('type', 'text')
-						.setProp('list', 'datalist-' + uniqID)
+					el = new global.util.ExtendedInputElement("input")
+						.setProp("type", "text")
+						.setProp("list", "datalist-" + uniqID)
 						.bind(property.value, update)
 
 					if (
@@ -943,25 +935,31 @@ export default class WezzleManager {
 						property.options.length > 0
 					) {
 						additionalElements.push(
-							new global.util.ExtendedElement('datalist')
-								.id('datalist-' + uniqID)
+							new global.util.ExtendedElement("datalist")
+								.id("datalist-" + uniqID)
 								.append(
 									...property.options.map(opt =>
-										new global.util.ExtendedElement(
-											'option'
-										)
+										new global.util.ExtendedElement("option")
 											.html(opt.display_text)
-											.setProp('value', opt.value)
+											.setProp("value", opt.value)
 									)
 								)
 						)
 					}
+					break
+				
 			}
 
-			let label = new global.util.ExtendedElement('label')
-				.html(property.token)
+			let label = new global.util.ExtendedElement("label")
+				.html(
+					property.token === "Value (Units)"
+						? `Value (${
+								global.util.getUserSettings().get('useRemsInsteadOfPixels') ? "rem" : "px"
+						  })`
+						: property.token
+				)
 				.append(el)
-
+			
 			this.property_container.appendChild(label.element)
 			this.property_container.append(
 				...additionalElements.map(el => el.element)
