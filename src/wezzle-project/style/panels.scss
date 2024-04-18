@@ -269,6 +269,10 @@ html.is-animating .transition-fade {
         }
 
         label {
+			--visual-offset: 4px;
+			--width: 2rem;
+			--height: 1rem;
+
             grid-column: 1;
 
             display: grid;
@@ -282,58 +286,50 @@ html.is-animating .transition-fade {
             justify-items: start;
             cursor: pointer;
     
+			position: relative;
+			isolation: isolate;
+
             user-select: none;
 
-            input[type=checkbox] {
-                --visual-offset: 4px;
-                --width: 2rem;
-                --height: 1rem;
 
-                position: relative;
-                isolation: isolate;
+			&:has(input[type=checkbox])::before {
+				content: '';
+				background-color: lightgray;
 
+				position: absolute;
+				right: calc(var(--visual-offset) * -1);
+				top: 50%;
+				transform: translateY(-50%);
+
+				width: var(--width);
+				height: var(--height);
+
+				border-radius: 4px;
+                cursor: pointer;
+			}
+
+			&:has(input[type=checkbox])::after {
+
+				content: '';
+				background-color: cornflowerblue;
+				
+				position: absolute;
+				right: calc(var(--width) - var(--height) - var(--visual-offset) * 0.75);
+				top: 50%;
+				transform: translateY(-50%);
+
+				height: calc(var(--height) * 0.75);
+
+				aspect-ratio: 1;
                 cursor: pointer;
 
-                left: var(--visual-offset);
+				border-radius: calc(4px * 0.75);
+				transition: right 250ms ease;
+			}
 
-                &::before {
-                    content: '';
-                    background-color: lightgray;
-
-                    position: absolute;
-                    right: calc(var(--visual-offset) * -1);
-                    top: 50%;
-                    transform: translateY(-50%);
-
-                    width: var(--width);
-                    height: var(--height);
-
-                    border-radius: 4px;
-                    
-                    z-index: -1;
-                }
-
-                &::after {
-
-                    content: '';
-                    background-color: cornflowerblue;
-                    
-                    position: absolute;
-                    right: calc(var(--width) - var(--height) - var(--visual-offset) * 0.75);
-                    top: 50%;
-                    transform: translateY(-50%);
-
-                    height: calc(var(--height) * 0.75);
-                    aspect-ratio: 1;
-
-                    border-radius: calc(4px * 0.75);
-                    transition: right 250ms ease;
-                }
-
-                &:checked::after {
-                    right: calc(var(--visual-offset) * -0.25); 
-                }
-            }
+			&:has(input:checked)::after {
+				right: calc(var(--visual-offset) * -0.25); 
+			}
         }
     }
 
