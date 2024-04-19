@@ -1,5 +1,0 @@
-<!-- Divided by 2 -->
-<!-- Extra height: 30 / 2 = 15 -->
-<svg xmlns="http://www.w3.org/2000/svg" width="180" height="60" viewBox="0 0 360 120" fill="white" stroke="gray">
-  <path d="M 0 30 L 290 30 C 260 0 340 0 310 30 L 360 30 L 360 120 L 310 120 C 340 90 260 90 290 120 L 0 120 Z" />
-</svg>

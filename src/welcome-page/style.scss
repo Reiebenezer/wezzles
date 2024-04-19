@@ -96,6 +96,14 @@ html.is-animating .transition-fade {
 }
 
 #wz-loader {
-    background-image: url('/wz-extendable.svg'), url('/wz-extender.svg'), url('/wz.svg');
+    background-image: 
+        url('/wz-extendable-1.svg'), 
+        url('/wz-extendable-2.svg'), 
+        url('/wz-extendable-3.svg'), 
+        url('/wz-extender.svg'), 
+        url('/wz-1.svg'),
+        url('/wz-2.svg'),
+        url('/wz-3.svg');
+        
     opacity: 0;
 }

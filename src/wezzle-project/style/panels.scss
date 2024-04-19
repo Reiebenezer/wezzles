@@ -97,6 +97,7 @@ html.is-animating .transition-fade {
 		font-size: 0.75rem;
 
 		cursor: pointer;
+		text-transform: capitalize;
 
 		&.active {
 			background-color: bisque;
@@ -294,7 +295,6 @@ html.is-animating .transition-fade {
 
 			&:has(input[type=checkbox])::before {
 				content: '';
-				background-color: lightgray;
 
 				position: absolute;
 				right: calc(var(--visual-offset) * -1);
@@ -306,12 +306,17 @@ html.is-animating .transition-fade {
 
 				border-radius: 4px;
                 cursor: pointer;
+
+				background-color: lightgray;
+
+				transition: 250ms ease;
+				transition-property: right, background-color;
 			}
 
 			&:has(input[type=checkbox])::after {
 
 				content: '';
-				background-color: cornflowerblue;
+				background-color: hsl(0, 100%, 65%);
 				
 				position: absolute;
 				right: calc(var(--width) - var(--height) - var(--visual-offset) * 0.75);
@@ -324,11 +329,18 @@ html.is-animating .transition-fade {
                 cursor: pointer;
 
 				border-radius: calc(4px * 0.75);
-				transition: right 250ms ease;
+
+				transition: 250ms ease;
+				transition-property: right, background-color;
 			}
 
-			&:has(input:checked)::after {
+			// &:has(input[type=checkbox]:checked)::before {
+			// 	background-color: lightgray;
+			// }
+
+			&:has(input[type=checkbox]:checked)::after {
 				right: calc(var(--visual-offset) * -0.25); 
+				background-color: hsl(120, 100%, 38%);
 			}
         }
     }

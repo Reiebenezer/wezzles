@@ -6,7 +6,3 @@ import '@fontsource-variable/open-sans'
 
 import '@phosphor-icons/web/regular'
 import 'dragula/dist/dragula.min.css'
-
-import '/wz.svg'
-import '/wz-extendable.svg'
-import '/wz-extender.svg'

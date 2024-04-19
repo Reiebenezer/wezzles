@@ -15,7 +15,7 @@ const templates: WezzleData[] = [
 		],
 	},
 	{
-		name: 'Generic Container',
+		name: 'Container',
 		extendable: true,
 		group: WezzleGroup.container,
 		parsed_name: 'div',

@@ -39,7 +39,7 @@ export default class FileManager {
 	download(filename: string) {
 		const wzData = this.getprojectJSON()
 
-		const blob = new Blob([JSON.stringify(wzData)], { type: 'application/json' })
+		const blob = new Blob([JSON.stringify(wzData)], { type: 'application/octet-stream' })
 		const url  = URL.createObjectURL(blob)
 		const link = document.createElement('a')
 		link.href = url

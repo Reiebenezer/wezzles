@@ -24,12 +24,8 @@
 }
 
 :root {
-	font-family: 'Montserrat Variable', 'Open Sans Variable', sans-serif;
+	font-family: 'Grandstander Variable', 'Montserrat Variable', 'Open Sans Variable', sans-serif;
 }
-
-$wz-bg: url('/wz.svg');
-$wz-extendable-bg: url('/wz-extendable.svg');
-$wz-style-bg: url('/wz-style.svg');
 
 .wz,
 .wz-extendable {
@@ -50,6 +46,9 @@ $wz-style-bg: url('/wz-style.svg');
 	touch-action: none;
 
 	scroll-margin: 1rem;
+	color: #fef;
+
+	// font-family: 'Grandstander Variable';
 	
 	&.preloading {
 		opacity: 0;
@@ -59,7 +58,12 @@ $wz-style-bg: url('/wz-style.svg');
 
 	&.selected {
 		z-index: 1;
-		filter: drop-shadow(0 0 4px gray);
+
+		> p::before
+		// ,.wz-extender
+		{
+			filter: brightness(50%)
+		}
 	}
 
 	&.gu-mirror {
@@ -108,11 +112,15 @@ $wz-style-bg: url('/wz-style.svg');
 			height: var(--wezzle-height);
 
 			background: url('/wz-extender.svg') left/cover no-repeat;
-			margin-left: -13px;
+			margin-left: -13.5px;
 		}
 
 		.contents {
 			display: none;
+		}
+
+		&.expanded::before {
+			filter: brightness(50%);
 		}
 
 		&.expanded > .contents {
@@ -125,17 +133,47 @@ $wz-style-bg: url('/wz-style.svg');
 	}
 }
 
-.wz > p::before {
-	background-image: $wz-bg;
+$wz-1: url('/wz-1.svg');
+$wz-2: url('/wz-2.svg');
+$wz-3: url('/wz-3.svg');
+
+$wz-extendable-1: url('/wz-extendable-1.svg');
+$wz-extendable-2: url('/wz-extendable-2.svg');
+$wz-extendable-3: url('/wz-extendable-3.svg');
+
+.wz,
+.wz-style {
+	> p::before {
+		background-image: $wz-2;
+	}
+
+	&:last-of-type > p::before {
+		background-image: $wz-3;
+	}
+
+	&:first-of-type > p::before {
+		background-image: $wz-1;
+	}
 }
 
-.wz-extendable > p::before {
-	background-image: $wz-extendable-bg;
+.wz-style {
+	filter: hue-rotate(160deg);
 }
 
-.wz-style > p::before {
-	background-image: $wz-style-bg;
-}
+.wz-extendable {
+	> p::before {
+		background-image: $wz-extendable-2;
+	}
+	
+	&:last-of-type > p::before {
+		background-image: $wz-extendable-3;
+	}
+
+	&:first-of-type > p::before {
+		background-image: $wz-extendable-1;
+	}
+
+} 
 
 #wz-playground :is(.wz, .wz-extendable) {
 	cursor: grab;
