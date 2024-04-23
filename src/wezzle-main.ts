@@ -1,3 +1,4 @@
+import Wezzle from './wezzle-project/wezzle/wezzle'
 import WezzleManager from './wezzle-project/wezzle/wezzle-manager'
 
 export default function load() {
@@ -5,4 +6,12 @@ export default function load() {
 		document.getElementById('project-app')?.style.setProperty('opacity', '1')
 		document.getElementById('project-app')?.addEventListener('transitionend', () => WezzleManager.instance.parse())
 	})
+
+	window.wz = Wezzle
+}
+
+declare global {
+	interface Window {
+		wz: typeof Wezzle
+	}
 }

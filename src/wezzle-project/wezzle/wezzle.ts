@@ -46,7 +46,8 @@ export default class Wezzle {
 
 		if (this.text.innerHTML.length === 0) this.text.innerHTML = data.name
 
-		Wezzle.instances.add(this)
+		if (!(this instanceof WezzleInstance))
+			Wezzle.instances.add(this)
 	}
 
 	// PUBLIC FUNCTIONS

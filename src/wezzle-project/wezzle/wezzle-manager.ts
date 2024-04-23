@@ -99,7 +99,7 @@ export default class WezzleManager {
 		FileManager.instance.getLocalProject()
 	}
 
-	#setupPanel() {
+	async #setupPanel() {
 		const sizeData = localStorage.getItem("play-preview-sizes")
 		const sizes = sizeData ? JSON.parse(sizeData) : [33, 67]
 
@@ -125,15 +125,13 @@ export default class WezzleManager {
 		toolbar.forEach(item => {
 			if (document.getElementById("toolbar-" + item.name)) return
 
+			const img = new global.util.ExtendedElement("img")
+			fetch(item.icon).then(res => img.setProp('src', res.url))
+
 			const button = new global.util.ExtendedElement("button")
 				.id("toolbar-" + item.name)
-				.append(
-					new global.util.ExtendedElement("span")
-						.class("ph", item.icon)
-						.setProp("title", item.description ?? "")
-						.setProp("weight", "bold")
-						.setProp("size", "1rem")
-				)
+				.setProp("title", item.description ?? "")
+				.append(img)
 				.onclick(e => {
 					if (typeof item.command === "string") {
 						shortcutJS.actions
@@ -144,10 +142,9 @@ export default class WezzleManager {
 
 			this.toolbar_container.appendChild(button.element)
 		})
-		;(document.getElementById("toolbar-undo") as HTMLButtonElement).disabled =
-			true
-		;(document.getElementById("toolbar-redo") as HTMLButtonElement).disabled =
-			true
+		
+		;(document.getElementById("toolbar-undo") as HTMLButtonElement)?.setAttribute('disabled', '')
+		;(document.getElementById("toolbar-redo") as HTMLButtonElement)?.setAttribute('disabled', '')
 	}
 
 	#setupGroupsAndTemplates() {
@@ -946,6 +943,12 @@ export default class WezzleManager {
 								)
 						)
 					}
+					break
+
+				case 'color':
+					el = new global.util.ExtendedInputElement("input")
+						.setProp("type", "color")
+						.bind(property.value, update)
 					break
 				
 			}

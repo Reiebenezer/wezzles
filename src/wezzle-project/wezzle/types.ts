@@ -34,6 +34,8 @@ export interface WezzleProperty {
 		| 'number'
 		| 'select'
 		| 'text-with-datalist'
+		| 'color'
+		
 	options?: { value: string; display_text: string }[]
 	value?: string
 }

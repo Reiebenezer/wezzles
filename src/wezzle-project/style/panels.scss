@@ -1,12 +1,12 @@
-@use 'sass:meta';
-@import './util';
+@use "sass:meta";
+@import "./util";
 
 html.is-changing .transition-fade {
-  transition: opacity 0.25s;
-  opacity: 1;
+	transition: opacity 0.25s;
+	opacity: 1;
 }
 html.is-animating .transition-fade {
-  opacity: 0;
+	opacity: 0;
 }
 
 #project-app {
@@ -47,19 +47,22 @@ html.is-animating .transition-fade {
 }
 
 #wz-toolbar {
-	$color: desaturate($color: chocolate, $amount: 50);
+	$color: desaturate(
+		$color: chocolate,
+		$amount: 50,
+	);
 
 	background-color: $color;
-	padding: 0;
-
+	
 	display: flex;
 	
+	padding: 0.5rem;
+	gap: 0.5rem;
+
 	button {
 		aspect-ratio: 1;
-		height: 100%;
 
 		margin: 0;
-		padding: 0.4rem;
 
 		display: flex;
 		align-items: center;
@@ -70,13 +73,19 @@ html.is-animating .transition-fade {
 		background-color: $color;
 		color: white;
 
+		cursor: pointer;
+		transition: transform 450ms cubic-bezier(0.165, 0.84, 0.44, 1);
+
+		img {
+			width: 2rem;
+		}
+
 		&:disabled {
-			color: transparentize($color: white, $amount: 0.5);
+			filter: brightness(0.7);
 		}
 
 		&:not(:disabled):hover {
-			background-color: transparentize($color: bisque, $amount: 0.2);
-			color: $color;
+			transform: translateY(-4px);
 		}
 
 	}
@@ -156,7 +165,7 @@ html.is-animating .transition-fade {
 	background-color: hsla(34, 57%, 70%, 0);
 
 	transition: 450ms 100ms cubic-bezier(0.215, 0.61, 0.355, 1);
-	
+
 	overflow: hidden;
 
 	display: grid;
@@ -168,7 +177,7 @@ html.is-animating .transition-fade {
 	}
 
 	&.active:empty::after {
-		content: 'No applicable properties';
+		content: "No applicable properties";
 
 		margin: 1rem;
 		display: block;
@@ -176,7 +185,7 @@ html.is-animating .transition-fade {
 		font-weight: 500;
 		opacity: 0.5;
 	}
-	
+
 	&.active {
 		height: 40%;
 		background-color: hsla(34, 57%, 40%, 100%);
@@ -213,7 +222,6 @@ html.is-animating .transition-fade {
 			font-size: inherit;
 
 			resize: vertical;
-
 		}
 	}
 }
@@ -230,71 +238,69 @@ html.is-animating .transition-fade {
 
 // Other panels
 #wz-settings {
-    --size: 80%;
+	--size: 80%;
 
-    width: var(--size);
-    height: var(--size);
+	width: var(--size);
+	height: var(--size);
 
-    // align-self: center;
-    // justify-self: center;
+	// align-self: center;
+	// justify-self: center;
 
-    border-radius: 0 1rem;
+	border-radius: 0 1rem;
 
 	left: 50%;
 	top: 50%;
 
 	translate: -50% -50%;
 
-    
-    > div {
-        height: 100%;
-        padding: 2rem;
-    
-        > h1 {
-            margin-bottom: 2rem;
+	> div {
+		height: 100%;
+		padding: 2rem;
+
+		> h1 {
+			margin-bottom: 2rem;
 
 			font-size: clamp(1.5rem, 5vw, 2.5rem);
-        }
+		}
 
-        .close {
-            position: absolute;
-            right: 0.5rem;
-            top:   0.5rem;
-            font-size: 1.5rem;
-    
-            cursor: pointer;
-    
-            &:hover {
-                color: red;
-            }
-        }
+		.close {
+			position: absolute;
+			right: 0.5rem;
+			top: 0.5rem;
+			font-size: 1.5rem;
 
-        label {
+			cursor: pointer;
+
+			&:hover {
+				color: red;
+			}
+		}
+
+		label {
 			--visual-offset: 4px;
 			--width: 2rem;
 			--height: 1rem;
 
-            grid-column: 1;
+			grid-column: 1;
 
-            display: grid;
-            grid-template-columns: 1fr auto;
+			display: grid;
+			grid-template-columns: 1fr auto;
 			gap: 0.25rem;
 
-            max-width: 24rem;
+			max-width: 24rem;
 
-            margin-block: 0.5rem;
-    
-            justify-items: start;
-            cursor: pointer;
-    
+			margin-block: 0.5rem;
+
+			justify-items: start;
+			cursor: pointer;
+
 			position: relative;
 			isolation: isolate;
 
-            user-select: none;
+			user-select: none;
 
-
-			&:has(input[type=checkbox])::before {
-				content: '';
+			&:has(input[type="checkbox"])::before {
+				content: "";
 
 				position: absolute;
 				right: calc(var(--visual-offset) * -1);
@@ -305,7 +311,7 @@ html.is-animating .transition-fade {
 				height: var(--height);
 
 				border-radius: 4px;
-                cursor: pointer;
+				cursor: pointer;
 
 				background-color: lightgray;
 
@@ -313,20 +319,21 @@ html.is-animating .transition-fade {
 				transition-property: right, background-color;
 			}
 
-			&:has(input[type=checkbox])::after {
-
-				content: '';
+			&:has(input[type="checkbox"])::after {
+				content: "";
 				background-color: hsl(0, 100%, 65%);
-				
+
 				position: absolute;
-				right: calc(var(--width) - var(--height) - var(--visual-offset) * 0.75);
+				right: calc(
+					var(--width) - var(--height) - var(--visual-offset) * 0.75
+				);
 				top: 50%;
 				transform: translateY(-50%);
 
 				height: calc(var(--height) * 0.75);
 
 				aspect-ratio: 1;
-                cursor: pointer;
+				cursor: pointer;
 
 				border-radius: calc(4px * 0.75);
 
@@ -338,11 +345,10 @@ html.is-animating .transition-fade {
 			// 	background-color: lightgray;
 			// }
 
-			&:has(input[type=checkbox]:checked)::after {
-				right: calc(var(--visual-offset) * -0.25); 
+			&:has(input[type="checkbox"]:checked)::after {
+				right: calc(var(--visual-offset) * -0.25);
 				background-color: hsl(120, 100%, 38%);
 			}
-        }
-    }
-
+		}
+	}
 }

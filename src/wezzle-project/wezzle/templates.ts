@@ -427,6 +427,84 @@ const templates: WezzleData[] = [
 			}
 		]
 	},
-	
+	{
+		name: 'Quote',
+		extendable: false,
+		group: WezzleGroup.text,
+		parsed_name: 'blockquote',
+		properties: [
+			{
+				token: 'Text Content',
+				input_type: 'multiline-text'
+			}
+		]
+	},
+	{
+		name: 'Background Color',
+		extendable: false,
+		group: WezzleGroup.style,
+		parsed_name: 'style',
+		properties: [
+			{
+				token: 'Style Type',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Background Color',
+						value: 'background-color'
+					}
+				],
+				value: 'background-color'
+			},
+			{
+				token: 'Style Value',
+				input_type: 'color',
+			}
+		]
+	},
+	{
+		name: 'Text Color',
+		extendable: false,
+		group: WezzleGroup.style,
+		parsed_name: 'style',
+		properties: [
+			{
+				token: 'Style Type',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Text Color',
+						value: 'color'
+					}
+				],
+				value: 'color'
+			},
+			{
+				token: 'Style Value',
+				input_type: 'color',
+			}
+		]
+	},
+	{
+		name: 'Unordered List',
+		extendable: true,
+		group: WezzleGroup.container,
+		parsed_name: 'ul',
+		properties: []
+	},
+	{
+		name: 'Ordered List',
+		extendable: true,
+		group: WezzleGroup.container,
+		parsed_name: 'ol',
+		properties: []
+	},
+	{
+		name: 'List Item',
+		extendable: true,
+		group: WezzleGroup.container,
+		parsed_name: 'li',
+		properties: []
+	},
 ]
 export default templates

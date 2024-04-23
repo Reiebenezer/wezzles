@@ -3,31 +3,31 @@ import { settings } from "./functions"
 const toolbar: ToolbarData[] = [
     {
         name: 'undo',
-        icon: 'ph-arrow-counter-clockwise',
+        icon: '/toolbar/undo.svg',
         description: 'Undo the last action',
         command: 'undo'
     },
     {
         name: 'redo',
-        icon: 'ph-arrow-clockwise',
+        icon: '/toolbar/redo.svg',
         description: 'Redo the last action',
         command: 'redo'
     },
     {
         name: 'save',
-        icon: 'ph-floppy-disk',
+        icon: '/toolbar/save.svg',
         description: 'Saves the current project',
         command: 'save'
     },
     {
         name: 'open',
-        icon: 'ph-folder-open',
+        icon: '/toolbar/open.svg',
         description: 'Opens a wezzle (.wzzl) project',
         command: 'upload'
     },
     {
         name: 'settings',
-        icon: 'ph-gear',
+        icon: '/toolbar/settings.svg',
         description: 'Opens the settings panel',
         command: settings
     }
