@@ -5,17 +5,12 @@ import { ExportWezzle } from './wezzle-project/wezzle/types'
 
 import Swup from "swup"
 import loadProject from './wezzle-main'
-import SwupPreloadPlugin from '@swup/preload-plugin'
 
 //
 const app = document.getElementById('app') as HTMLElement
 const splashscreen = fetch('/splashscreen.svg')
 
-const swup = new Swup({
-	plugins: [
-		new SwupPreloadPlugin()
-	]
-})
+const swup = new Swup()
 
 document.addEventListener('DOMContentLoaded', () => {
 	const recentbtn = document.getElementById('open-recent') as HTMLButtonElement
@@ -53,8 +48,6 @@ function animateSplashscreen() {
 		complete: async() => {
 			splashscreen.classList.add('completed')
 			app.classList.add('loaded')
-
-			await swup.preload!('/project')
 
 			load()
 		},

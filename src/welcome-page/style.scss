@@ -103,7 +103,12 @@ html.is-animating .transition-fade {
         url('/wz-extender.svg'), 
         url('/wz-1.svg'),
         url('/wz-2.svg'),
-        url('/wz-3.svg');
+        url('/wz-3.svg'),
+        url('/toolbar/open.svg'),
+        url('/toolbar/redo.svg'),
+        url('/toolbar/save.svg'),
+        url('/toolbar/settings.svg'),
+        url('/toolbar/undo.svg');
         
     opacity: 0;
 }
