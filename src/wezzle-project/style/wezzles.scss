@@ -142,7 +142,8 @@ $wz-extendable-2: url('/wz-extendable-2.svg');
 $wz-extendable-3: url('/wz-extendable-3.svg');
 
 .wz,
-.wz-style {
+.wz-style,
+.wz-script {
 	> p::before {
 		background-image: $wz-2;
 	}
@@ -158,6 +159,10 @@ $wz-extendable-3: url('/wz-extendable-3.svg');
 
 .wz-style {
 	filter: hue-rotate(160deg);
+}
+
+.wz-script {
+	filter: hue-rotate(30deg);
 }
 
 .wz-extendable {

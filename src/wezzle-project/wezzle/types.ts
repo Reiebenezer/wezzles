@@ -13,6 +13,7 @@ export enum WezzleGroup {
 	text,
 	interactable,
 	style,
+	script
 }
 
 export interface WezzleProperty {
@@ -25,8 +26,13 @@ export interface WezzleProperty {
 		| 'Style Value'
 		| 'Input Type'
 		| 'Value (Units)'
-		| 'Image URL'
+		| 'Image File'
 		| 'Alternative Caption'
+		| 'ID Name'
+		| 'Command'
+		| 'Trigger Event'
+		| 'Class Name'
+		| 'Element ID(s)'
 
 	input_type:
 		| 'text'
@@ -35,6 +41,7 @@ export interface WezzleProperty {
 		| 'select'
 		| 'text-with-datalist'
 		| 'color'
+		| 'file'
 		
 	options?: { value: string; display_text: string }[]
 	value?: string

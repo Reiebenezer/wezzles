@@ -75,10 +75,8 @@ html.is-animating .transition-fade {
 
 		cursor: pointer;
 		transition: transform 450ms cubic-bezier(0.165, 0.84, 0.44, 1);
-
-		img {
-			width: 2rem;
-		}
+		
+		width: 2rem;
 
 		&:disabled {
 			filter: brightness(0.7);
@@ -88,6 +86,22 @@ html.is-animating .transition-fade {
 			transform: translateY(-4px);
 		}
 
+	}
+
+	#toolbar-undo {
+		background-image: url('/toolbar/undo.svg');
+	}
+	#toolbar-redo {
+		background-image: url('/toolbar/redo.svg');
+	}
+	#toolbar-save {
+		background-image: url('/toolbar/save.svg');
+	}
+	#toolbar-settings {
+		background-image: url('/toolbar/settings.svg');
+	}
+	#toolbar-open {
+		background-image: url('/toolbar/open.svg');
 	}
 }
 
@@ -240,27 +254,35 @@ html.is-animating .transition-fade {
 #wz-settings {
 	--size: 80%;
 
-	width: var(--size);
-	height: var(--size);
+	width: fit-content;
+	height: fit-content;
+
+	max-width: var(--size);
+	max-height: var(--size);
 
 	// align-self: center;
 	// justify-self: center;
 
-	border-radius: 0 1rem;
+	border-radius: 1rem;
 
 	left: 50%;
 	top: 50%;
 
 	translate: -50% -50%;
 
+	@include phone-query(
+		$width: var(--size)
+	);
+
 	> div {
 		height: 100%;
-		padding: 2rem;
+		padding: clamp(4rem, 5vh, 8rem) clamp(2rem, 5vw, 4rem);
+		// padding: 2rem;
 
 		> h1 {
 			margin-bottom: 2rem;
 
-			font-size: clamp(1.5rem, 5vw, 2.5rem);
+			font-size: clamp(2rem, 5vw, 2.5rem);
 		}
 
 		.close {
@@ -285,7 +307,7 @@ html.is-animating .transition-fade {
 
 			display: grid;
 			grid-template-columns: 1fr auto;
-			gap: 0.25rem;
+			gap: 2.5rem;
 
 			max-width: 24rem;
 

@@ -28,7 +28,7 @@ body.show-outline * {
     outline-offset: -1px;
 }
 
-:is(p, h1, h2, h3, h4, h5, h6, input, textarea, select, div, header, footer):empty::after {
+:is(p, h1, h2, h3, h4, h5, h6, input, textarea, select, div, header, footer, ol, ul, li, blockquote):empty::after {
     color: transparentize($color: $text-color, $amount: 0.6);
 }
 
@@ -48,6 +48,10 @@ body.show-outline * {
     $h4: '<Subheading 3>',
     $h5: '<Subheading 4>',
     $h6: '<Subheading 5>',
+    $ul: '<Unordered List>',
+    $ol: '<Ordered List>',
+    $li: '<List Item>',
+    $blockquote: '<Quote>',
 );
 
 div, header, footer {
@@ -101,4 +105,21 @@ img {
 
 ul, ol {
     padding-left: 40px;
+}
+
+blockquote {
+    background-color: transparentize($color: $accent, $amount: 0.75);
+    border-left: 10px solid $accent;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+
+    &::before {
+        content: open-quote;
+        font-size: 4em;
+        line-height: 0.1em;
+        margin-right: 0.25em;
+        vertical-align: -0.4em;
+        color: transparentize($color: $accent, $amount: 0.25);
+    }
+
 }

@@ -15,10 +15,20 @@ export default class FileManager {
 
 		FileManager.#instance = this
 
-		KeyboardManager.instance.init().on('save', e => {
+		KeyboardManager.instance.init().on('save', async e => {
 			e.preventDefault()
 
-			const filename = prompt('Save Wezzle Project', 'My Wezzle Project')
+			// const filename = prompt('Save Wezzle Project', 'My Wezzle Project')
+			const { value: filename } = await Swal.fire({
+				title: 'Save Wezzle Project',
+				input: 'text',
+				inputLabel: 'Your Wezzle Project Name',
+				inputValue: 'My Wezzle Project',
+				inputValidator(value) {
+					if (!value)
+						return "You need to add a project name!"
+				}
+			})
 			if (filename)
 				this.download(filename)
 		})

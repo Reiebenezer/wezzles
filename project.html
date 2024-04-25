@@ -1,50 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wezzles</title>
-  <link rel="icon" href="/logo128.png">
-  <script type="module" src="/src/preload.ts"></script>
-</head>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Wezzles</title>
+		<link rel="icon" href="/logo128.png" />
+		<script type="module" src="/src/preload.ts"></script>
+	</head>
 
-<body>
-  <main id="swup" class="transition-fade">
-    <template id="wz-tmp">
-      <div class="wz" tabindex="1">
-        <p class="name"></p>
-      </div>
-      <div class="wz-extendable" tabindex="1">
-        <p class="name"></p>
-        <div class="wz-extender">
-          <div class="contents"></div>
-        </div>
-      </div>
-    </template>
-    <div id="project-app" style="opacity: 0;">
-      <div id="wz-toolbar"></div>
-      <div id="wz-groups"></div>
-      <div id="wz-templates"></div>
-      <section>
-        <div id="left-panel">
-          <div id="wz-playground"></div>
-          <div id="wz-properties"></div>
-        </div>
-        <iframe src="/src/wezzle-project/preview/preview.html" id="wz-preview" width="100%" height="100%"
-          frameborder="0" allowfullscreen="false" referrerpolicy="same-origin"></iframe>
-      </section>
-    </div>
-    <dialog id="wz-settings">
-      <div>
-        <span class="close ph ph-x-circle"></span>
-        <h1>Wezzle Settings</h1>
-        <div class="area">
-        </div>
-      </div>
-    </dialog>
-  </main>
+	<body>
+		<main id="swup" class="transition-fade">
+			<template id="wz-tmp">
+				<div class="wz" tabindex="1">
+					<p class="name"></p>
+				</div>
+				<div class="wz-extendable" tabindex="1">
+					<p class="name"></p>
+					<div class="wz-extender">
+						<div class="contents"></div>
+					</div>
+				</div>
+			</template>
+			<div id="project-app" style="opacity: 0">
+				<div id="wz-toolbar">
+					<button id="toolbar-undo" title="Undo the last action" disabled=""></button>
+          <button id="toolbar-redo" title="Redo the last action" disabled=""></button>
+          <button id="toolbar-save" title="Saves the current project"></button>
+          <button id="toolbar-open" title="Opens a wezzle (.wzzl) project"></button>
+          <button id="toolbar-settings" title="Opens the settings panel"></button>
+				</div>
+				<div id="wz-groups"></div>
+				<div id="wz-templates"></div>
+				<section>
+					<div id="left-panel">
+						<div id="wz-playground"></div>
+						<div id="wz-properties"></div>
+					</div>
+					<iframe
+						src="/src/wezzle-project/preview/preview.html"
+						id="wz-preview"
+						width="100%"
+						height="100%"
+						frameborder="0"
+						allowfullscreen="false"
+						referrerpolicy="same-origin"
+					></iframe>
+				</section>
+			</div>
+			<dialog id="wz-settings">
+				<div>
+					<span class="close ph ph-x-circle"></span>
+					<h1>Wezzle Settings</h1>
+					<div class="area"></div>
+				</div>
+			</dialog>
+		</main>
 
-  <script type="module" src="/src/wezzle-main.ts" defer></script>
-</body>
-
+		<script type="module" src="/src/wezzle-main.ts" defer></script>
+	</body>
 </html>

@@ -33,7 +33,7 @@ const templates: WezzleData[] = [
 						value: 'horizontal',
 					},
 				],
-				value: 'horizontal'
+				value: 'vertical'
 			},
 		],
 	},
@@ -417,7 +417,24 @@ const templates: WezzleData[] = [
 		parsed_name: 'img',
 		properties: [
 			{
-				token: 'Image URL',
+				token: 'Image File',
+				input_type: 'file',
+			},
+			{
+				token: 'Alternative Caption',
+				input_type: 'text',
+				value: 'Image'
+			}
+		]
+	},
+	{
+		name: 'Online Image',
+		extendable: false,
+		group: WezzleGroup.interactable,
+		parsed_name: 'img',
+		properties: [
+			{
+				token: 'Image File',
 				input_type: 'text',
 			},
 			{
@@ -505,6 +522,68 @@ const templates: WezzleData[] = [
 		group: WezzleGroup.container,
 		parsed_name: 'li',
 		properties: []
+	},
+	{
+		name: 'Identifier',
+		extendable: false,
+		group: WezzleGroup.script,
+		parsed_name: 'wz-identifiers',
+		properties: [
+			{
+				token: 'ID Name',
+				input_type: 'text',
+			}
+		]
+	},
+	// {
+	// 	name: 'Class',
+	// 	extendable: false,
+	// 	group: WezzleGroup.script,
+	// 	parsed_name: 'wz-identifiers',
+	// 	properties: [
+	// 		{
+	// 			token: 'Class Name',
+	// 			input_type: 'text'
+	// 		}
+	// 	]
+	// },
+	{
+		name: 'Command',
+		extendable: false,
+		group: WezzleGroup.script,
+		parsed_name: 'wz-logic',
+		properties: [
+			{
+				token: 'Command',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Replace With',
+						value: 'replace-with'
+					},
+				],
+				value: 'replace-with'
+			},
+			{
+				token: 'Trigger Event',
+				input_type: 'select',
+				options: [
+					{
+						display_text: 'Click',
+						value: 'click'
+					},
+					{
+						display_text: 'Right Away',
+						value: 'eager'
+					}
+				],
+				value: 'click'
+			},
+			{
+				token: 'Element ID(s)',
+				input_type: 'text',
+			}
+		]
 	},
 ]
 export default templates

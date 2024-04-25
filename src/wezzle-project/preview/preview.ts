@@ -1,6 +1,7 @@
 import '@fontsource-variable/grandstander'
 import './preview.scss'
 import { util } from '../global'
+import { KeyboardManager } from '../keyboard'
 
 function update() {
     document.body.classList.toggle('show-outline', util.getUserSettings().get('showWezzleOutlines') as boolean)

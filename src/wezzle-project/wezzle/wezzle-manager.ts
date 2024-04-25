@@ -123,15 +123,10 @@ export default class WezzleManager {
 		})
 
 		toolbar.forEach(item => {
-			if (document.getElementById("toolbar-" + item.name)) return
-
-			const img = new global.util.ExtendedElement("img")
-			fetch(item.icon).then(res => img.setProp('src', res.url))
-
-			const button = new global.util.ExtendedElement("button")
-				.id("toolbar-" + item.name)
-				.setProp("title", item.description ?? "")
-				.append(img)
+			console.error(item.name)
+			new global.util.ExtendedElement(
+				document.getElementById(`toolbar-${item.name}`)!
+			)
 				.onclick(e => {
 					if (typeof item.command === "string") {
 						shortcutJS.actions
@@ -140,7 +135,6 @@ export default class WezzleManager {
 					} else item.command()
 				})
 
-			this.toolbar_container.appendChild(button.element)
 		})
 		
 		;(document.getElementById("toolbar-undo") as HTMLButtonElement)?.setAttribute('disabled', '')
@@ -391,8 +385,10 @@ export default class WezzleManager {
 	}
 
 	#setupObservers() {
-		const mutObserver = new MutationObserver(() => {
-			this.parse()
+		const mutObserver = new MutationObserver(mutations => {
+			if (mutations.filter(mut => mut.attributeName !== 'class').length > 0)
+				this.parse()
+
 
 			// Property selection
 			const selectedElement = this.instance_container.querySelector('.selected')
@@ -688,14 +684,20 @@ export default class WezzleManager {
 			),
 		] as HTMLElement[]
 
+		// console.error('parse!')
+
 		const parsed = FileManager.instance.getWezzleOrder(children)
 
 		const parsedElements = document.createElement("div")
 		updatePreview(parsed, parsedElements)
 		parseStyles(parsedElements)
-
-		this.preview_container.contentDocument!.body.innerHTML =
-			parsedElements.innerHTML
+		parseAttributes(parsedElements)
+		
+		
+		this.preview_container.contentDocument!.body.innerHTML = ""
+		this.preview_container.contentDocument!.body.append(...parsedElements.childNodes)
+		
+		parseScripts(this.preview_container.contentDocument!.body)
 
 		global.dev.logJSON(parsed.map(getParsedName))
 
@@ -788,12 +790,32 @@ export default class WezzleManager {
 						el.setProp("type", prop.value ?? "text")
 						break
 
-					case 'Image URL':
+					case 'Image File':
 						el.setProp('src', prop.value ?? '')
 						break
 
 					case 'Alternative Caption':
 						el.setProp('alt', prop.value ?? '')
+						break
+
+					case 'ID Name':
+						el.setProp('data-id', prop.value ?? '')
+						break
+
+					case 'Command':
+						el.setProp('data-command', prop.value ?? '')
+						break
+
+					case 'Class Name':
+						el.setProp('data-classname', prop.value ?? '')
+						break
+						
+					case 'Element ID(s)':
+						el.setProp('data-elements', prop.value ?? '')
+						break
+
+					case 'Trigger Event':
+						el.setProp('data-event', prop.value ?? '')
 						break
 				}
 			})
@@ -806,7 +828,10 @@ export default class WezzleManager {
 				const nearestElement = global.util.findElementMatch(
 					style,
 					"previous",
-					el => el.tagName !== "style"
+					el => 
+						el.tagName.toLowerCase() !== "wz-identifiers" && 
+						el.tagName.toLowerCase() !== "style" &&
+						el.tagName.toLowerCase() !== "wz-logic"
 				)
 
 				if (nearestElement === null) {
@@ -822,6 +847,71 @@ export default class WezzleManager {
 				}
 
 				style.remove()
+			})
+		}
+
+		function parseAttributes(parsedElement: HTMLElement) {
+			const scriptIdentifiers = [...parsedElement.querySelectorAll('wz-identifiers')] as HTMLElement[]
+
+			scriptIdentifiers.forEach(identifier => {
+				const nearestElement = global.util.findElementMatch(
+					identifier,
+					"previous",
+					el => 
+						el.tagName.toLowerCase() !== "wz-identifiers" && 
+						el.tagName.toLowerCase() !== "style" &&
+						el.tagName.toLowerCase() !== "wz-logic"
+				) as HTMLElement
+
+				if (nearestElement === null) return
+				if (identifier.dataset.id) {
+					nearestElement.id = identifier.dataset.id
+				}
+
+				else if (identifier.dataset.classname) {
+					nearestElement.classList.add(identifier.dataset.classname)
+				}
+			})
+
+			scriptIdentifiers.forEach(tag => tag.remove())
+		}
+
+		function parseScripts(parsedElement: HTMLElement) {
+			const scriptLogicElements = [...parsedElement.querySelectorAll('wz-logic')] as HTMLElement[]
+
+			scriptLogicElements.forEach(script => {
+				const nearestElement = global.util.findElementMatch(
+					script,
+					"previous",
+					el => 
+						el.tagName.toLowerCase() !== "wz-identifiers" && 
+						el.tagName.toLowerCase() !== "style" &&
+						el.tagName.toLowerCase() !== "wz-logic"
+				) as HTMLElement
+				if (nearestElement === null) return
+
+				const { command, elements: elementArr, event } = script.dataset
+				if (!command || !elementArr || !event) return
+
+				const IDs = elementArr.split(",").map(str => str.trim())
+				const handler = () => {
+					switch(command) {
+						case 'replace-with':
+							if (IDs.length > 1) {
+								const el0 = WezzleManager.instance.preview_container.contentDocument!.getElementById(IDs[0])
+								const el1 = WezzleManager.instance.preview_container.contentDocument!.getElementById(IDs[1])
+	
+								if (el0 && el1)
+									el0.innerHTML = el1.innerHTML
+							}
+					}
+				}
+				
+				// console.log(command, IDs, event)
+				if (event === 'eager')
+					handler()
+				
+				else nearestElement.addEventListener(event, handler)
 			})
 		}
 	}
@@ -949,6 +1039,24 @@ export default class WezzleManager {
 					el = new global.util.ExtendedInputElement("input")
 						.setProp("type", "color")
 						.bind(property.value, update)
+					break
+
+				case 'file':
+					el = new global.util.ExtendedInputElement('input')
+						.setProp('type', 'file')
+
+					;(el.element as HTMLInputElement).onchange = () => {
+						const files = (el.element as HTMLInputElement).files
+
+						if (!files || !files[0]) return
+
+						const reader = new FileReader()
+						reader.onload = () => {
+							update(reader.result as string)
+						}
+						reader.readAsDataURL(files[0])
+					}
+
 					break
 				
 			}
