@@ -79,7 +79,8 @@ html.is-animating .transition-fade {
 		width: 2rem;
 
 		&:disabled {
-			filter: brightness(0.7);
+			filter: saturate(0);
+			cursor: unset;
 		}
 
 		&:not(:disabled):hover {
