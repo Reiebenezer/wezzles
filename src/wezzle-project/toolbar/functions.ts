@@ -1,3 +1,10 @@
+/**
+ * # TOOLBAR.TS
+ * 
+ * Functions and Animations for toolbar
+ */
+
+
 import anime from "animejs"
 import {
 	camelToDisplay,
@@ -8,20 +15,28 @@ import { util } from "../global"
 import { WezzleInstance } from "../wezzle/wezzle"
 import WezzleManager from "../wezzle/wezzle-manager"
 
+
+/**
+ * ### Toolbar functions
+ */
 export function settings() {
 	const panel = document.getElementById("wz-settings")! as HTMLDialogElement
 	const area = panel.querySelector(".area") as HTMLElement
 	const close = panel.querySelector(".close") as HTMLButtonElement
 
+	// Function to show settings panel
 	panel.showModal()
+	
 	;(panel.querySelector(":scope > div") as HTMLElement).onclick = e =>
 		e.stopPropagation()
+
 	panel.onkeydown = e => {
 		if (e.code === "Escape") {
 			e.preventDefault()
 			closeModal()
 		}
 	}
+	// fetch settings from local storage
 	showSettings()
 
 	// Animate the settings panel
@@ -34,7 +49,7 @@ export function settings() {
 			panel.onclick = close.onclick = closeModal
 		},
 	})
-
+	// Function to close settings panel
 	function closeModal() {
 		anime({
 			targets: panel,
@@ -46,11 +61,17 @@ export function settings() {
 			},
 		})
 	}
-
+	
+	/**
+	 * ### Fetch settings
+	 * fetch settings from local storage
+	 * 
+	*/
 	function showSettings() {
 		const settings = getUserSettings()
 
 		area.innerHTML = ""
+		// fetch settings for each value from local storage
 		settings.forEach((setting, key) => {
 			const label = new util.ExtendedElement("label").html(
 				capitalizeFirstLetters(camelToDisplay(key, " "))
@@ -73,11 +94,13 @@ export function settings() {
 					update()
 				})
 			}
-
+			// Insert the input element inside the label
 			label.append(input)
 
+			// Add the label tag to the settings panel
 			area.appendChild(label.element)
-
+			
+			// Automatically update the project based on the settings
 			function update() {
 				util.setUserSettings(settings)
 				;(

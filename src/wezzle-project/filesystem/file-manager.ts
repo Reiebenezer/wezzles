@@ -1,3 +1,7 @@
+/**
+ * Initialization function for the file manager of the web application
+ */
+
 import Swal from "sweetalert2"
 import { KeyboardManager } from "../keyboard"
 import { parsedWezzle, WezzleData, ExportWezzle } from "../wezzle/types"
@@ -9,6 +13,7 @@ export default class FileManager {
 	fileExtension = '.wzzl'
     instance_container = document.getElementById('wz-playground')!
 
+	// function for saving or opening a created work 
 	constructor() {
 		if (FileManager.#instance)
             throw new ReferenceError('You cannot create another instance!')
@@ -45,9 +50,9 @@ export default class FileManager {
 
         return FileManager.#instance
     }
-    
+    // download function to save created work on disk
 	download(filename: string) {
-		const wzData = this.getprojectJSON()
+		const wzData = this.convertToJSON()
 
 		const blob = new Blob([JSON.stringify(wzData)], { type: 'application/octet-stream' })
 		const url  = URL.createObjectURL(blob)
@@ -57,13 +62,14 @@ export default class FileManager {
 		link.click()
 		URL.revokeObjectURL(url)
     }
-
+	// upload function to open created work from disk
 	async upload() {
 		const input = document.createElement('input')
 		input.type = 'file'
 		input.accept = '.wzzl'
 		input.onchange = async (e) => {
 			const files = (e.target as HTMLInputElement).files
+			// validating input file name
 			if (!files) return
 			if (!files[0].name.endsWith('.wzzl')) {
 				Swal.fire({
@@ -74,8 +80,10 @@ export default class FileManager {
 				return
 			}
 			
+			// Loading and Parsing JSON file as a Wezzle Export
 			const wzData = JSON.parse(await files[0].text()) as ExportWezzle[]
 
+			// Pop up notification when opening an upload with an existing file opened
 			if (this.instance_container.innerHTML) {
 				Swal.fire({
 					title: "Project Conflict",
@@ -98,14 +106,15 @@ export default class FileManager {
 		input.click()
 	}
 
+	// upload function to open created work from homepage
 	async uploadFromHome(): Promise<ExportWezzle[]> {
 		const input = document.createElement('input')
 		input.type = 'file'
 		input.accept = '.wzzl'
 		let wzData: ExportWezzle[] | undefined;
-
 		input.onchange = async (e) => {
 			const files = (e.target as HTMLInputElement).files
+			// validating input file name
 			if (!files) return
 			if (!files[0].name.endsWith('.wzzl')) {
 				Swal.fire({
@@ -126,6 +135,11 @@ export default class FileManager {
 		}, 1))
 	}
 
+	/**
+	 * ### Get Wezzle Order 
+	 * Converts elements into wezzle instances
+	 * For each element in the wezzle playground panel
+	 */
 	getWezzleOrder(elements: HTMLElement[]) {
 		const arr = new Array<parsedWezzle>()
 
@@ -150,7 +164,13 @@ export default class FileManager {
 		return arr
 	}
 
-	getprojectJSON() {
+	/**
+	 * ### Convert to JSON
+	 * Fetches the HTML elements from the wezzle playground,
+	 * converts them to wezzle instances via `getWezzleOrder`,
+	 * and returns them as minified JSON for file saving
+	 */
+	convertToJSON() {
 		const children = [...this.instance_container.querySelectorAll(':scope > :is(.wz, .wz-extendable)')] as HTMLElement[]
         const wzData = this.getWezzleOrder(children).map(function map(wz): ExportWezzle {
             if (wz instanceof WezzleInstance) {
@@ -174,12 +194,20 @@ export default class FileManager {
 
 		return wzData
 	}
-
+	
+	/**
+	 * ### Save Local Project
+	 * Saves the wezzle project via localStorage
+	 */
 	saveLocalProject() {
-		const data = this.getprojectJSON()
+		const data = this.convertToJSON()
 		localStorage.setItem('local-project-data', JSON.stringify(data))
 	}
 
+	/**
+	 * ### Retrieve Local Project
+	 * Retrieves the wezzle project from localStorage
+	 */
 	getLocalProject() {
 		const data_str = localStorage.getItem('local-project-data')
 		if (!data_str) return

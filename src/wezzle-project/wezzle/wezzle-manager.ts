@@ -1,5 +1,15 @@
 /// <reference path="./.d.ts" />
 
+/** # WEZZLE-MANAGER.TS
+ * 
+ * Handles the main wezzle application logic 
+ * 
+ * - Initializes the wezzle project page
+ * - Handles wezzle parsing
+ * - Handles wezzle logic
+ */
+
+// Imports the necessary libraries
 import dragula from "dragula"
 import autoScroll from "dom-autoscroller"
 import Split from "split.js"
@@ -17,13 +27,29 @@ import { FileManager } from "../filesystem"
 import { toolbar } from "../toolbar"
 import { shortcutJS } from "shortcutjs"
 
+/** 
+ * Wezzle Manager
+ * 
+ * The heart of the wezzles application
+ * - Handles wezzle project loading
+ * - Handles drag logic
+ * - Handles real-time parsing
+ */
 export default class WezzleManager {
+
+	/** Singleton instance */
 	static #instance: WezzleManager
 
+	/** Dragula drake (Wezzle Dragging API) */
 	drake = dragula({
+		
+		// Enables copy wezzle on drag from template container
 		copy: (_, source) => {
 			return source === this.template_container
 		},
+
+		// Allows drag into the instance container (playground) 
+		// and the extendable wezzles' containers
 		accepts: (el, target) => {
 			return (
 				(target === this.instance_container ||
@@ -34,9 +60,13 @@ export default class WezzleManager {
 				![...el.querySelectorAll(".contents")].includes(target)
 			)
 		},
+
+		// Prevents dragging into the wezzle extender object
 		invalid: (_, target) => {
 			return target === undefined || target.classList.contains("wz-extender")
 		},
+
+		// Restricts drag events to wezzle elements only
 		moves: el => {
 			return (
 				el !== undefined &&
@@ -44,21 +74,53 @@ export default class WezzleManager {
 					el.classList.contains("wz-extendable"))
 			)
 		},
+
+		// Allows wezzle deletion on drag outside
 		removeOnSpill: true,
 	})
 
+	/** ### Wezzle Toolbar panel
+	 * Contains the toolbar buttons
+	 */
 	toolbar_container = document.getElementById("wz-toolbar")!
+
+	/** ### Wezzle Groups Panel
+	 * Contains the wezzle categories
+	 */
 	group_container = document.getElementById("wz-groups")!
+
+	/** ### Wezzle Templates Panel
+	 * Contains the different wezzle templates
+	 */
 	template_container = document.getElementById("wz-templates")!
+
+	/** ### Wezzle Playground Panel
+	 * The main area of the application
+	 * User can place, arrange and remove wezzles here
+	 */
 	instance_container = document.getElementById("wz-playground")!
-	preview_container = document.getElementById(
-		"wz-preview"
-	)! as HTMLIFrameElement
+
+	/** ### Wezzle Preview Panel
+	 * Previews the output of the wezzle project
+	 */
+	preview_container = document.getElementById("wz-preview")! as HTMLIFrameElement
+
+	/** ### Wezzle Properties Panel
+	 * Change wezzle properties here
+	 */
 	property_container = document.getElementById("wz-properties")!
 
+	/** ### The split window instance
+	 * Allows resizing the `preview_container` and `instance_container` panels horizontally
+	 */
 	#splitInstance?: Split.Instance
+
+	/** ### Clipboard
+	 * Stores copied wezzle data for paste later on
+	 */
 	#clipboard?: WezzleInstance
 
+	/** **Singleton:** prevents creation of another instance */
 	constructor() {
 		if (WezzleManager.#instance)
 			throw new ReferenceError("You cannot create another instance!")
@@ -66,44 +128,55 @@ export default class WezzleManager {
 		WezzleManager.#instance = this
 	}
 
+	/** **Singleton:** instance calls are made here */
 	static get instance() {
 		if (!WezzleManager.#instance)
 			WezzleManager.#instance = new WezzleManager()
 		return WezzleManager.#instance
 	}
 
+	/** Initialize the Wezzle Manager */
 	async init() {
-		// Set up project
 		this.#setupProject()
-
 		this.#setupKeyboard()
-
-		// Set up panels
+		
 		this.#setupPanel()
-
 		// When user resizes the screen, panels are set up again
 		if (visualViewport) visualViewport.onresize = () => this.#setupPanel()
 
 		this.#setupClickEvents()
 		this.#setupGroupsAndTemplates()
-
 		this.#setupDrag()
 		this.#setupAutoscroll()
-
 		this.#setupObservers()
 
 		return this
 	}
 
+	/** ### Setup Project
+	 * Fetches the project saved in localStorage
+	 */
 	#setupProject() {
 		FileManager.instance.getLocalProject()
 	}
 
+	/** 
+	 * ### Setup Panel
+	 * Initialize the panel layout and split window instance
+	 * Initialize the toolbars
+	 */
 	async #setupPanel() {
+		
+		// Get the autosaved split window size
 		const sizeData = localStorage.getItem("play-preview-sizes")
+
+		// Set a default size if the autosave does not exist
 		const sizes = sizeData ? JSON.parse(sizeData) : [33, 67]
 
+		// Destroy the previous instance if it exists (prevents bugs)
 		if (this.#splitInstance) this.#splitInstance.destroy()
+
+		// Initialize the Split instance (for panel splitting)
 		this.#splitInstance = Split(["#left-panel", this.preview_container], {
 			direction:
 				global.util.deviceOrientation() === "portrait"
@@ -122,8 +195,10 @@ export default class WezzleManager {
 			},
 		})
 
+		// Instantiate the toolbars in the toolbar panel
 		toolbar.forEach(item => {
-			console.error(item.name)
+			
+			// Map the buttons to their corresponding keyboard shortcut action when clicked
 			new global.util.ExtendedElement(
 				document.getElementById(`toolbar-${item.name}`)!
 			)
@@ -137,27 +212,46 @@ export default class WezzleManager {
 
 		})
 		
+		// Disable the undo and redo buttons (as there are no history actions on startup)
 		;(document.getElementById("toolbar-undo") as HTMLButtonElement)?.setAttribute('disabled', '')
 		;(document.getElementById("toolbar-redo") as HTMLButtonElement)?.setAttribute('disabled', '')
 	}
 
+	/** 
+	 * ### Setup Groups and Templates Panel
+	 * Fetches the wezzle groups and templates from `templates.ts`
+	 * and initializes them
+	 */
 	#setupGroupsAndTemplates() {
-		// Initialize Wezzles by group
+		
+		// Get the text-based keys from the wezzle group enum
 		const groups = Object.keys(WezzleGroup).filter(g => isNaN(Number(g)))
 
+		// Sort the templates by group
 		const sortedTemplates = templates.sort((a, b) => {
 			if (a.group < b.group) return -1
 			if (a.group > b.group) return 1
 			return 0
 		})
 
+		// Instantiate the wezzle templates
 		sortedTemplates.forEach(data => {
+			
+			// Create a new wezzle for each template and append it to the templates panel
 			const wz = new Wezzle(data).addTo(this.template_container)
+
+			// Create a copy of the wezzle and place it in `wezzle-playground`
 			const add = () => {
+				// Clone the element
 				const cloned = wz.element.cloneNode(true) as HTMLElement
+
+				// Add the cloned element to `wezzle-playground`
 				this.instance_container.appendChild(cloned)
 
-				this.#addInstance(cloned, this.drake)
+				// Add draggable functionality to cloned element
+				this.#addDragContainerIfExtendable(cloned, this.drake)
+
+				// Add undo and redo action to history entries
 				HistoryManager.instance.add({
 					undoAction: () => {
 						WezzleInstance.removeInstance(cloned)
@@ -170,13 +264,16 @@ export default class WezzleManager {
 					},
 				})
 			}
+
+			// Execute `add` function on click and on keypress `Spacebar` and `Enter`
 			wz.element.onclick = add
 			wz.element.onkeydown = e => {
 				if (e.code === "Space" || e.code === "Enter") add()
 			}
 		})
 
-		// Add group buttons and scrolling
+		// Add a button in `wezzle-group` panel for each group 
+		// And scroll the `wezzle-templates` panel to the specific group on click
 		this.group_container.prepend(
 			...groups.map(
 				groupName =>
@@ -191,8 +288,6 @@ export default class WezzleManager {
 							const el = [...Wezzle.instances.values()]
 								.find(item => item.data.group === groupIndex && item.element.closest('#wz-playground') === null)!
 
-							// console.log(el)
-							
 							el.element.scrollIntoView({
 									inline: "start",
 									behavior: global.util.prefersReducedMotion
@@ -205,18 +300,34 @@ export default class WezzleManager {
 	}
 
 	#setupClickEvents() {
-		// Remove selected state on property panel on click outside
+		// Open property panel when a wezzle is clicked
+		// Close the property panel when it is clicked outside
+		// Toggle the "selected" classname on the clicked wezzle
 		document.addEventListener("click", e => {
+
+			// Get the click target
 			const target = e.target as HTMLElement
 
+			// If the target is the playground panel itself
 			if (target === this.instance_container) {
+
+				// Do nothing if the properties panel is closed
 				if (!this.property_container.classList.contains("active")) return
 
+				// Close the property panel
 				this.property_container.classList.remove("active")
+
+				// Remove the "selected" classname from all wezzles in the playground
 				this.instance_container
-					.querySelector(".selected")
-					?.classList.remove("selected")
-			} else if (target.closest(`#${this.instance_container.id}`)) {
+					.querySelector(".selected")?.classList.remove("selected")
+
+
+			}
+			
+			// Otherwise, if the target is anything inside the playground
+			else if (target.closest(`#${this.instance_container.id}`)) {
+
+				// Do nothing if the target element is not a wezzle
 				if (
 					!(
 						target.classList.contains("wz") ||
@@ -224,6 +335,8 @@ export default class WezzleManager {
 					)
 				)
 					return
+
+				// Remove the `selected` classname from all wezzles
 				;[
 					...this.instance_container.querySelectorAll(
 						":is(.wz, .wz-extendable).selected"
@@ -232,21 +345,37 @@ export default class WezzleManager {
 					.filter(el => el !== target)
 					.forEach(el => el.classList.remove("selected"))
 
+				// Toggle the `selected` classname on the target element
 				target.classList.toggle("selected")
 			}
 		})
 	}
 
+	/** 
+	 * ### Setup Drag
+	 * Add dragging functionality to the wezzle instances
+	 */
 	#setupDrag() {
+
+		// Identify `templates` panel and `playground` panel as a drag container
 		this.drake.containers.push(
 			this.template_container,
 			this.instance_container
 		)
+		
+		// Add events on the dragula instance
 		this.drake
+		
+			// A wezzle is dragged
 			.on("drag", (el, source) => {
+
+				// If the wezzle was dragged from the `templates` panel, do nothing
 				if (source === this.template_container) return
 
+				// Get the wezzle instance from the dragged element
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
+
+				// Add current position to the list of positions for history
 				instance.undoHistory.push({
 					source,
 					srcIndex: [...source.children].findIndex(item => item === el),
@@ -254,11 +383,20 @@ export default class WezzleManager {
 					destIndex: null,
 				})
 			})
-			.on("drop", (el, target, source) => {
-				this.#addInstance(el, this.drake)
 
+			// When the dragged wezzle was dropped
+			.on("drop", (el, target, source) => {
+
+				// If the wezzle is extendable, identify `contents` container as a drag container
+				this.#addDragContainerIfExtendable(el, this.drake)
+
+				// Get the wezzle instance
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
+
+				// If the wezzle was dragged from the `templates` panel
 				if (source === this.template_container) {
+
+					// Register current position to history
 					instance.undoHistory.push({
 						source,
 						srcIndex: Number.POSITIVE_INFINITY,
@@ -268,17 +406,20 @@ export default class WezzleManager {
 						),
 					})
 				} else {
+
+					// Get the last position entry in the wezzle
 					const hist =
 						instance.undoHistory[instance.undoHistory.length - 1]
-
+					
+					// Update the last history entry to include the current position
 					hist.dest = target
 					hist.destIndex = [...target.children].findIndex(
 						item => item === el
 					)
 				}
-
+				// add undo and redo action to history entries
 				HistoryManager.instance.add({
-					undoAction: () => {
+						undoAction: () => {
 						if (source === this.template_container) {
 							WezzleInstance.removeInstance(el as HTMLElement)
 
@@ -288,9 +429,11 @@ export default class WezzleManager {
 							return
 						}
 
+						// Get the last wezzle position entry
 						const hist = instance.undoHistory.pop()
 						if (!hist) return
 
+						// Get the element
 						const sibling = hist.source.children.item(
 							hist.srcIndex +
 								(hist.srcIndex <= (hist.destIndex ?? 0) ? 0 : 1)
@@ -318,6 +461,8 @@ export default class WezzleManager {
 					},
 				})
 			})
+			// Create a shadow to a wezzle instance
+			// where the dragged wezzle instance can be applied to
 			.on("shadow", (_, container) => {
 				if (!container.classList.contains("contents")) return
 				;(container as HTMLElement).style.maxHeight =
@@ -325,6 +470,7 @@ export default class WezzleManager {
 					+getComputedStyle(container).padding.replace("px", "") +
 					"px"
 			})
+			// Removing the wezzle instance when dragged and dropped outside the container
 			.on("remove", (el, container) => {
 				const instance = WezzleInstance.getInstance(el as HTMLElement)
 				WezzleInstance.instances.delete(instance)
@@ -368,7 +514,7 @@ export default class WezzleManager {
 			}
 		})
 	}
-
+	// Automatically scroll the playground when wezzles is dragged near an edge  of the container
 	#setupAutoscroll() {
 		if (!this.drake) return
 
@@ -383,7 +529,7 @@ export default class WezzleManager {
 			},
 		})
 	}
-
+	
 	#setupObservers() {
 		const mutObserver = new MutationObserver(mutations => {
 			if (mutations.filter(mut => mut.attributeName !== 'class').length > 0)
@@ -565,7 +711,7 @@ export default class WezzleManager {
 				})
 				// console.log('Pasted Wezzle')
 			})
-
+			// Copy action
 			.on("copy", () => {
 				if (getSelection()?.toString()) return
 
@@ -578,7 +724,7 @@ export default class WezzleManager {
 
 				// console.log('Copied Wezzle')
 			})
-
+			// Cut action
 			.on("cut", () => {
 				if (getSelection()?.toString()) return
 
@@ -623,7 +769,7 @@ export default class WezzleManager {
 
 				// console.log('Cut Wezzle')
 			})
-
+			// Duplicate
 			.on("duplicate", ev => {
 				ev.preventDefault()
 
@@ -661,8 +807,8 @@ export default class WezzleManager {
 			.on("undo", () => HistoryManager.instance.undo())
 			.on("redo", () => HistoryManager.instance.redo())
 	}
-
-	#addInstance(el: Element, drake?: dragula.Drake) {
+	// Adds a extender wezzle instance to the instance if applicable
+	#addDragContainerIfExtendable(el: Element, drake?: dragula.Drake) {
 		const instance = WezzleInstance.getInstance(el as HTMLElement)
 		const extender = instance?.element.querySelector(
 			":scope > .wz-extender"

@@ -1,3 +1,10 @@
+/**
+ * # MAIN.TS
+ * 
+ * Initializion sequence for the web application
+ */
+
+// Library Imports for Use
 import anime from 'animejs'
 
 import { FileManager } from './wezzle-project/filesystem'
@@ -6,7 +13,7 @@ import { ExportWezzle } from './wezzle-project/wezzle/types'
 import Swup from "swup"
 import loadProject from './wezzle-main'
 
-//
+// Initializing the Web App and loading of the splash screen
 const app = document.getElementById('app') as HTMLElement
 const splashscreen = fetch('/splashscreen.svg')
 
@@ -34,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			animateSplashscreen()
 		})
 })
-
+// Animation for the splash screen
 function animateSplashscreen() {
 	const splashscreen = document.getElementById('splashscreen') as HTMLElement
 
